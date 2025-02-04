@@ -7,20 +7,21 @@ router.post('/', async (req, res) => {
     try {
 
       const { username, password } = req.body;
-  
+
       // Check if required fields are present in the request body
-      if (!username || !password) {
-        throw new Error('Missing required fields');
-      }
+      if (!username)
+        return res.status(400).json({ error: "Missing username" })
+      if (!password)
+        return res.status(400).json({ error: "Missing password" })
 
       // Fields length validation, no more validations needed because of the register validations
       if (!username.trim()) {
-        throw new Error('The username cannot contain only spaces');
+        return res.status(400).json({ error: "The username is empty" })
       }
       if (!password.trim()) {
-        throw new Error('The password cannot contain only spaces');
+        return res.status(400).json({ error: "The password is empty" })
       }
-  
+
       // Find the user by username in the database
       const user = await User.findOne({ where: { username } });
 

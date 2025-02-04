@@ -39,13 +39,13 @@ describe('Auth Routes', () => {
         // We make the wrong login request
         const response = await request(app)
             .post('/login')
-            .send({ username: '   ', 
+            .send({ username: '   ',
                 password: 'Test1234' //NOSONAR
             });
 
         // We now need to check that the response is correct and it shows the error
         expect(response.statusCode).toBe(400);
-        console.log(response.error);
+        expect(response.body.error).toBe("The username is empty");
     });
 
     it('shouldn`t login a user because of the white password', async () => {
@@ -63,13 +63,13 @@ describe('Auth Routes', () => {
         // We make the wrong login request
         const response = await request(app)
             .post('/login')
-            .send({ username: 'existinguser', 
+            .send({ username: 'existinguser',
                 password: '    ' //NOSONAR
             });
 
         // We now need to check that the response is correct and it shows the error
         expect(response.statusCode).toBe(400);
-        console.log(response.error);
+        expect(response.body.error).toBe("The password is empty");
     });
 
     it('shouldn`t login a user due to not including the password', async () => {
@@ -91,7 +91,7 @@ describe('Auth Routes', () => {
 
         // We now need to check that the response is correct and it shows the error
         expect(response.statusCode).toBe(400);
-        console.log(response.error);
+        expect(response.body.error).toBe("Missing password");
     });
 
     it('shouldn`t login a user due to wrong username credential', async () => {
@@ -109,13 +109,13 @@ describe('Auth Routes', () => {
         // We make the wrong login request
         const response = await request(app)
             .post('/login')
-            .send({ username: 'notexistinguser', 
+            .send({ username: 'notexistinguser',
                 password: 'Test1234' //NOSONAR
             });
 
         // We now need to check that the response is correct and it shows the error
         expect(response.statusCode).toBe(401);
-        console.log(response.error);
+        expect(response.body.error).toBe('Invalid credentials');
     });
 
     it('shouldn`t login a user due to wrong password credential', async () => {
@@ -133,13 +133,13 @@ describe('Auth Routes', () => {
         // We make the wrong login request
         const response = await request(app)
             .post('/login')
-            .send({ username: 'existinguser', 
+            .send({ username: 'existinguser',
                 password: 'WrongPassword' //NOSONAR
             });
 
         // We now need to check that the response is correct and it shows the error
         expect(response.statusCode).toBe(401);
-        console.log(response.error);
+        expect(response.body.error).toBe('Invalid credentials');
     });
 
     it('should login a user', async () => {
@@ -157,12 +157,12 @@ describe('Auth Routes', () => {
         // We make the login request
         const response = await request(app)
             .post('/login')
-            .send({ username: 'existinguser', 
+            .send({ username: 'existinguser',
                 password: 'Test1234' //NOSONAR
             });
 
         // We now need to check that the response is correct
         expect(response.statusCode).toBe(200);
     });
-    
+
 });

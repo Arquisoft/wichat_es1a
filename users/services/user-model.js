@@ -38,6 +38,11 @@ const User = sequelize.define('User', {
         type: DataTypes.STRING,
         allowNull: false,
     },
+    salt: {
+        type: DataTypes.STRING,
+        nonEmpty: true,
+        allowNull: false,
+    },
     name: {
         type: DataTypes.STRING,
         allowNull: false,

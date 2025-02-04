@@ -6,7 +6,7 @@ const express = require('express');
 const authRoutes = require('./routes/auth-routes.js');
 const userRoutes = require('./routes/user-routes.js');
 
-// App and users port definition 
+// App and users port definition
 const app = express();
 const port = 8001;
 let expressSession = require('express-session');
@@ -23,8 +23,6 @@ app.use(expressSession({
 // Routes middlewares to be used
 app.use('/user', userRoutes);
 app.use('/login', authRoutes);
-
-
 
 // Start the service
 const server = app.listen(port, () => {

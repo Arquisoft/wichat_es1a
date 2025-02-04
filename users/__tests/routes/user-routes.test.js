@@ -113,7 +113,6 @@ describe('User Routes', () => {
             name: 'Test',
             surname: 'User'
         };
-
         const response = await request(app)
             .post('/user')
             .send(newUser);
@@ -125,6 +124,10 @@ describe('User Routes', () => {
         const user = await User.findOne({ where: { username: newUser.username } });
         expect(user).toBeDefined();
 
+        expect(user.salt).toBeDefined();
+        expect(user.salt).not.toBeNull();
+        expect(user.salt.trim()).toBeTruthy();
+
         // Check if the password is hashed
         const isPasswordCorrect = await bcrypt.compare(newUser.password, user.password);
         expect(isPasswordCorrect).toBe(true);
@@ -133,6 +136,27 @@ describe('User Routes', () => {
         const statistics = await Statistics.findOne({ where: { username: newUser.username } });
         expect(statistics).toBeDefined();
     });
+
+    it("should store password hash", async () => {
+        const existingUser = {
+            username: 'existinguser_HASH',
+            password: password,
+            name: 'Existing',
+            surname: 'User'
+        };
+
+        const salt = bcrypt.genSaltSync(10);
+        let user = await User.create({
+            username: existingUser.username,
+            password: bcrypt.hashSync(existingUser.password, salt),
+            salt,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            name: existingUser.name,
+            surname: existingUser.surname
+        });
+        expect(user.salt).toBe(salt)
+    })
 
     it('should not add a user if username already exists', async () => {
         const existingUser = {
@@ -143,9 +167,9 @@ describe('User Routes', () => {
         };
 
         // Create the existing user in the database
-        await User.create({
+        await config.createUser({
             username: existingUser.username,
-            password: await bcrypt.hash(existingUser.password, 10),
+            password: existingUser.password,
             createdAt: new Date(),
             updatedAt: new Date(),
             name: existingUser.name,
@@ -261,9 +285,9 @@ describe('User Routes', () => {
     it('should return list of all groups when username is not defined', async () => {
 
         // Create a user in the database to create the groups
-        await User.create({
+        await config.createUser({
             username: 'existinguser',
-            password: await bcrypt.hash('Test1234', 10),
+            password: 'Test1234',
             createdAt: new Date(),
             updatedAt: new Date(),
             name: 'Existing',
@@ -301,9 +325,9 @@ describe('User Routes', () => {
 
     it('should return list of groups with membership status when username is defined', async () => {
         // Create a user in the database to create the groups
-        await User.create({
+        await config.createUser({
             username: 'existinguser',
-            password: await bcrypt.hash('Test1234', 10),
+            password: 'Test1234',
             createdAt: new Date(),
             updatedAt: new Date(),
             name: 'Existing',
@@ -576,7 +600,7 @@ describe('User Routes', () => {
         const username='testuser1';
         const groupName = 'testgroup4';
 
-        await User.create({
+        await config.createUser({
             username: username,
             password: password,
             name: 'Test1',
@@ -614,7 +638,7 @@ describe('User Routes', () => {
         const username='testuser1';
         const groupName='testgroup1';
 
-        await User.create({
+        await config.createUser({
             username: username,
             password: password,
             name: 'Test1',
@@ -647,7 +671,7 @@ describe('User Routes', () => {
         };
 
         // Create user for the statistics
-        await User.create(newUser);
+        await config.createUser(newUser);
 
         const initialStatistics = {
             username: 'testuser',
@@ -713,7 +737,7 @@ describe('User Routes', () => {
         };
 
         // Create user for the statistics
-        await User.create(newUser);
+        await config.createUser(newUser);
 
         const initialStatistics = {
             the_callenge_earned_money: 100,
@@ -753,8 +777,8 @@ describe('User Routes', () => {
         };
 
         // Create user for the statistics
-        await User.create(newUser);
-        await User.create(newUser2);
+        await config.createUser(newUser);
+        await config.createUser(newUser2);
 
 
         const response = await request(app)
@@ -778,7 +802,7 @@ describe('User Routes', () => {
         };
 
         // Crear un usuario para la prueba
-        await User.create(newUser);
+        await config.createUser(newUser);
 
         const response = await request(app)
             .get(`/user/${newUser.username}`);
@@ -805,9 +829,9 @@ describe('User Routes', () => {
             name: 'Test',
             surname: 'User'
         };
-        await User.create(newUser);
-        await User.create(newUser2);
-        await User.create(newUser3);
+        await config.createUser(newUser);
+        await config.createUser(newUser2);
+        await config.createUser(newUser3);
 
         const response = await request(app)
          .get(`/user/ranking`);
@@ -821,7 +845,7 @@ describe('User Routes', () => {
                 name: 'Test',
                 surname: 'User'
             };
-            await User.create(newUser);
+            await config.createUser(newUser);
             const newGroup = {
                 name: 'testgroup3',
                 creator: 'testuser',
@@ -864,7 +888,7 @@ describe('User Routes', () => {
                 name: 'Test2',
                 surname: 'User2'
             };
-            await User.create(newUser2);
+            await config.createUser(newUser2);
             const newGroup2 = {
                 name: 'testgroup4',
                 creator: 'testuser2',
@@ -917,7 +941,7 @@ describe('User Routes', () => {
     });
 
     it('should allow a user to exit a group', async () => {
-        await User.create({
+        await config.createUser({
             username: 'testuser',
             password: password,
             name: 'Test',
@@ -952,14 +976,14 @@ describe('User Routes', () => {
     });
 
     it('should allow viewing statistics of a user if logged in user has common group', async () => {
-        await User.create({
+        await config.createUser({
             username: 'testuser1',
             password: password,
             name: 'Test1',
             surname: 'User1'
         });
 
-        await User.create({
+        await config.createUser({
             username: 'testuser2',
             password: password,
             name: 'Test2',
@@ -1004,14 +1028,14 @@ describe('User Routes', () => {
     });
 
     it('should return an error if user is not logged in or has no common group', async () => {
-        await User.create({
+        await config.createUser({
             username: 'testuser1',
             password: password,
             name: 'Test1',
             surname: 'User1'
         });
 
-        await User.create({
+        await config.createUser({
             username: 'testuser2',
             password: password,
             name: 'Test2',
@@ -1026,7 +1050,7 @@ describe('User Routes', () => {
     });
 
     it('Should return the user when the username is valid when getting the profile', async () => {
-        await User.create({
+        await config.createUser({
             username: 'testuser1',
             password: password,
             name: 'Test1',
@@ -1058,7 +1082,7 @@ describe('User Routes', () => {
     });
 
     it('Should update the user`s profile pic', async () => {
-        await User.create({
+        await config.createUser({
             username: 'testuser1',
             password: password,
             name: 'Test1',

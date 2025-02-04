@@ -4,7 +4,6 @@ ifndef::imagesdir[:imagesdir: ../images]
 == Architecture Decisions
 
 
-ifdef::arc42help[]
 [role="arc42help"]
 ****
 .Contents
@@ -34,4 +33,21 @@ See https://docs.arc42.org/section-9/[Architecture Decisions] in the arc42 docum
 There you will find links and examples about ADR.
 
 ****
-endif::arc42help[]
+
+The architectural decisions are completely documented in our https://github.com/Arquisoft/wiq_es04a/wiki[repository Wiki section]. Henceforth, to avoid redundancy, instead of re-document those decisions here, we will refer to them.
+
+=== Team Working Methodology
+- https://github.com/Arquisoft/wiq_es04a/wiki/ADR-01-‐-Usage-of-A-Succesful-Branching-Model[ADR 01] - Usage of A Succesful Branching Model
+- https://github.com/Arquisoft/wiq_es04a/wiki/ADR-07-‐-Usage-of-Trunk-Based-Development[ADR 07] - Usage of Trunk Based Development
+
+=== Design and Decisions
+- https://github.com/Arquisoft/wiq_es04a/wiki/ADR-08-‐-Questions-Database-Functioning[ADR 08] - Questions Database Functioning
+- https://github.com/Arquisoft/wiq_es04a/wiki/ADR-10-‐-Questions-API-structure[ADR 10] - Questions API Design
+
+=== Technology
+- https://github.com/Arquisoft/wiq_es04a/wiki/ADR-02-‐-Microservices-Architecture[ADR 02] - Microservices Architecture
+- https://github.com/Arquisoft/wiq_es04a/wiki/ADR-03-‐-Frontend-in-React[ADR 03] - Front-end in React
+- https://github.com/Arquisoft/wiq_es04a/wiki/ADR-04-‐-Users-and-Groups-with-MariaDB[ADR 04] - Users and Groups with MariaDB
+- https://github.com/Arquisoft/wiq_es04a/wiki/ADR-05-‐-Question-generation-in-Node.js[ADR 05] - Question generation in Node.js
+- https://github.com/Arquisoft/wiq_es04a/wiki/ADR-06-‐-MongoDB-for-questions-database[ADR 06] - MongoDB for questions database
+- https://github.com/Arquisoft/wiq_es04a/wiki/ADR-09-‐-Multiplayer-technology[ADR 09] - Multiplayer technology

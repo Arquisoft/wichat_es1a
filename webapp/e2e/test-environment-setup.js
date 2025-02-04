@@ -1,20 +1,45 @@
-const { MongoMemoryServer } = require('mongodb-memory-server');
-
-let mongoserver;
+let sequelize;
 let userservice;
-let authservice;
-let llmservice;
 let gatewayservice;
+let questionservice;
 
 async function startServer() {
-    console.log('Starting MongoDB memory server...');
-    mongoserver = await MongoMemoryServer.create();
-    const mongoUri = mongoserver.getUri();
-    process.env.MONGODB_URI = mongoUri;
-    userservice = await require("../../users/userservice/user-service");
-    authservice = await require("../../users/authservice/auth-service");
-    llmservice = await require("../../llmservice/llm-service");
-    gatewayservice = await require("../../gatewayservice/gateway-service");
-}
+    try {
+        process.env.NODE_ENV ='test';
+        console.log('Starting MariaDB Connection...');
+        userservice = await require("../../users/services/user-model");
+        sequelize = userservice.sequelize;
+        userModel =  await require("../../users/routes/user-routes").User;
+        gatewayservice = await require("../../gatewayservice/gateway-service");
+        questionservice = await require("../../questions/services/question-data-service");
+    
+        await sequelize.authenticate();
+        await sequelize.sync({force:true});
+        
+        //test user
+        //const hashedPassword = await bcrypt.hash("99999999XxX.", 10);
+        /*const hashedPassword = "$2a$10$azpPYhKmIKB4Mhreyq6UHOQdrHdugt7TFh.VhSED.F.QsGaQh.tZ6";
+        let username = "JORDI33";
+        let name = "JORDI";
+        let surname = "Hurtado"
+        // Create the user in the database using Sequelize
+        await userModel.create({
+            username,
+            password: hashedPassword,
+            name,
+            surname
+        });*/
 
-startServer();
+        /*let SessionContext = await require('../src/SessionContext');
+        const { createSession } = useContext(SessionContext);
+        createSession("JORDI33");*/
+       
+        
+
+    } catch (error) {
+        console.error('Error starting server:', error);
+    }
+   
+  }
+
+  startServer();

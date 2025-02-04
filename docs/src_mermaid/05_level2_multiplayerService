@@ -1,0 +1,7 @@
+flowchart TD
+    subgraph Whitebox multiplayer
+    sis2(index)
+ 
+    end
+    sis1(webapp) -.-> sis2
+    sis2 -.->|Get| sis3(gateway)

@@ -1,0 +1,70 @@
+'''
+
+@startuml
+
+
+title Deployment Diagram
+
+!theme vibrant
+
+left to right direction
+node AzureServer{    
+    
+
+    node MongoDB {
+        
+    } 
+    
+   node MariaDB {
+   }
+
+  node Users{
+  }   
+
+ node GatewayService{
+    
+    }
+
+ node WebApp {
+        
+    }   
+
+node Questions{
+       
+    }
+
+node Multiplayer{
+        
+    }
+
+ node Grafana{
+        
+    }   
+
+  node Prometheus{
+        
+    }   
+
+}
+
+node Wikidata{
+  
+    }
+ 
+node UserDevice {
+    node WebBrowser {
+    }
+
+
+ 
+Actor User
+
+}
+
+User -l-> WebBrowser : "uses"
+
+
+WebApp -d-> WebBrowser : "shows on user device"
+Questions -d-> Wikidata : "Fetches data"
+@enduml
+'''

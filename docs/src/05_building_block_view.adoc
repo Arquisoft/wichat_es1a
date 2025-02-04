@@ -2,10 +2,9 @@ ifndef::imagesdir[:imagesdir: ../images]
 
 [[section-building-block-view]]
 
-
 == Building Block View
+The building block view presents, in a graphical manner, a decomposition of the most important parts of the system.
 
-ifdef::arc42help[]
 [role="arc42help"]
 ****
 .Content
@@ -40,24 +39,18 @@ Thus it contains the white box description of selected building blocks of level 
 See https://docs.arc42.org/section-5/[Building Block View] in the arc42 documentation.
 
 ****
-endif::arc42help[]
 
 === Whitebox Overall System
 
-ifdef::arc42help[]
+Main view of the system. WIQ application is related to one external component: the Wikidata API
+
 [role="arc42help"]
 ****
 Here you describe the decomposition of the overall system using the following white box template. It contains
 
  * an overview diagram
  * a motivation for the decomposition
- * black box descriptions of the contained building blocks. For these we offer you alternatives:
-
-   ** use _one_ table for a short and pragmatic overview of all contained building blocks and their interfaces
-   ** use a list of black box descriptions of the building blocks according to the black box template (see below).
-   Depending on your choice of tool this list could be sub-chapters (in text files), sub-pages (in a Wiki) or nested elements (in a modeling tool).
-
-
+ * black box descriptions of the contained building blocks. 
  * (optional:) important interfaces, that are not explained in the black box templates of a building block, but are very important for understanding the white box.
 Since there are so many ways to specify interfaces why do not provide a specific template for them.
  In the worst case you have to specify and describe syntax, semantics, protocols, error handling,
@@ -65,49 +58,16 @@ Since there are so many ways to specify interfaces why do not provide a specific
 In the best case you will get away with examples or simple signatures.
 
 ****
-endif::arc42help[]
 
-_**<Overview Diagram>**_
+image:05_scope_and_context.png["Diagram Whitebox Overall System"]
 
 Motivation::
 
-_<text explanation>_
+This is a general overview of the application.
 
-
-Contained Building Blocks::
-_<Description of contained building block (black boxes)>_
-
-Important Interfaces::
-_<Description of important interfaces>_
-
-ifdef::arc42help[]
 [role="arc42help"]
 ****
-Insert your explanations of black boxes from level 1:
-
-If you use tabular form you will only describe your black boxes with name and
-responsibility according to the following schema:
-
-[cols="1,2" options="header"]
-|===
-| **Name** | **Responsibility**
-| _<black box 1>_ | _<Text>_
-| _<black box 2>_ | _<Text>_
-|===
-
-
-
-If you use a list of black box descriptions then you fill in a separate black box template for every important building block .
-Its headline is the name of the black box.
-****
-endif::arc42help[]
-
-==== <Name black box 1>
-
-ifdef::arc42help[]
-[role="arc42help"]
-****
-Here you describe <black box 1>
+Here you describe black boxes
 according the the following black box template:
 
 * Purpose/Responsibility
@@ -118,108 +78,188 @@ according the the following black box template:
 * (Optional) Open issues/problems/risks
 
 ****
-endif::arc42help[]
 
-_<Purpose/Responsibility>_
+Contained Building Blocks::
+* **Wikidata Infinite Quest**: It is the main application, represented as a blackbox that will be detailed in the following decompositions. 
+* **Wikidata API**: It is the external API that the system uses to generate questions and answers.
 
-_<Interface(s)>_
+=== Level 1
 
-_<(Optional) Quality/Performance Characteristics>_
-
-_<(Optional) Directory/File Location>_
-
-_<(Optional) Fulfilled Requirements>_
-
-_<(optional) Open Issues/Problems/Risks>_
-
-
-
-
-==== <Name black box 2>
-
-_<black box template>_
-
-==== <Name black box n>
-
-_<black box template>_
-
-
-==== <Name interface 1>
-
-...
-
-==== <Name interface m>
-
-
-
-=== Level 2
-
-ifdef::arc42help[]
 [role="arc42help"]
 ****
-Here you can specify the inner structure of (some) building blocks from level 1 as white boxes.
+Here you can specify the inner structure of (some) building blocks from Overall System as white boxes.
 
 You have to decide which building blocks of your system are important enough to justify such a detailed description.
 Please prefer relevance over completeness. Specify important, surprising, risky, complex or volatile building blocks.
 Leave out normal, simple, boring or standardized parts of your system
 ****
-endif::arc42help[]
 
-==== White Box _<building block 1>_
+==== White Box Wikidata Infinite Quest
 
-ifdef::arc42help[]
 [role="arc42help"]
 ****
-...describes the internal structure of _building block 1_.
+...describes the internal structure of _building block WIQ_.
 ****
-endif::arc42help[]
 
-_<white box template>_
+image:05_level1.png["Diagram White Box Wikidata Infinite Quest"]
 
-==== White Box _<building block 2>_
+Motivation::
 
+First decomposition of the system.
 
-_<white box template>_
+Contained Building Blocks::
+* **webapp**: It is the main module of the application. 
+* **gateway**: Handles the communication between the user service and question service modules with the web app service. Is is the API REST.
+* **questions**: Gets questions from Wikidata and handles their loading into the database.
+* **users**: Handles the user management.
+* **multiplayer**: Handles the multiplayer management.
+* **MongoDB**: MongoDB database.
+* **MariaDB**: MaiaDB database.
 
-...
+Other Important Interfaces::
+* **Docs**: Contains the application documentation.
 
-==== White Box _<building block m>_
+=== Level 2
 
+[role="arc42help"]
+****
+Here you can specify the inner structure of (some) building blocks from level 1 as white boxes.
+****
+==== White Box users
 
-_<white box template>_
+image:05_level2_userService.png["Diagram White users"]
 
+Motivation::
 
+Decomposition of the users black box from level 1 system.
+
+Contained Building Blocks::
+* **Routes**: Contains route handlers for the users.
+* **Services**: Contains data logic.
+
+Other Important Interfaces::
+* **index**: Define the entry point of the User Service.
+
+==== White Box questions
+
+image:05_level2_questionGenerationService.png["Diagram White Box questions"]
+
+Motivation::
+
+Decomposition of the questions black box from level 1 system.
+
+Contained Building Blocks::
+* **Routes**: Contains route handlers for the questions.
+* **Services**: Contains data logic.
+
+Other Important Interfaces::
+* **index**: Define the entry point of the questions.
+* **utils**: Define auxiliar functions and questions structure.
+
+==== White Box Web App
+
+image:05_level2_webApp.png["Diagram White webapp"]
+
+Motivation::
+
+Decomposition of the webapp black box from level 1 system.
+
+Contained Building Blocks::
+* **public**: Contains image and audio files.
+* **src**: Contains the components, pages and data of the front-end application.
+
+==== White Box gateway
+
+image:05_level2_gatewayService.png["Diagram White Box gateway"]
+
+Motivation::
+
+Decomposition of the gateway black box from level 1 system.
+
+Contained Building Blocks::
+* **gateway-service**: Define the routes for handling the communication between the user service and question service modules with the web app service.
+* **prometheus**: Contains the configuration of grapfana and prometheus
+Other Important Interfaces::
+* **monitoring**: Uses Grafana and Prometheus to monitor the application.
+
+==== White Box multiplayer
+
+image:05_level2_multiplayerService.png["Diagram White Box multiplayer"]
+
+Motivation::
+
+Decomposition of the multiplayer black box from level 1 system.
+
+Contained Building Blocks::
+* **index**: Handles the multiplayer management.
 
 === Level 3
 
-ifdef::arc42help[]
 [role="arc42help"]
 ****
 Here you can specify the inner structure of (some) building blocks from level 2 as white boxes.
-
-When you need more detailed levels of your architecture please copy this
-part of arc42 for additional levels.
 ****
-endif::arc42help[]
+==== White Box routes from users
 
-==== White Box <_building block x.1_>
+image:05_level3_routesUserService.png["Diagram White Box routes from users"]
 
-ifdef::arc42help[]
-[role="arc42help"]
-****
-Specifies the internal structure of _building block x.1_.
-****
-endif::arc42help[]
+Motivation::
 
-_<white box template>_
+Decomposition of the black box routes from users white box from level 2 system.
+
+Contained Building Blocks::
+* **user-routes**: Contains route handlers for the register, ranking, groups management, statistics management and questions record management.
+* **auth-routes**: Contains route handlers for the login.
+
+==== White Box services from users
+
+image:05_level3_servicesUserService.png["Diagram White Box services from users"]
+
+Motivation::
+
+Decomposition of the black box services from users white box from level 2 system.
+
+Contained Building Blocks::
+* **user-model**: Define the User, Statistics and Group database schemas.
+
+==== White Box routes from questions
+
+image:05_level3_routesQuestionGenerationService.png["Diagram White Box routes from questions"]
+
+Motivation::
+
+Decomposition of the black box routes from questions white box from level 2 system.
+
+Contained Building Blocks::
+* **question-routes**: Contains route handlers for the questions management.
+
+==== White Box services from questions
+
+image:05_level3_servicesQuestionGenerationService.png["Diagram White Box services from questions"]
+
+Motivation::
+
+Decomposition of the black box routes from questions white box from level 2 system.
+
+Contained Building Blocks::
+* **question-data-model**: Define the Question database schema.
+* **question-data-service**: Responsible for managing questions in the database.
+* **wikidata-service**: Responsible for getting questions from Wikidata.
+
+==== White Box src from webapp
+
+image:05_level3_srcWebApp.png["Diagram White Box src from webapp"]
+
+Motivation::
+
+Decomposition of the black box src from webapp white box from level 2 system.
+
+Contained Building Blocks::
+* **components**: Defines common elements in the pages like the nav-bar, footer, etc. 
+* **pages**: Defines the different screens of the application.
+* **data**:  It contains the data used by the pages.
+* **App**: Main entry point for the application logic. Defines the application's theme and navbar routes.
+* **index**: Initializes the application and renders the main component (App.js) to the DOM.
 
 
-==== White Box <_building block x.2_>
 
-_<white box template>_
-
-
-
-==== White Box <_building block y.1_>
-
-_<white box template>_

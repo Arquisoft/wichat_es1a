@@ -1,6 +1,7 @@
+version: '3'
 services:
   mongodb:
-    container_name: mongodb-wichat_es1a
+    container_name: mongodb
     image: mongo
     profiles: ["dev", "prod"]
     volumes:
@@ -9,34 +10,70 @@ services:
       - "27017:27017"
     networks:
       - mynetwork
+    restart: always
 
-  authservice:
-    container_name: authservice-wichat_es1a
-    image: ghcr.io/arquisoft/wichat_es1a/authservice:latest
+  mariadb:
+    container_name: mariadb
+    image: mariadb
     profiles: ["dev", "prod"]
-    build: ./users/authservice
-    depends_on:
-      - mongodb
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: R#9aLp2sWu6y
+      MYSQL_DATABASE: base_de_datos_de_usuarios
     ports:
-      - "8002:8002"
+      - "3306:3306"
     networks:
       - mynetwork
-    environment:
-      MONGODB_URI: mongodb://mongodb:27017/userdb
+    restart: always
 
-  userservice:
-    container_name: userservice-wichat_es1a
-    image: ghcr.io/arquisoft/wichat_es1a/userservice:latest
+  users:
+    container_name: users
+    image: ghcr.io/arquisoft/wiq_es04a/users:latest
     profiles: ["dev", "prod"]
-    build: ./users/userservice
+    build: ./users
     depends_on:
-      - mongodb
+      - mariadb
     ports:
       - "8001:8001"
     networks:
       - mynetwork
     environment:
-      MONGODB_URI: mongodb://mongodb:27017/userdb
+      DATABASE_URL: mariadb:3306/userdb
+    restart: always
+
+  questions:
+      container_name: questions
+      image: ghcr.io/arquisoft/wiq_es04a/questions:latest
+      profiles: ["dev", "prod"]
+      build: ./questions
+      depends_on:
+        - mongodb
+      ports:
+        - "8010:8010"
+      networks:
+        - mynetwork
+      environment:
+        DATABASE_URI: mongodb://mongodb:27017/questionDB
+        TEST_DATABASE_URI: mongodb://mongodb:27017/test
+      restart: always
+
+  gatewayservice:
+    container_name: gatewayservice
+    image: ghcr.io/arquisoft/wiq_es04a/gatewayservice:latest
+    profiles: ["dev", "prod"]
+    build: ./gatewayservice
+    depends_on:
+      - users
+      - questions
+    ports:
+      - "8000:8000"
+    networks:
+      - mynetwork
+    environment:
+      USER_SERVICE_URL: http://users:8001
+      QUESTION_SERVICE_URL: http://questions:8010
+    restart: always
 
   llmservice:
     container_name: llmservice-wichat_es1a
@@ -48,42 +85,43 @@ services:
     networks:
       - mynetwork
 
-  gatewayservice:
-    container_name: gatewayservice-wichat_es1a
-    image: ghcr.io/arquisoft/wichat_es1a/gatewayservice:latest
+  webapp:
+    container_name: webapp
+    image: ghcr.io/arquisoft/wiq_es04a/webapp:latest
     profiles: ["dev", "prod"]
-    build: ./gatewayservice
+    build: ./webapp
     depends_on:
-      - mongodb
-      - userservice
-      - authservice
-      - llmservice
+      - gatewayservice
+      - multiplayer
     ports:
-      - "8000:8000"
+      - "3000:3000"
     networks:
       - mynetwork
     environment:
-      AUTH_SERVICE_URL: http://authservice:8002
-      USER_SERVICE_URL: http://userservice:8001
-      LLM_SERVICE_URL: http://llmservice:8003
+      REACT_APP_API_ENDPOINT: http://gatewayservice:8000
+      REACT_APP_MULTIPLAYER_ENDPOINT: http://multiplayer:5010
+    restart: always
 
-  webapp:
-    container_name: webapp-wichat_es1a
-    image: ghcr.io/arquisoft/wichat_es1a/webapp:latest
+  multiplayer:
+    container_name: multiplayer
+    image: ghcr.io/arquisoft/wiq_es04a/multiplayer:latest
     profiles: ["dev", "prod"]
-    build: 
-      context: ./webapp
-      args:
-        LLM_API_KEY: ${LLM_API_KEY}
+    build: ./multiplayer
     depends_on:
       - gatewayservice
     ports:
-      - "3000:3000"
+      - "5010:5010"
+    networks:
+      - mynetwork
+    environment:
+      WEBAPP_ENDPOINT: http://webapp:3000
+      GATEWAY_SERVICE_ENDPOINT: http://gatewayservice:8000
+    restart: always
 
   prometheus:
     image: prom/prometheus
-    container_name: prometheus-wichat_es1a
-    profiles: ["dev"]
+    container_name: prometheus
+    profiles: ["dev", "prod"]
     networks:
       - mynetwork
     volumes:
@@ -91,13 +129,14 @@ services:
       - prometheus_data:/prometheus
     ports:
       - "9090:9090"
-    depends_on: 
+    depends_on:
       - gatewayservice
-      
+    restart: always
+
   grafana:
     image: grafana/grafana
-    container_name: grafana-wichat_es1a
-    profiles: ["dev"]
+    container_name: grafana
+    profiles: ["dev", "prod"]
     networks:
       - mynetwork
     volumes:
@@ -110,14 +149,15 @@ services:
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
     ports:
       - "9091:9091"
-    depends_on: 
+    depends_on:
       - prometheus
-
+    restart: always
 
 volumes:
+  mariadb_data:
   mongodb_data:
-  prometheus_data: 
-  grafana_data: 
+  prometheus_data:
+  grafana_data:
 
 networks:
   mynetwork:

@@ -1,0 +1,19 @@
+classDiagram
+    Game <|-- WiseMenStack
+    Game <|-- WarmQuestion
+    Game <|-- TheChallenge
+    Game <|-- DiscoveringCities
+    Game <|-- Multiplayer
+    class Game {
+    }
+    class WiseMenStack {
+    }
+    class TheChallenge {
+    }
+    class WarmQuestion {
+    }
+    class DiscoveringCities {
+    }
+    class Multiplayer {
+    }
+    

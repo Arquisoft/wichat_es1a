@@ -18,10 +18,6 @@ If needed you can subdivide them into
 technical constraints, organizational and political constraints and
 conventions (e.g. programming or versioning guidelines, documentation or naming conventions)
 
-.Further Information
-
-See https://docs.arc42.org/section-2/[Architecture Constraints] in the arc42 documentation.
-
 ****
 There are various architectural constraints that affect this application. They have been divided into the following sections.
 
@@ -29,7 +25,7 @@ There are various architectural constraints that affect this application. They h
 [options="header"]
 |===
 | Constraint | Description
-| Application name | The name of the developed application will be WIQ. We have discussed the https://github.com/Arquisoft/wiq_es04a/discussions/19[meaning of these acronyms] 
+| Application name | The name of the developed application will be WIChat
 |===
 
 === Application Requirements

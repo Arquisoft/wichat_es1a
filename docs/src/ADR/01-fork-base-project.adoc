@@ -1,0 +1,19 @@
+=== Fork a project from last year to use as a base
+
+Since the project specification is similar to last year's, we need to choose
+between building the project from scratch, or forking a project from last year.
+
+Our decision is to base our project on last year's
+link:https://github.com/Arquisoft/wiq_es04a[wiq_es04a] team.
+
+**Advantages**
+
+- A considerable amount of functionality is the same as last year, so we won't
+  have to implement it.
+
+**Disadvantages**
+
+- Using other people's code can lead to confusion. Understanding an extraneaous
+  codebase is complicated.
+
+Status: **Accepted**

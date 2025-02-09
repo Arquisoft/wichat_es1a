@@ -1,5 +1,9 @@
-node_modules
 coverage
 docs/build
-.env
-webapp/.env
+
+# Node.js dependencies
+node_modules
+
+# IDE/Editor files
+.idea/
+.vscode/

@@ -3,8 +3,6 @@ ifndef::imagesdir[:imagesdir: ../images]
 [[section-solution-strategy]]
 == Solution Strategy
 
-
-ifdef::arc42help[]
 [role="arc42help"]
 ****
 .Contents
@@ -31,4 +29,99 @@ Refer to details in the following sections.
 See https://docs.arc42.org/section-4/[Solution Strategy] in the arc42 documentation.
 
 ****
-endif::arc42help[]
+
+=== Technology decisions
+
+To develop the app we will use the following technologies:
+
+* JavaScript will be the main programming language
+* ReactJS to build the user interface
+* Docker Compose to deploy all the microservices
+* GitHub for version control
+* WikiData API to obtain question and answer information
+* ExpressJS to build the backend
+
+We have considered the trade-offs that belong to each technology, such as SpringBoot or PHP for the backend of the app. 
+However, JavaScript was the language that adapted better to our requirements due to the simplicity of the language and its
+ focus on agile development that can lead to faster development cycles. 
+One of the main disadvantages is that we had to learn it, because our main language is Java. 
+
+=== Implementation design
+==== Question generation strategy
+For the question generation process, we consult Wikidata using one of the question generation structures available in a JSON, and enrich it usually with properties more likely to be succesfuly queried from Wikidata.
+
+The JSON structure allows us to select the desired categories for the questions requested if necessary, and, in the future, the language of the question. From there, we construct the query in Wikidata and convert it into a question object. Here's an example of a category element in the JSON:
+
+```json
+[
+    {
+        "name": "country",
+        "instance": "Q6256",
+        "properties": [
+            {
+                "property": "P36",
+                "template": {
+                    "es": "Cuál es la capital de x",
+                    "en": "What is the capital of x",
+                    "fr": "Quelle est la capitale de x"
+                },
+                "category": ["Geography", "Cities"]
+            },
+            {
+                "property": "P38",
+                "template": {
+                    "es": "Que moneda tiene x",
+                    "en": "What currency x has",
+                    "fr": "Quelle est la devise de x"
+                },
+                "category": ["Political"]
+            }, ...
+        ], ...
+    }, ...
+]
+```
+
+This structure allows us to select multiple and varying questions from a given category or for a given item, varying the properties depending on the type of element we are querying within a category (i.e., a Wikidata Item).
+
+This process allows us to dynamically generate questions based on specific categories and properties, ensuring a diverse set of questions for users across different topics and languages.
+
+==== Question service functionality
+
+For the question service implementation, as explained in https://github.com/Arquisoft/wiq_es04a/wiki/ADR-08-‐-Questions-Database-Functioning[ADR 08] - Questions Database Functioning, we've devised a strategy to ensure a seamless experience with minimal question repetition.
+
+The question request route will manage its service by removing questions from the database, preventing redundancy. We've established two thresholds for the questions stored count: 
+
+- A high threshold to maintain a minimum number of stored questions
+- A low threshold to avoid depleting the collection entirely. 
+
+In exceptional cases where no questions are available, a pair of questions will be synchronously generated before asynchronously replenishing to reach the high threshold, which will be the usual behavior whenever the high threshold is surpassed.
+
+This approach ensures continuous question availability while mitigating repetition risks. Additionally, we aim to explore the feasibility of generating questions during periods of service inactivity or low request volume for further optimization.
+
+=== Decisions about the top-level decomposition of the system
+
+We decided to use a microservices arquitecture, having different modules for each functionality. 
+For example, we will use a microservice to generate the questions.
+
+=== Decisions on how to achieve key quality goals
+
+Quality goals are explained in detail in point 10.
+
+[options="header",cols="1,2"]
+|===
+|Quality goal| Decisions to achieve it.
+|Usability| We are going to use real users to test the app interface and improve it according to their feedback.
+|Availability| Docker Compose will be helpful to avoid problems with the deploy of the app. In addition we will use web hosting to expose it to the internet.
+|Testability| We created unit and e2e (integration) test set to test the application
+|Performance| We will use the minimum required calls to the APIs to mantain the minimum time response, for example, with bulk requests.
+|===
+
+=== Relevant organizational decisions
+
+Our framework will be based on working every week with meetings when necessary, one will be held always during lab time in order to assign tasks and make minor decisions.
+On the other hand, further meetings will be intended for more thorough reviews as well as more significant decisions.
+
+Each assigned task will be created as an Issue in GitHub to track the progress done. In addition, we are going to use GitHub Projects to organize the workflow of the team.
+To merge the code to the develop branch we are going to use Pull Requests in order to be approved by every person of the team.
+
+

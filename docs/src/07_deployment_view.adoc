@@ -5,7 +5,6 @@ ifndef::imagesdir[:imagesdir: ../images]
 
 == Deployment View
 
-ifdef::arc42help[]
 [role="arc42help"]
 ****
 .Content
@@ -42,59 +41,19 @@ when your infrastructure is more complex.
 See https://docs.arc42.org/section-7/[Deployment View] in the arc42 documentation.
 
 ****
-endif::arc42help[]
 
-=== Infrastructure Level 1
+We have several services deployed in a single virtual machine using containers and Docker Compose, this eases the deployment.
+This are the different container and their relations:
 
-ifdef::arc42help[]
-[role="arc42help"]
-****
-Describe (usually in a combination of diagrams, tables, and text):
+- WebApp: The web page. Gets data from Gateway Service.
+- Gateway Service: data access interface for services.
+- Users: manages authentication and statistics about users.
+- MariaDB: persistance system used in the users data.
+- MongoDB: persistance system used in the questions data.
+- Grafana and Prometeus: code monitoring systems.
+- Questions: generates questions to use in the game.
+- Multiplayer: permits users to play multiplayer games.
 
-* distribution of a system to multiple locations, environments, computers, processors, .., as well as physical connections between them
-* important justifications or motivations for this deployment structure
-* quality and/or performance features of this infrastructure
-* mapping of software artifacts to elements of this infrastructure
+We are going to use an Azure VM to deploy all this services.
 
-For multiple environments or alternative deployments please copy and adapt this section of arc42 for all relevant environments.
-****
-endif::arc42help[]
-
-_**<Overview Diagram>**_
-
-Motivation::
-
-_<explanation in text form>_
-
-Quality and/or Performance Features::
-
-_<explanation in text form>_
-
-Mapping of Building Blocks to Infrastructure::
-_<description of the mapping>_
-
-
-=== Infrastructure Level 2
-
-ifdef::arc42help[]
-[role="arc42help"]
-****
-Here you can include the internal structure of (some) infrastructure elements from level 1.
-
-Please copy the structure from level 1 for each selected element.
-****
-endif::arc42help[]
-
-==== _<Infrastructure Element 1>_
-
-_<diagram + explanation>_
-
-==== _<Infrastructure Element 2>_
-
-_<diagram + explanation>_
-
-...
-
-==== _<Infrastructure Element n>_
-
-_<diagram + explanation>_
+image:07_deployment_view.png["Deployment View"]

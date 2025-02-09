@@ -9,7 +9,33 @@
 <img src="https://miro.medium.com/max/365/1*Jr3NFSKTfQWRUyjblBSKeg.png" height="100">
 </p>
 
-This is a base project for the Software Architecture course in 2024/2025. 
+**This project is based on last year's wiq_es04a**
+
+Original repo: <https://github.com/Arquisoft/wiq_es04a>
+
+Original authors:
+- Méndez Fernández, Hugo
+- Barrero Cruz, Pablo
+- Lago Conde, Alberto
+- García-Ovies Pérez, Pablo
+- Bustamante Larriet, Samuel
+- González García, María Teresa
+- Andina Pailos, Daniel
+
+Their code is imported on commit **87c3561**.
+
+All development after that is made by us (wichat_es1a)
+
+▪️ Participants👥:
+
+- Andrea Fuertes Carral (**UO276299**). 💟
+- Sara Inés Bolado (**UO277494**). 🥰
+- Pablo Pérez Saavedra (**UO288816**). 🧐
+- Sara Lamuño García (**UO283706**). 🦊
+- Saúl Valdelvira Iglesias (**UO283685**). 👾
+- Alejandro Aldea Viana (**UO293873**). 🍉
+
+This is a base project for the Software Architecture course in 2024/2025.
 It is a basic application composed of several components.
 
 - **User service**. Express service that handles the insertion of new users in the system.
@@ -30,7 +56,7 @@ First, clone the project:
 
 In order to communicate with the LLM integrated in this project, we need to setup an API key. Two integrations are available in this propotipe: gemini and empaphy. The API key provided must match the LLM provider used.
 
-We need to create two .env files. 
+We need to create two .env files.
 - The first one in the webapp directory (for executing the webapp using ```npm start```). The content of this .env file should be as follows:
 ```
 REACT_APP_LLM_API_KEY="YOUR-API-KEY"

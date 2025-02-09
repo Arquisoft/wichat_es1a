@@ -6,7 +6,7 @@
 // configure EN settings for asciidoc
 include::src/config.adoc[]
 
-= image:arc42-logo.png[arc42] wichat_es1a
+= image:logo_wiq.png[WIQ Logo] image:arc42-logo.png[arc42] Wikidata Infinite Quest
 :revnumber: 8.2 EN
 :revdate: January 2023
 :revremark: (based upon AsciiDoc version)
@@ -34,7 +34,6 @@ include::src/about-arc42.adoc[]
 // horizontal line
 ***
 
-ifdef::arc42help[]
 [role="arc42help"]
 ****
 [NOTE]
@@ -44,7 +43,7 @@ It is used for familiarization with arc42 and the understanding of the concepts.
 For documentation of your own system you use better the _plain_ version.
 ====
 ****
-endif::arc42help[]
+
 
 // numbering from here on
 :numbered:
@@ -58,8 +57,8 @@ include::src/01_introduction_and_goals.adoc[]
 include::src/02_architecture_constraints.adoc[]
 
 <<<<
-// 3. Context and Scope
-include::src/03_context_and_scope.adoc[]
+// 3. System Scope and Context
+include::src/03_system_scope_and_context.adoc[]
 
 <<<<
 // 4. Solution Strategy
@@ -97,4 +96,14 @@ include::src/11_technical_risks.adoc[]
 // 12. Glossary
 include::src/12_glossary.adoc[]
 
+<<<<
+// 13. Appendix I: Load tests
+include::src/13_appendix1_load_tests.adoc[]
 
+<<<<
+// 14. Appendix I: Other tests
+include::src/14_appendix2_testing.adoc[]
+
+<<<<
+// 15. Appendix I: Monitoring
+include::src/15_appendix3_monitoring.adoc[]

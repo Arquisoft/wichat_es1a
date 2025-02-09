@@ -34,3 +34,5 @@ There you will find links and examples about ADR.
 
 ****
 include::ADR/01-fork-base-project.adoc[]
+
+include::ADR/02-git-workflow.adoc[]

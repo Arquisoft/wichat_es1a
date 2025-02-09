@@ -1,0 +1,19 @@
+=== Trunk based development
+
+Use the link:https://trunkbaseddevelopment.com/[Trunk Based Development] git
+branching strategy.
+
+The proposed workflow is the following. +
+To make any change to the codebase:
+
+. Branch from master
+. Make all the changes, and commit them
+. Create a pull request to merge the changes into master
+
+It's important to constantly merge all the changes into master, and to avoid any
+aditional long-lived branches. This reduces the effort of maintaining those
+branches, and keeping them on sync.
+
+link:https://github.com/Arquisoft/wichat_es1a/issues/11[**Tracking Issue**]
+
+Status: **Accepted**

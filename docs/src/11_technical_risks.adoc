@@ -29,6 +29,7 @@ To evaluate the significance of the identified risks, we use a scale from 1 to 3
 | Lack of prior collaboration within the team | 1 | Since the team has not worked together before, there is a risk of inefficiencies in coordination. Establishing clear communication channels and regularly updating each other on progress will mitigate this issue.
 | Large team size | 1 | A higher number of contributors can complicate communication and workflow synchronization. Implementing structured meetings and documentation processes should help maintain efficiency.
 | Potential delays in integrating external APIs | 2 | Depending on external data sources, such as Wikidata, might introduce latency or downtime risks. Developing fallback mechanisms and caching strategies can help mitigate disruptions.
+| Knowledge disparity among team members | 2 | Some team members have prior experience, either from retaking the course or external knowledge, while others are learning these concepts for the first time. This can lead to uneven task distribution and communication gaps. Encouraging mentoring and pairing experienced members with those less familiar can help balance the workload and improve overall team efficiency.
 |===
 
 === Technical Debts
@@ -42,6 +43,8 @@ To evaluate the significance of the identified risks, we use a scale from 1 to 3
 | Filtering and validation of Wikidata responses | Inconsistencies in Wikidata labeling can lead to inaccurate or irrelevant questions and answers. We have implemented filtering mechanisms but recognize the need for further refinement to improve accuracy.
 | Code redundancy in game modes | Due to limited JavaScript experience, there is redundant code across different game modes, making maintenance difficult. Refactoring and modularizing common functionalities will enhance maintainability.
 | Session management | The current session implementation does not include expiration, which poses security risks. Implementing session expiration policies will improve security and user management.
+| Lack of automated testing | Currently, there is no automated testing strategy in place, which increases the risk of introducing bugs and regressions. Implementing unit and integration tests will improve code reliability and reduce debugging time.
+| Documentation gaps | The absence of comprehensive documentation makes onboarding new developers and maintaining the system more difficult. Creating and maintaining updated technical documentation will help streamline development and troubleshooting processes.
 |===
 
 By systematically addressing these risks and technical debts, we aim to enhance project stability, maintainability, and long-term viability.

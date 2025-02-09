@@ -8,22 +8,26 @@ ifndef::imagesdir[:imagesdir: ../images]
 [role="arc42help"]
 ****
 .Content
-The deployment view describes:
+This part of the documentation for wichat_es1a explains the deployment view, which is in charge of:
 
- 1. technical infrastructure used to execute your system, with infrastructure elements like geographical locations, environments, computers, processors, channels and net topologies as well as other infrastructure elements and
+ - technical infrastructure required to execute the system, for example environments, computing resources, network topologies, among other things.
+ 
+ - maps the software building blocks to the infrastructure elements.
 
-2. mapping of (software) building blocks to that infrastructure elements.
+Since software typically operates across multiple environments, such as development environment, test environment, production environment. In such cases you should document all relevant and essential environments.
 
-Often systems are executed in different environments, e.g. development environment, test environment, production environment. In such cases you should document all relevant environments.
+This documentation becomes especially crucial when the system is distributed system with more than one computer, processor, server or container or when you design and construct your own hardware processors and chips.
 
-Especially document a deployment view if your software is executed as distributed system with more than one computer, processor, server or container or when you design and construct your own hardware processors and chips.
+From a software perspective it is sufficient to capture only those elements of an infrastructure that are needed to show a deployment of your building blocks. No special or deep explanation is needed in this level.
 
-From a software perspective it is sufficient to capture only those elements of an infrastructure that are needed to show a deployment of your building blocks. Hardware architects can go beyond that and describe an infrastructure to any level of detail they need to capture.
+In the other hand, hardware architects can go beyond that and describe an infrastructure to any level of detail they need to capture. Here, explaining and detailing this part of the documentation becomes an essential task.
 
 .Motivation
-Software does not run without hardware.
-This underlying infrastructure can and will influence a system and/or some
-cross-cutting concepts. Therefore, there is a need to know the infrastructure.
+Both software and hardware are complementary parts, since software does not run without a proper hardware.
+
+Because of that, the infrastructure can and will influence a system and/or some cross-cutting concepts. 
+
+Therefore, there is a need to know the infrastructure.
 
 .Form
 
@@ -35,25 +39,28 @@ zoom into this black box using additional deployment diagrams:
 when your infrastructure is more complex.
 * When your (hardware) stakeholders prefer other kinds of diagrams rather than a deployment diagram, let them use any kind that is able to show nodes and channels of the infrastructure.
 
+****
+
+.Deployment approach
+
+Our system is deployed using a single Azure Virtual Machine (VM), letting Docker Compose manage multiple containerized services.
+
+These services will help us to simplify deployment, maintenance, and other features in the project.
+
+The different containers used will be listed below:
+
+- WebApp: The primary user interface that interacts with the system. It retrieves data from the Gateway Service.
+- Gateway Service: Data access interface for services.
+- Users: Manages authentication and statistics about users.
+- MariaDB: Persistance system used in the users data.
+- MongoDB: Persistance system used in the questions data.
+- Grafana and Prometeus: Responsible for system monitoring and performance analytics.
+- Questions: Generates questions to use in the game.
+- Multiplayer: Permits users to play multiplayer games.
+
+image:07_deployment_view.png["Deployment View"]
+
 
 .Further Information
 
 See https://docs.arc42.org/section-7/[Deployment View] in the arc42 documentation.
-
-****
-
-We have several services deployed in a single virtual machine using containers and Docker Compose, this eases the deployment.
-This are the different container and their relations:
-
-- WebApp: The web page. Gets data from Gateway Service.
-- Gateway Service: data access interface for services.
-- Users: manages authentication and statistics about users.
-- MariaDB: persistance system used in the users data.
-- MongoDB: persistance system used in the questions data.
-- Grafana and Prometeus: code monitoring systems.
-- Questions: generates questions to use in the game.
-- Multiplayer: permits users to play multiplayer games.
-
-We are going to use an Azure VM to deploy all this services.
-
-image:07_deployment_view.png["Deployment View"]

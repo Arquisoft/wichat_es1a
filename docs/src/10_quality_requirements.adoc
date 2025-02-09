@@ -5,17 +5,29 @@ ifndef::imagesdir[:imagesdir: ../images]
 
 The main quality goals are:
 
-* **Usability**: The interface should be intuitive, with clear instructions and an accessible design. This will allow users of all abilities to navigate and use the application effortlessly. It must mantain usability in mobile devices.
-* **Availability**: The system should aim for maximum availability, ensuring it is accessible around the clock. This will guarantee uninterrupted access most of the time, regardless of their time zone or schedule.
-* **Testability**: The code must be tested and should be easy to test (for instance with datatest-id to reference elements). The tests ease the implementation of new features because they make sure old functionality never stops working.
-* **Performance**: Efficiency is a priority in system usage, particularly in quick question generation, ensuring a good experience for users.
+* **Usability**:
+The interface should be intuitive, with clear instructions and an accessible design.
+This will allow users of all abilities to navigate and use the application effortlessly.
+It must mantain usability in mobile devices.
+
+* **Availability**:
+The system should aim for maximum availability, ensuring it is accessible at all
+times.
+
+* **Testability**:
+The code must be tested and should be easy to test.
+The tests improve the stability of the codebase by detecting regressions.
+
+* **Performance**:
+Efficiency is a priority in system usage, particularly in quick question generation, ensuring a good experience for users.
 
 
 [role="arc42help"]
 ****
 
 .Content
-This section contains all quality requirements as quality tree with scenarios. The most important ones have already been described in section 1.2. (quality goals)
+This section contains all quality requirements as quality tree with scenarios.
+The most important ones have already been described in section 1.2. (quality goals)
 
 Here you can also capture quality requirements with lesser priority,
 which will not create high risks when they are not fully achieved.
@@ -79,6 +91,33 @@ Change Scenario table:
 |Adding a new game language.|When adding a new game language, the system should continue to function smoothly.
 |===
 
+Performance Scenario table:
+
+[options="header",cols="1,2"]
+|===
+|Performance Scenario|System Reaction
+
+| The user starts a game
+| The questions should be generated fast, and the user shouldn't have to wait
+more than a second or two for the game to start.
+
+| The user starts a chat with the LLM, to ask questions.
+| The chat should work smoothly.
+|===
+
+Testing Scenario table:
+
+[options="header",cols="1,2"]
+|===
+|Testing Scenario|System Reaction
+
+| A change is added to the codebase
+| The change should be tested meticulously
+
+| A change on the codebase breaks functionality
+| The existing test suite should fail and reveal the regression
+
+|===
 
 [role="arc42help"]
 ****

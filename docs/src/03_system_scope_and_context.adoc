@@ -50,8 +50,8 @@ The title of the table is the name of your system, the three columns contain the
 
 image:03_Business_1.png["Diagram 3.1: Business Context"]
 
-- **WIQ:** Overview of the whole system. Essentialy, a web application in which users will be able to register/log in, play "Saber y Ganar" and display statistics of their games.
-- **Wikidata:** Free and open knowledge base that acts as a central storage repository for structured data. Its API will be used to obtain information used in questions and answers of the application.
+- **WIQ ** is a web application that allows users to register, log in, play "Saber y Ganar," and view statistics about their game performance.
+- **Wikidata ** is a free and open knowledge base that serves as a central repository for structured data. Its API will be used to retrieve the information needed to generate questions and answers within the application.
 
 === Technical Context
 
@@ -70,12 +70,12 @@ together with a mapping table showing the relationships between channels and inp
 ****
 
 ==== System Scope
-image:03_Technical_1.png["Diagram 3.2: Techincal Context"]
+
 
 Other elements of the system which can be looked up in point https://arquisoft.github.io/wiq_es04a/#section-building-block-view[Point 5: Building Block View] are:
 
-- **WIQ Webapp:** Module that supports user interaction via UI _i.e._, the front-end of the whole system.
-- **Question Generation Service**: Service that will be used internally to manage information retrival from Wikidata.
-- **Gateway Service:** Express service that is exposed to the public and serves as a proxy to the users management allowing sign up and log in.
-- **User service:** Express service that handles the insertion of new users in the system.
-- **Auth service:** Express service that handles the authentication of users.
+- **WIQ Webapp:** The module responsible for user interaction through the UI, serving as the front-end of the entire system.
+- **Image Generation Service**: An internal service that manages image generation based on data retrieved from Wikidata.
+- **Gateway Service:** A public-facing Express service that acts as a proxy for user management, enabling sign-up and login.
+- **User service:** An Express service that handles the registration of new users in the system.
+- **Auth service:** An Express service dedicated to user authentication.

@@ -11,17 +11,10 @@ describe('Footer component', () => {
   });
 
   it('should render elements', async () => {
-    await waitFor(() => screen.getByText(/QUESTIONS API DOC/));
+    await waitFor(() => screen.getByText(/WICHAT/));
 
-    const link1 = screen.getByText(/QUESTIONS API DOC/);
-    await expect(link1).toBeInTheDocument();
-
-    const link2 = screen.getByText(/© WIQ-ES04A/);
-    await expect(link2).toBeInTheDocument();
-
-    const link3 = screen.getByText(/USERS API DOC/);
-    await expect(link3).toBeInTheDocument();
-
+    const link = screen.getByText(/© WICHAT_ES1A/);
+    await expect(link).toBeInTheDocument();
   });
 
 });

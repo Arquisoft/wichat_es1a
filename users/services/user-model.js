@@ -9,18 +9,22 @@ function createSequelizeInstance() {
             storage: ':memory:'
         });
     } else {
-        // Normal database configuration for production
         return new Sequelize({
-            host: 'mariadb',
-            username: 'root',
-            password: 'R#9aLp2sWu6y', //NOSONAR
-            database: 'base_de_datos_de_usuarios',
-            port: 3306,
-            dialect: 'mariadb',
-            dialectOptions: {
-                connectTimeout: 20000
-            }
+            dialect: 'sqlite',
+            storage: '/var/users_db.sqlite'
         });
+        // Normal database configuration for production
+        // return new Sequelize({
+        //     host: 'mariadb',
+        //     username: 'root',
+        //     password: 'R#9aLp2sWu6y', //NOSONAR
+        //     database: 'base_de_datos_de_usuarios',
+        //     port: 3306,
+        //     dialect: 'mariadb',
+        //     dialectOptions: {
+        //         connectTimeout: 20000
+        //     }
+        // });
     }
 }
 
@@ -36,6 +40,11 @@ const User = sequelize.define('User', {
     },
     password: {
         type: DataTypes.STRING,
+        allowNull: false,
+    },
+    salt: {
+        type: DataTypes.STRING,
+        nonEmpty: true,
         allowNull: false,
     },
     name: {

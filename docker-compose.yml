@@ -12,32 +12,17 @@ services:
       - mynetwork
     restart: always
 
-  mariadb:
-    container_name: mariadb
-    image: mariadb
-    profiles: ["dev", "prod"]
-    volumes:
-      - mariadb_data:/var/lib/mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: R#9aLp2sWu6y
-      MYSQL_DATABASE: base_de_datos_de_usuarios
-    ports:
-      - "3306:3306"
-    networks:
-      - mynetwork
-    restart: always
-
   users:
     container_name: users
     image: ghcr.io/arquisoft/wichat_es1a/users:latest
     profiles: ["dev", "prod"]
     build: ./users
-    depends_on:
-      - mariadb
     ports:
       - "8001:8001"
     networks:
       - mynetwork
+    volumes:
+      - users_data:/var/
     environment:
       DATABASE_URL: mariadb:3306/userdb
     restart: always
@@ -154,7 +139,7 @@ services:
     restart: always
 
 volumes:
-  mariadb_data:
+  users_data:
   mongodb_data:
   prometheus_data:
   grafana_data:

@@ -54,10 +54,10 @@ describe('User Routes', () => {
     });
 
     it('should get questions record for a user in a specific game mode', async () => {
-        
+
         const username = 'testuser';
         const gameMode = 'classic';
-    
+
         // Ahora, creamos el registro de preguntas para el usuario
         await QuestionsRecord.create({
             username: username,
@@ -76,11 +76,11 @@ describe('User Routes', () => {
         await request(app)
             .post('/user/questionsRecord')
             .send(newQuestionRecord);
-    
+
         // Luego, hacemos la solicitud GET al endpoint
         const response = await request(app)
             .get(`/user/questionsRecord/${username}/${gameMode}`);
-    
+
         // Verificamos que se haya realizado correctamente y que los datos sean correctos
         expect(response.status).toBe(200);
         expect(response.body[0].username).toBe(username);
@@ -113,7 +113,6 @@ describe('User Routes', () => {
             name: 'Test',
             surname: 'User'
         };
-
         const response = await request(app)
             .post('/user')
             .send(newUser);
@@ -125,6 +124,10 @@ describe('User Routes', () => {
         const user = await User.findOne({ where: { username: newUser.username } });
         expect(user).toBeDefined();
 
+        expect(user.salt).toBeDefined();
+        expect(user.salt).not.toBeNull();
+        expect(user.salt.trim()).toBeTruthy();
+
         // Check if the password is hashed
         const isPasswordCorrect = await bcrypt.compare(newUser.password, user.password);
         expect(isPasswordCorrect).toBe(true);
@@ -134,6 +137,27 @@ describe('User Routes', () => {
         expect(statistics).toBeDefined();
     });
 
+    it("should store password hash", async () => {
+        const existingUser = {
+            username: 'existinguser_HASH',
+            password: password,
+            name: 'Existing',
+            surname: 'User'
+        };
+
+        const salt = bcrypt.genSaltSync(10);
+        let user = await User.create({
+            username: existingUser.username,
+            password: bcrypt.hashSync(existingUser.password, salt),
+            salt,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            name: existingUser.name,
+            surname: existingUser.surname
+        });
+        expect(user.salt).toBe(salt)
+    })
+
     it('should not add a user if username already exists', async () => {
         const existingUser = {
             username: 'existinguser',
@@ -141,22 +165,22 @@ describe('User Routes', () => {
             name: 'Existing',
             surname: 'User'
         };
-    
+
         // Create the existing user in the database
-        await User.create({
+        await config.createUser({
             username: existingUser.username,
-            password: await bcrypt.hash(existingUser.password, 10),
+            password: existingUser.password,
             createdAt: new Date(),
             updatedAt: new Date(),
             name: existingUser.name,
             surname: existingUser.surname
         });
-    
+
         // Try to add the existing user again
         const response = await request(app)
             .post('/user')
             .send(existingUser);
-    
+
         expect(response.status).toBe(400);
         expect(response.body.error).toBe('Invalid username');
     });
@@ -261,9 +285,9 @@ describe('User Routes', () => {
     it('should return list of all groups when username is not defined', async () => {
 
         // Create a user in the database to create the groups
-        await User.create({
+        await config.createUser({
             username: 'existinguser',
-            password: await bcrypt.hash('Test1234', 10),
+            password: 'Test1234',
             createdAt: new Date(),
             updatedAt: new Date(),
             name: 'Existing',
@@ -276,7 +300,7 @@ describe('User Routes', () => {
                 name: 'Testing '+i,
                 username: 'existinguser'
             };
-        
+
             // We now make each request so that it creates the group and associates it to the user
             const response = await request(app)
                 .post('/user/group')
@@ -291,19 +315,19 @@ describe('User Routes', () => {
         const response = await request(app)
             .get('/user/group')
             .set('Accept', 'application/json');
-    
+
         // Verify if the request was successful
         expect(response.status).toBe(200);
-    
+
         // Verify if the response contains the list of groups
         expect(response.body.groups).toBeDefined();
     });
-    
+
     it('should return list of groups with membership status when username is defined', async () => {
         // Create a user in the database to create the groups
-        await User.create({
+        await config.createUser({
             username: 'existinguser',
-            password: await bcrypt.hash('Test1234', 10),
+            password: 'Test1234',
             createdAt: new Date(),
             updatedAt: new Date(),
             name: 'Existing',
@@ -316,7 +340,7 @@ describe('User Routes', () => {
                 name: 'Testing '+i,
                 username: 'existinguser'
             };
-        
+
             // We now make each request so that it creates the group and associates it to the user
             const response = await request(app)
                 .post('/user/group')
@@ -325,16 +349,16 @@ describe('User Routes', () => {
             // Verify if the request was successful
             expect(response.status).toBe(200);
         }
-    
+
         // Perform the request with the defined username
         const response = await request(app)
             .get('/user/group')
             .query({ username: 'existinguser' })
             .set('Accept', 'application/json');
-    
+
         // Verify if the request was successful
         expect(response.status).toBe(200);
-    
+
         // Verify if the response contains the list of groups with membership status
         expect(response.body.groups).toBeDefined();
         response.body.groups.forEach(group => {
@@ -344,7 +368,7 @@ describe('User Routes', () => {
         });
     });
 
-   
+
 
     it('should show an error if group doesnt exist', async () => {
 
@@ -363,7 +387,7 @@ describe('User Routes', () => {
     it('should find an existing group', async () => {
         const newGroup = {
             name: 'testgroup3',
-            creator: 'Test1234', 
+            creator: 'Test1234',
         };
         await Group.create(newGroup);
         const response = await request(app)
@@ -418,16 +442,16 @@ describe('User Routes', () => {
             name: "t",
             username: "testuserGroup"
         };
-    
+
         const res = await request(app)
             .post('/user/group')
             .send(groupData)
             .expect(400);
-    
+
         expect(res.body.error).toBe('Group name must be at least 4 characters long.');
     });
 
-    
+
     //group add fail test
     it('shouldn`t add a new group', async () => {
 
@@ -436,12 +460,12 @@ describe('User Routes', () => {
             .post('/user/group')
             .send({})
             .expect(500); // Expecting a successful response with status code 200
-    
+
     });
 
     //group join
     it('should allow a user to join a group successfully when the group is not full', async () => {
-        
+
          //I have to add the user first to make the post work
          const newUser = {
             username: 'testuserGroupJoin',
@@ -454,12 +478,12 @@ describe('User Routes', () => {
             .send(newUser);
         const newGroup = {
             name: 'testgroupUserSuccessfulJoin',
-            creator: 'Test1234', 
+            creator: 'Test1234',
             };
         await Group.create(newGroup);
-        
-        
-        
+
+
+
         // Assuming group is not full
         const groupName = 'testgroupUserSuccessfulJoin';
         const username = 'testuserGroupJoin';
@@ -527,7 +551,7 @@ describe('User Routes', () => {
             .post('/user/group')
             .send(groupData)
             .expect(200);
-    
+
         // Creating 20 users and adding them to the group
         for (let i = 0; i < 19; i++) {
             let newUser = {
@@ -540,14 +564,14 @@ describe('User Routes', () => {
                 .post('/user')
                 .send(newUser)
                 .expect(200);
-    
+
             // Adding the user to the group
             await request(app)
                 .post(`/user/group/${groupName}`)
                 .send({ username: newUser.username })
                 .expect(200);
         }
-    
+
         // Trying to add a 21st user to the group
         const newUser = {
             username: 'testuserGroupJoinFull20',
@@ -555,19 +579,19 @@ describe('User Routes', () => {
             name: 'Test',
             surname: 'User'
         };
-    
+
         // Adding the user
         await request(app)
             .post('/user')
             .send(newUser)
             .expect(200);
-    
+
         // Trying to add the user to the group, which should fail because the group is full
         const res = await request(app)
             .post(`/user/group/${groupName}`)
             .send({ username: newUser.username })
             .expect(400); // Expecting a 'Bad Request' response with status code 400
-    
+
         // Verifying if the correct error message is returned
         expect(res.body.error).toBe('Group is already full');
     });
@@ -575,8 +599,8 @@ describe('User Routes', () => {
     it('Should return an error when the user tries to create more than three groups', async () => {
         const username='testuser1';
         const groupName = 'testgroup4';
-        
-        await User.create({
+
+        await config.createUser({
             username: username,
             password: password,
             name: 'Test1',
@@ -585,26 +609,26 @@ describe('User Routes', () => {
 
         const newGroup = {
             name: 'testgroup1',
-            creator: username, 
+            creator: username,
         };
         await Group.create(newGroup);
 
         const newGroup2 = {
             name: 'testgroup2',
-            creator: username, 
+            creator: username,
         };
         await Group.create(newGroup2);
 
         const newGroup3 = {
             name: 'testgroup3',
-            creator: username, 
+            creator: username,
         };
         await Group.create(newGroup3);
-    
+
         const response = await request(app)
           .post('/user/group')
           .send({ name: groupName, username });
-    
+
         expect(response.status).toBe(400);
         expect(response.body.error).toBe('You cannot create more than three groups');
     });
@@ -613,8 +637,8 @@ describe('User Routes', () => {
     it('Should return an error when the user tries to create a group with an existing name', async () => {
         const username='testuser1';
         const groupName='testgroup1';
-        
-        await User.create({
+
+        await config.createUser({
             username: username,
             password: password,
             name: 'Test1',
@@ -623,18 +647,18 @@ describe('User Routes', () => {
 
         const newGroup = {
             name: groupName,
-            creator: username, 
+            creator: username,
         };
         await Group.create(newGroup);
-    
+
         const response = await request(app)
           .post('/user/group')
           .send({ name: groupName, username });
-    
+
         expect(response.status).toBe(400);
         expect(response.body.error).toBe('A group with the same name already exists');
     });
-    
+
 
     // STATISTICS TESTS
 
@@ -645,9 +669,9 @@ describe('User Routes', () => {
             name: 'Test',
             surname: 'User'
         };
-    
+
         // Create user for the statistics
-        await User.create(newUser);
+        await config.createUser(newUser);
 
         const initialStatistics = {
             username: 'testuser',
@@ -707,14 +731,14 @@ describe('User Routes', () => {
     it('should get user statistics by username', async () => {
         const newUser = {
             username: 'testuser',
-            password: password, 
+            password: password,
             name: 'Test',
             surname: 'User'
         };
-    
+
         // Create user for the statistics
-        await User.create(newUser);
-    
+        await config.createUser(newUser);
+
         const initialStatistics = {
             the_callenge_earned_money: 100,
             the_callenge_correctly_answered_questions: 5,
@@ -722,13 +746,13 @@ describe('User Routes', () => {
             the_callenge_total_time_played: 3600,
             the_callenge_games_played: 3
         };
-    
+
         await Statistics.create({ username: newUser.username, ...initialStatistics });
-    
+
         const response = await request(app)
             .get(`/user/statistics/${newUser.username}`)
             .query({ loggedUser: newUser.username });
-    
+
         expect(response.status).toBe(200);
         expect(response.body.the_callenge_earned_money).toEqual(initialStatistics.the_callenge_earned_money);
         expect(response.body.the_callenge_correctly_answered_questions).toEqual(initialStatistics.the_callenge_correctly_answered_questions);
@@ -751,15 +775,15 @@ describe('User Routes', () => {
             name: 'Test2',
             surname: 'User2'
         };
-    
+
         // Create user for the statistics
-        await User.create(newUser);
-        await User.create(newUser2);
-    
-    
+        await config.createUser(newUser);
+        await config.createUser(newUser2);
+
+
         const response = await request(app)
             .get(`/user`);
-    
+
         expect(response.status).toBe(200);
         expect(response.body.users.length).toBe(2);
 
@@ -778,7 +802,7 @@ describe('User Routes', () => {
         };
 
         // Crear un usuario para la prueba
-        await User.create(newUser);
+        await config.createUser(newUser);
 
         const response = await request(app)
             .get(`/user/${newUser.username}`);
@@ -801,13 +825,13 @@ describe('User Routes', () => {
             surname: 'User'
         };const newUser3 = {
             username: 'testuser6',
-            password: password, 
+            password: password,
             name: 'Test',
             surname: 'User'
-        };   
-        await User.create(newUser);
-        await User.create(newUser2);
-        await User.create(newUser3);
+        };
+        await config.createUser(newUser);
+        await config.createUser(newUser2);
+        await config.createUser(newUser3);
 
         const response = await request(app)
          .get(`/user/ranking`);
@@ -820,11 +844,11 @@ describe('User Routes', () => {
                 password: password,
                 name: 'Test',
                 surname: 'User'
-            };        
-            await User.create(newUser);
+            };
+            await config.createUser(newUser);
             const newGroup = {
                 name: 'testgroup3',
-                creator: 'testuser', 
+                creator: 'testuser',
             };
             await Group.create(newGroup);
             await UserGroup.create({
@@ -864,10 +888,10 @@ describe('User Routes', () => {
                 name: 'Test2',
                 surname: 'User2'
             };
-            await User.create(newUser2);
+            await config.createUser(newUser2);
             const newGroup2 = {
                 name: 'testgroup4',
-                creator: 'testuser2', 
+                creator: 'testuser2',
             };
             await Group.create(newGroup2);
             await UserGroup.create({
@@ -917,7 +941,7 @@ describe('User Routes', () => {
     });
 
     it('should allow a user to exit a group', async () => {
-        await User.create({
+        await config.createUser({
             username: 'testuser',
             password: password,
             name: 'Test',
@@ -952,14 +976,14 @@ describe('User Routes', () => {
     });
 
     it('should allow viewing statistics of a user if logged in user has common group', async () => {
-        await User.create({
+        await config.createUser({
             username: 'testuser1',
             password: password,
             name: 'Test1',
             surname: 'User1'
         });
 
-        await User.create({
+        await config.createUser({
             username: 'testuser2',
             password: password,
             name: 'Test2',
@@ -1004,14 +1028,14 @@ describe('User Routes', () => {
     });
 
     it('should return an error if user is not logged in or has no common group', async () => {
-        await User.create({
+        await config.createUser({
             username: 'testuser1',
             password: password,
             name: 'Test1',
             surname: 'User1'
         });
 
-        await User.create({
+        await config.createUser({
             username: 'testuser2',
             password: password,
             name: 'Test2',
@@ -1026,7 +1050,7 @@ describe('User Routes', () => {
     });
 
     it('Should return the user when the username is valid when getting the profile', async () => {
-        await User.create({
+        await config.createUser({
             username: 'testuser1',
             password: password,
             name: 'Test1',
@@ -1034,11 +1058,11 @@ describe('User Routes', () => {
         });
 
         const username = 'testuser1';
-        
+
         const response = await request(app)
           .get('/user/profile')
           .query({ username });
-    
+
         expect(response.status).toBe(200);
         expect(response.body.user).toBeDefined();
         expect(response.body.user.username).toBe('testuser1');
@@ -1048,17 +1072,17 @@ describe('User Routes', () => {
 
     it('Should return an error when a user does not exist and does not have profile', async () => {
         const username = 'nombre_de_usuario_inexistente';
-        
+
         const response = await request(app)
           .get('/user/profile')
           .query({ username });
-    
+
         expect(response.status).toBe(404);
         expect(response.body.error).toBe('No user found');
     });
 
     it('Should update the user`s profile pic', async () => {
-        await User.create({
+        await config.createUser({
             username: 'testuser1',
             password: password,
             name: 'Test1',
@@ -1067,11 +1091,11 @@ describe('User Routes', () => {
 
         const username = 'testuser1';
         const newImageUrl = 'bertinIcon.jpg';
-    
+
         const response = await request(app)
           .post(`/user/profile/${username}`)
           .send({ imageUrl: newImageUrl });
-    
+
         expect(response.status).toBe(200);
         expect(response.body.affectedRows).toBe(1);
     });
@@ -1079,11 +1103,11 @@ describe('User Routes', () => {
     it('Should return an error when updating th euser profile pic', async () => {
         const username = 'nombre_de_usuario_inexistente';
         const newImageUrl = 'nueva_url_de_imagen';
-    
+
         const response = await request(app)
           .post(`/user/profile/${username}`)
           .send({ imageUrl: newImageUrl });
-    
+
         expect(response.status).toBe(404);
         expect(response.body.error).toBe('No user could be updated');
     });

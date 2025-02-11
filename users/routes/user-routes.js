@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const { User, Statistics, Group, UserGroup, QuestionsRecord, sequelize } = require('../services/user-model');
 const { getRandomPic } = require("../data/icons");
+const assert = require("../assert")
 
 // Getting the list of groups in the database
 router.get('/group', async (req, res) => {
@@ -81,7 +82,7 @@ router.post('/profile/:username', async (req, res) => {
             return res.status(404).json({ error: 'No user could be updated' });
         }
 
-        res.status(200).json({ affectedRows });  
+        res.status(200).json({ affectedRows });
     } catch (error) {
       return res.status(500).json({ error: 'Internal Server Error' });
     }
@@ -159,7 +160,7 @@ router.get('/:username', async (req,res) => {
                 username: username
             }
         });
-        
+
         const userJSON = user.toJSON();
         res.json(userJSON);
     } catch (error) {
@@ -192,7 +193,7 @@ router.post('/questionsRecord', async (req, res) => {
     try {
         const { username, questions, gameMode} = req.body;
 
-        // Create new question 
+        // Create new question
         const newQuestionRecord = await QuestionsRecord.create({
             questions,
             username,
@@ -230,7 +231,7 @@ router.get('/questionsRecord/:username/:gameMode', async (req, res) => {
 // Route to add a user
 router.post('/', async (req, res) => {
     try {
-        const { username, password, name, surname } = req.body;
+        let { username, password, name, surname } = req.body;
 
         const user = await User.findOne({ where: { username } });
 
@@ -258,14 +259,16 @@ router.post('/', async (req, res) => {
         if (!name.trim()) {
             throw new Error('The name cannot be empty or contain only spaces');
         }
-        
+
         // Surname validation
         if (!surname.trim()) {
             throw new Error('The surname cannot be empty or contain only spaces');
         }
 
+        const salt = bcrypt.genSaltSync();
+
         // Hash the password
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword = bcrypt.hashSync(password, salt);
 
         const imageUrl = getRandomPic();
 
@@ -273,10 +276,13 @@ router.post('/', async (req, res) => {
         const newUser = await User.create({
             username,
             password: hashedPassword,
+            salt,
             name,
             surname,
             imageUrl
         });
+        console.log(newUser)
+        assert(newUser.salt === salt)
 
         // Create the user statistics
         await Statistics.create({
@@ -510,10 +516,10 @@ router.post('/group/:name/exit', async (req, res) => {
 router.post('/statistics', async (req, res) => {
     try {
 
-        const { username, the_callenge_earned_money, the_callenge_correctly_answered_questions, the_callenge_incorrectly_answered_questions, 
-            the_callenge_total_time_played, the_callenge_games_played, wise_men_stack_earned_money, wise_men_stack_correctly_answered_questions, 
+        const { username, the_callenge_earned_money, the_callenge_correctly_answered_questions, the_callenge_incorrectly_answered_questions,
+            the_callenge_total_time_played, the_callenge_games_played, wise_men_stack_earned_money, wise_men_stack_correctly_answered_questions,
             wise_men_stack_incorrectly_answered_questions, wise_men_stack_games_played, warm_question_earned_money, warm_question_correctly_answered_questions,
-            warm_question_incorrectly_answered_questions, warm_question_passed_questions, warm_question_games_played, discovering_cities_earned_money, 
+            warm_question_incorrectly_answered_questions, warm_question_passed_questions, warm_question_games_played, discovering_cities_earned_money,
             discovering_cities_correctly_answered_questions, discovering_cities_incorrectly_answered_questions, discovering_cities_games_played, online_earned_money,
             online_correctly_answered_questions, online_incorrectly_answered_questions, online_total_time_played, online_games_played} = req.body;
 
@@ -569,7 +575,7 @@ router.post('/statistics', async (req, res) => {
 //Get user statics by username
 router.get('/statistics/:username', async (req,res) => {
     try {
-        
+
         const username = req.params.username;
         const loggedUser = req.query.loggedUser;
 
@@ -581,18 +587,18 @@ router.get('/statistics/:username', async (req,res) => {
                   username: username
                 }
             });
-    
+
             const loggedUserGroups = await UserGroup.findAll({
                 where: {
                   username: loggedUser
                 }
             });
-    
+
             if (loggedUserGroups.length != 0 && userGroups != 0){
                 const hasCommonGroup = userGroups.some(userGroup => {
                     return loggedUserGroups.some(loggedUserGroup => loggedUserGroup.groupName === userGroup.groupName);
                 });
-    
+
                 if(!hasCommonGroup){
                     return res.status(403).json({ error: 'You are not allowed to see this user statistics' });
                 }
@@ -605,7 +611,7 @@ router.get('/statistics/:username', async (req,res) => {
                 username: username
             }
         });
-        
+
         const userJSON = user.toJSON();
         res.json(userJSON);
     } catch (error) {

@@ -13,7 +13,7 @@ describe('Footer component', () => {
   it('should render elements', async () => {
     await waitFor(() => screen.getByText(/WICHAT/));
 
-    const link = screen.getByText(/© WICHAT_ES1A/);
+    const link = screen.getByText(/© WICHAT-ES1A/);
     await expect(link).toBeInTheDocument();
   });
 

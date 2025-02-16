@@ -23,11 +23,6 @@ Motivate what was decided and why it was decided that way,
 based upon problem statement, quality goals and key constraints.
 Refer to details in the following sections.
 
-
-.Further Information
-
-See https://docs.arc42.org/section-4/[Solution Strategy] in the arc42 documentation.
-
 **
 
 === Technology decisions
@@ -46,31 +41,86 @@ This allowed us to build upon an existing foundation, facilitating development a
 === Implementation design
 ==== Image generation strategy
 
-==== Question service functionality
+For the image generation process, we retrieve data from Wikidata using SPARQL queries based on a structured JSON format. This JSON structure defines categories and properties that guide the generation of image prompts.
 
+The JSON structure allows us to select the desired categories for the images, and in the future, specify the style or format. Based on this, we construct a SPARQL query to fetch data from Wikidata and convert it into an image generation request. Here’s an example of a category element in the JSON:
+
+```json
+[
+    {
+        "name": "country",
+        "instance": "Q6256",
+        "properties": [
+            {
+                "property": "P18",
+                "query": "SELECT ?capital WHERE { ?country wdt:P18 ?capital . FILTER(?country = wd:{x}) }",
+                "template": {
+                    "es": "Genera una imagen de la capital de x",
+                    "en": "Generate an image of the capital of x",
+                    "fr": "Générer une image de la capitale de x"
+                },
+                "category": ["Geography", "Cities"]
+            },
+            {
+                "property": "P18",
+                "query": "SELECT ?currency WHERE { ?country wdt:P38 ?currency . FILTER(?country = wd:{x}) }",
+                "template": {
+                    "es": "Genera una imagen representativa de la moneda de x",
+                    "en": "Generate a representative image of the currency of x",
+                    "fr": "Générer une image représentative de la devise de x"
+                },
+                "category": ["Economy"]
+            },
+            ...
+        ],
+        ...
+    },
+    ...
+]
+```
+
+his structure allows us to dynamically generate SPARQL queries to fetch data from Wikidata, which is then transformed into image generation prompts.
+
+The process consists of the following steps:
+
+Define categories and properties in JSON format.
+
+Generate a SPARQL query based on the selected properties.
+
+Retrieve data from Wikidata using the query.
+
+Convert the data into an image prompt.
+
+Generate the image using an external image generation API.
+
+This approach enables the dynamic creation of images based on specific categories and properties, ensuring a diverse set of visual representations across different topics and languages.
 
 === Decisions about the top-level decomposition of the system
 
 We decided to use a microservices arquitecture, having different modules for each functionality. 
-For example, we will use a microservice to generate the questions.
+For example, we will use a microservice to generate the images.
 
-=== Decisions on how to achieve key quality goals
 
-Quality goals are explained in detail in point 10.
+=== Strategies to Achieve Key Quality Goals
 
-[options="header",cols="1,2"]
-|===
-|Quality goal| Decisions to achieve it.
-|Usability| We are going to use real users to test the app interface and improve it according to their feedback.
-|Availability| Docker Compose will be helpful to avoid problems with the deploy of the app. In addition we will use web hosting to expose it to the internet.
-|Testability| We created unit and e2e (integration) test set to test the application
-|Performance| We will use the minimum required calls to the APIs to mantain the minimum time response, for example, with bulk requests.
-|===
+The quality goals are explained in more detail in another section.
 
-=== Relevant organizational decisions
+[options="header",cols="1,2"] 
+|=== 
+|Quality Goal| Strategies to Achieve It 
+|Usability| We will conduct tests with real users to evaluate the app's interface and improve it based on their feedback. 
+|Availability| Docker Compose will be used to streamline the app deployment process and prevent issues. Additionally, web hosting will be used to make the app accessible on the internet. 
+|Testability| We have created unit and end-to-end (e2e) test suites to ensure the app functions as expected. 
+|Performance| We will minimize API calls to maintain quick response times, for instance, by using bulk requests when necessary.
+ |===
 
-Our framework will be based on working every week with meetings when necessary, one will be held always during lab time in order to assign tasks and make minor decisions.
-On the other hand, further meetings will be intended for more thorough reviews as well as more significant decisions.
 
-Each assigned task will be created as an Issue in GitHub to track the progress done. In addition, we are going to use GitHub Projects to organize the workflow of the team.
-To merge the code to the develop branch we are going to use Pull Requests in order to be approved by every person of the team.
+
+
+=== Key Organizational Decisions
+
+Our framework will involve weekly work sessions with meetings scheduled as needed. One meeting will always take place during lab time to assign tasks and make minor decisions.
+
+Additional meetings will be dedicated to more in-depth reviews and major decision-making.
+
+Each task will be tracked as an Issue in GitHub to monitor progress. Moreover, we will use GitHub Projects to streamline the team's workflow. To merge code into the develop branch, we will utilize Pull Requests, which require approval from all team members.

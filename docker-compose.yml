@@ -12,39 +12,24 @@ services:
       - mynetwork
     restart: always
 
-  mariadb:
-    container_name: mariadb
-    image: mariadb
-    profiles: ["dev", "prod"]
-    volumes:
-      - mariadb_data:/var/lib/mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: R#9aLp2sWu6y
-      MYSQL_DATABASE: base_de_datos_de_usuarios
-    ports:
-      - "3306:3306"
-    networks:
-      - mynetwork
-    restart: always
-
   users:
     container_name: users
-    image: ghcr.io/arquisoft/wiq_es04a/users:latest
+    image: ghcr.io/arquisoft/wichat_es1a/users:latest
     profiles: ["dev", "prod"]
     build: ./users
-    depends_on:
-      - mariadb
     ports:
       - "8001:8001"
     networks:
       - mynetwork
+    volumes:
+      - users_data:/var/
     environment:
       DATABASE_URL: mariadb:3306/userdb
     restart: always
 
   questions:
       container_name: questions
-      image: ghcr.io/arquisoft/wiq_es04a/questions:latest
+      image: ghcr.io/arquisoft/wichat_es1a/questions:latest
       profiles: ["dev", "prod"]
       build: ./questions
       depends_on:
@@ -60,7 +45,7 @@ services:
 
   gatewayservice:
     container_name: gatewayservice
-    image: ghcr.io/arquisoft/wiq_es04a/gatewayservice:latest
+    image: ghcr.io/arquisoft/wichat_es1a/gatewayservice:latest
     profiles: ["dev", "prod"]
     build: ./gatewayservice
     depends_on:
@@ -87,7 +72,7 @@ services:
 
   webapp:
     container_name: webapp
-    image: ghcr.io/arquisoft/wiq_es04a/webapp:latest
+    image: ghcr.io/arquisoft/wichat_es1a/webapp:latest
     profiles: ["dev", "prod"]
     build: ./webapp
     depends_on:
@@ -104,7 +89,7 @@ services:
 
   multiplayer:
     container_name: multiplayer
-    image: ghcr.io/arquisoft/wiq_es04a/multiplayer:latest
+    image: ghcr.io/arquisoft/wichat_es1a/multiplayer:latest
     profiles: ["dev", "prod"]
     build: ./multiplayer
     depends_on:
@@ -154,7 +139,7 @@ services:
     restart: always
 
 volumes:
-  mariadb_data:
+  users_data:
   mongodb_data:
   prometheus_data:
   grafana_data:

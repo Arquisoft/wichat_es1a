@@ -91,7 +91,7 @@ a|
 
 | *_Users_*
 a|
-- Final users of Conocer y Triunfar
+- Final users of WIChat
 | They are just expected to use this project as it is intended to work.
 
 |===

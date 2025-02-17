@@ -4,88 +4,38 @@ ifndef::imagesdir[:imagesdir: ../images]
 == Runtime View
 
 In this Runtime View section, some sequence diagrams of different interactions with the system will be shown.
+Most diagrams are taken from the WIQ project, our base project, because that funcionality has not changed.
+ You can find it in https://github.com/Arquisoft/wiq_es04a/tree/master/docs.
 
-[role="arc42help"]
-****
-.Contents
-The runtime view describes concrete behavior and interactions of the system’s building blocks in form of scenarios from the following areas:
+It has been changed MariaDB to SQLite.
 
-* important use cases or features: how do building blocks execute them?
-* interactions at critical external interfaces: how do building blocks cooperate with users and neighboring systems?
-* operation and administration: launch, start-up, stop
-* error and exception scenarios
-
-Remark: The main criterion for the choice of possible scenarios (sequences, workflows) is their *architectural relevance*. It is *not* important to describe a large number of scenarios. You should rather document a representative selection.
-
-.Motivation
-You should understand how (instances of) building blocks of your system perform their job and communicate at runtime.
-You will mainly capture scenarios in your documentation to communicate your architecture to stakeholders that are less willing or able to read and understand the static models (building block view, deployment view).
-
-.Form
-There are many notations for describing scenarios, e.g.
-
-* numbered list of steps (in natural language)
-* activity diagrams or flow charts
-* sequence diagrams
-* BPMN or EPCs (event process chains)
-* state machines
-* ...
-
-
-.Further Information
-
-See https://docs.arc42.org/section-6/[Runtime View] in the arc42 documentation.
-
-****
 
 === Register
 
-image:06_register_seq.svg["Register Sequence"]
+image:06_register.png["Register Sequence"]
 
 
 === Login
 
-image:06_login_seq.svg["Login Sequence"]
+image:06_login.png["Login Sequence"]
 
 
 === See User Statistics
 
-image:06_statistics_seq.svg["See User Statistics Sequence"]
+image:06_user_statistics.png["See User Statistics Sequence"]
 
-
-=== See Games Instrucions
-
-image:06_instructions_seq.svg["See Games Instrucions Sequence"]
 
 
 === See Users and Groups Ranking
 
-image:06_ranking_seq.svg["See Ranking Sequence"]
-
-
-=== Groups
-==== Group List and Creation
-
-image:06_create_a_group_seq.svg["Group Creation Sequence"]
-
-==== Group Joining
-
-image:06_join_a_group_seq.svg["Group Joining Sequence"]
-
-==== Group Exiting/Deletion
-
-image:06_exit_a_group_seq.svg["Group Exiting Sequence"]
-
-==== Group Details
-
-image:06_group_details_seq.svg["Group Details Sequence"]
+image:06_groups_ranking.png["See Ranking Sequence"]
 
 
 === Play Games
 
-image:06_play_seq.svg["Play Games Sequence"]
+image:06_play_llm.png["Play Games Sequence"]
 
 
 === See and edit your profile
 
-image:06_profile_seq.svg["See Profile Sequence"]
+image:06_profile.png["See Profile Sequence"]

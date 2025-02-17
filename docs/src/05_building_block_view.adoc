@@ -3,263 +3,111 @@ ifndef::imagesdir[:imagesdir: ../images]
 [[section-building-block-view]]
 
 == Building Block View
-The building block view presents, in a graphical manner, a decomposition of the most important parts of the system.
+The building block view graphically represents the decomposition of the system's most essential components.
 
-[role="arc42help"]
-****
-.Content
-The building block view shows the static decomposition of the system into building blocks (modules, components, subsystems, classes, interfaces, packages, libraries, frameworks, layers, partitions, tiers, functions, macros, operations, data structures, ...) as well as their dependencies (relationships, associations, ...)
-
-This view is mandatory for every architecture documentation.
-In analogy to a house this is the _floor plan_.
-
-.Motivation
-Maintain an overview of your source code by making its structure understandable through
-abstraction.
-
-This allows you to communicate with your stakeholder on an abstract level without disclosing implementation details.
-
-.Form
-The building block view is a hierarchical collection of black boxes and white boxes
-(see figure below) and their descriptions.
-
-image::05_building_blocks-EN.png["Hierarchy of building blocks"]
-
-*Level 1* is the white box description of the overall system together with black
-box descriptions of all contained building blocks.
-
-*Level 2* zooms into some building blocks of level 1.
-Thus it contains the white box description of selected building blocks of level 1, together with black box descriptions of their internal building blocks.
-
-*Level 3* zooms into selected building blocks of level 2, and so on.
-
-
-.Further Information
-
-See https://docs.arc42.org/section-5/[Building Block View] in the arc42 documentation.
-
-****
 
 === Whitebox Overall System
 
-Main view of the system. WIQ application is related to one external component: the Wikidata API
-
-[role="arc42help"]
-****
-Here you describe the decomposition of the overall system using the following white box template. It contains
-
- * an overview diagram
- * a motivation for the decomposition
- * black box descriptions of the contained building blocks. 
- * (optional:) important interfaces, that are not explained in the black box templates of a building block, but are very important for understanding the white box.
-Since there are so many ways to specify interfaces why do not provide a specific template for them.
- In the worst case you have to specify and describe syntax, semantics, protocols, error handling,
- restrictions, versions, qualities, necessary compatibilities and many things more.
-In the best case you will get away with examples or simple signatures.
-
-****
-
-image:05_scope_and_context.png["Diagram Whitebox Overall System"]
+image:05_white_box.png["Diagram White Box WIChat"]
 
 Motivation::
 
-This is a general overview of the application.
+This is the main view of the system. WiChat application is related to Wikidata API, which is an external component.
 
-[role="arc42help"]
-****
-Here you describe black boxes
-according the the following black box template:
-
-* Purpose/Responsibility
-* Interface(s), when they are not extracted as separate paragraphs. This interfaces may include qualities and performance characteristics.
-* (Optional) Quality-/Performance characteristics of the black box, e.g.availability, run time behavior, ....
-* (Optional) directory/file location
-* (Optional) Fulfilled requirements (if you need traceability to requirements).
-* (Optional) Open issues/problems/risks
-
-****
 
 Contained Building Blocks::
-* **Wikidata Infinite Quest**: It is the main application, represented as a blackbox that will be detailed in the following decompositions. 
-* **Wikidata API**: It is the external API that the system uses to generate questions and answers.
+* **User**: Client who interacts with the system.
+* **WIChat**: Main application. Represented as a blackbox that will be detailed in the following decompositions. 
+* **Wikidata**: External API the system uses to generate questions and answers and get images from.
+* **LLM Model**: External Large Language Model the system uses to request hints about the image.
 
-=== Level 1
+=== Level 2
 
-[role="arc42help"]
-****
-Here you can specify the inner structure of (some) building blocks from Overall System as white boxes.
 
-You have to decide which building blocks of your system are important enough to justify such a detailed description.
-Please prefer relevance over completeness. Specify important, surprising, risky, complex or volatile building blocks.
-Leave out normal, simple, boring or standardized parts of your system
-****
+==== White Box WIChat
 
-==== White Box Wikidata Infinite Quest
 
-[role="arc42help"]
-****
-...describes the internal structure of _building block WIQ_.
-****
-
-image:05_level1.png["Diagram White Box Wikidata Infinite Quest"]
+image:05_level2_wichat.png["Diagram White Box WIChat"]
 
 Motivation::
 
-First decomposition of the system.
+First decomposition of the system. Internal structure of WIChat component.
 
 Contained Building Blocks::
-* **webapp**: It is the main module of the application. 
-* **gateway**: Handles the communication between the user service and question service modules with the web app service. Is is the API REST.
-* **questions**: Gets questions from Wikidata and handles their loading into the database.
-* **users**: Handles the user management.
-* **multiplayer**: Handles the multiplayer management.
-* **MongoDB**: MongoDB database.
-* **MariaDB**: MaiaDB database.
+* **WebApp**: The main module of the application, responsible for the user interface and interaction. 
+* **Gateway**: Handles communication between the user service and question service modules with the WebApp. It acts as a REST API.
+* **Questions**: Retrieves questions from Wikidata and stores them in the database.
+* **Users**: Manages user administration.
+* **MongoDB**: Database used to store the generated questions.
+* **SQLite**: Database used to store user information.
+* **LLM Service**: External service that generates hints to help users with questions.
+* **Wikidata**: Data source used to retrieve images and quiz questions.
 
 Other Important Interfaces::
 * **Docs**: Contains the application documentation.
 
-=== Level 2
-
-[role="arc42help"]
-****
-Here you can specify the inner structure of (some) building blocks from level 1 as white boxes.
-****
-==== White Box users
-
-image:05_level2_userService.png["Diagram White users"]
-
-Motivation::
-
-Decomposition of the users black box from level 1 system.
-
-Contained Building Blocks::
-* **Routes**: Contains route handlers for the users.
-* **Services**: Contains data logic.
-
-Other Important Interfaces::
-* **index**: Define the entry point of the User Service.
-
-==== White Box questions
-
-image:05_level2_questionGenerationService.png["Diagram White Box questions"]
-
-Motivation::
-
-Decomposition of the questions black box from level 1 system.
-
-Contained Building Blocks::
-* **Routes**: Contains route handlers for the questions.
-* **Services**: Contains data logic.
-
-Other Important Interfaces::
-* **index**: Define the entry point of the questions.
-* **utils**: Define auxiliar functions and questions structure.
-
-==== White Box Web App
-
-image:05_level2_webApp.png["Diagram White webapp"]
-
-Motivation::
-
-Decomposition of the webapp black box from level 1 system.
-
-Contained Building Blocks::
-* **public**: Contains image and audio files.
-* **src**: Contains the components, pages and data of the front-end application.
-
-==== White Box gateway
-
-image:05_level2_gatewayService.png["Diagram White Box gateway"]
-
-Motivation::
-
-Decomposition of the gateway black box from level 1 system.
-
-Contained Building Blocks::
-* **gateway-service**: Define the routes for handling the communication between the user service and question service modules with the web app service.
-* **prometheus**: Contains the configuration of grapfana and prometheus
-Other Important Interfaces::
-* **monitoring**: Uses Grafana and Prometheus to monitor the application.
-
-==== White Box multiplayer
-
-image:05_level2_multiplayerService.png["Diagram White Box multiplayer"]
-
-Motivation::
-
-Decomposition of the multiplayer black box from level 1 system.
-
-Contained Building Blocks::
-* **index**: Handles the multiplayer management.
-
 === Level 3
 
-[role="arc42help"]
-****
-Here you can specify the inner structure of (some) building blocks from level 2 as white boxes.
-****
-==== White Box routes from users
+==== White Box Users
 
-image:05_level3_routesUserService.png["Diagram White Box routes from users"]
+image:05_level3_whitebox_userservice.png["Diagram White Box Users Service"]
 
 Motivation::
 
-Decomposition of the black box routes from users white box from level 2 system.
+Internal structure of users service black box from level 2.
 
 Contained Building Blocks::
-* **user-routes**: Contains route handlers for the register, ranking, groups management, statistics management and questions record management.
-* **auth-routes**: Contains route handlers for the login.
+* **User Profile**: Handles user account data and profile details.
+* **Authentication**: Manages login and signup processes.
+* **Participation history**: Records and manages users’ participation data.
+* **Gateway**: The entry point that routes requests to the appropriate internal component.
+* **SQLite**: Database used to store user data.
 
-==== White Box services from users
+==== White Box Questions
 
-image:05_level3_servicesUserService.png["Diagram White Box services from users"]
+image:05_level3_whitebox_questions.png["Diagram White Box Questions"]
 
 Motivation::
 
-Decomposition of the black box services from users white box from level 2 system.
+Internal structure of questions service black box from level 2.
 
 Contained Building Blocks::
-* **user-model**: Define the User, Statistics and Group database schemas.
+* **Question Fetcher**: Retrieves question data from Wikidata.
+* **Question Processor**: Processes fetched questions and prepares them for storage. Requires hints to LLM Service.
+* **Gateway**: The entry point that routes incoming question-related requests to internal components.
+* **MongoDB**: Database used to store the generated questions.
+* **LLM Service**: External service that generates hints to help users with questions.
+* **Wikidata**: Data source used to retrieve images and quiz questions.
 
-==== White Box routes from questions
+==== White Box Gateway
 
-image:05_level3_routesQuestionGenerationService.png["Diagram White Box routes from questions"]
+image:05_level3_whitebox_gateway.png["Diagram White Box Gateway"]
 
 Motivation::
 
-Decomposition of the black box routes from questions white box from level 2 system.
+Internal structure of gateway black box from level 2.
 
 Contained Building Blocks::
-* **question-routes**: Contains route handlers for the questions management.
+* **WebApp**: The main module of the application, responsible for the user interface and interaction. 
+* **Profile Controller**: Routes user profile requests to Users Service.
+* **Authentication Controller**: Routes authentication requests to Users Service.
+* **Participacion Controller**: Routes requests related to participation history to Users Service.
+* **Question Controller**: Routes question requests to Question Service.
+* **Questions**: Retrieves questions from Wikidata and stores them in the database.
+* **Users**: Manages user administration.
 
-==== White Box services from questions
+==== White Box WebApp
 
-image:05_level3_servicesQuestionGenerationService.png["Diagram White Box services from questions"]
+image:05_level3_whitebox_webapp.png["Diagram White Box WebApp"]
 
 Motivation::
 
-Decomposition of the black box routes from questions white box from level 2 system.
+Internal structure of WebApp black box from level 2.
 
 Contained Building Blocks::
-* **question-data-model**: Define the Question database schema.
-* **question-data-service**: Responsible for managing questions in the database.
-* **wikidata-service**: Responsible for getting questions from Wikidata.
-
-==== White Box src from webapp
-
-image:05_level3_srcWebApp.png["Diagram White Box src from webapp"]
-
-Motivation::
-
-Decomposition of the black box src from webapp white box from level 2 system.
-
-Contained Building Blocks::
-* **components**: Defines common elements in the pages like the nav-bar, footer, etc. 
-* **pages**: Defines the different screens of the application.
-* **data**:  It contains the data used by the pages.
-* **App**: Main entry point for the application logic. Defines the application's theme and navbar routes.
-* **index**: Initializes the application and renders the main component (App.js) to the DOM.
-
-
-
+* **User**: Client who interacts with the system.
+* **Authentication Controller**: Manages login and sign in from users and sends requests to gateway.
+* **Profile Controller**: Manage requests related to profile and sends this requests to gateway.
+* **Question Controller**: Manage requests related to quiz questions and sends them to gateway.
+* **Participation Controller**: Manage participation history requests and sends it to gateway.
+* **Gateway**: The entry point that routes requests to the appropriate internal component.

@@ -54,21 +54,13 @@ The JSON structure allows us to select the desired categories for the images, an
             {
                 "property": "P18",
                 "query": "SELECT ?capital WHERE { ?country wdt:P18 ?capital . FILTER(?country = wd:{x}) }",
-                "template": {
-                    "es": "Genera una imagen de la capital de x",
-                    "en": "Generate an image of the capital of x",
-                    "fr": "Générer une image de la capitale de x"
-                },
+                "image": "https://upload.wikimedia.org/wikipedia/commons/3/3a/Meerkat.jpg",
                 "category": ["Geography", "Cities"]
             },
             {
                 "property": "P18",
                 "query": "SELECT ?currency WHERE { ?country wdt:P38 ?currency . FILTER(?country = wd:{x}) }",
-                "template": {
-                    "es": "Genera una imagen representativa de la moneda de x",
-                    "en": "Generate a representative image of the currency of x",
-                    "fr": "Générer une image représentative de la devise de x"
-                },
+                "image": "https://upload.wikimedia.org/wikipedia/commons/3/3a/Meerkat.jpg",
                 "category": ["Economy"]
             },
             ...

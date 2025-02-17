@@ -87,6 +87,8 @@ a|
 | *_Teachers_*
 a|
 - José Emilio Labra
+- Pablo González
+- Irene Cid Rico
 | Teachers are in charge of supervising the developers work aswell as helping them solve environment, development issues or any other that may arise.
 
 | *_Users_*

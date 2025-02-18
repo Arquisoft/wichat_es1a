@@ -8,11 +8,6 @@ ifndef::imagesdir[:imagesdir: ../images]
 .Contents
 A comprehensive list of identified technical risks and technical debts, prioritized based on their potential impact.
 
-.Motivation
-“Risk management is project management for grown-ups” (Tim Lister, Atlantic Systems Guild.)
-
-This principle underlines the importance of proactively identifying and assessing risks and technical debts in the architecture. Understanding these factors enables project managers, product owners, and other stakeholders to make informed decisions, ensuring stability and scalability.
-
 .Form
 A structured list of risks and technical debts, accompanied by proposed mitigation strategies to minimize or prevent negative impacts.
 
@@ -37,14 +32,9 @@ To evaluate the significance of the identified risks, we use a scale from 1 to 3
 |===
 | Technical Debt | Considerations
 | Code maintainability and quality | Adopting new languages and frameworks can lead to inconsistencies in coding standards. To prevent this, we will enforce code reviews through pull requests, ensuring peer validation and adherence to best practices.
-| Deployment complexities | Since the team has limited experience with Docker and related deployment tools, deployment might pose challenges. To mitigate this, we will allocate time for learning and experimenting with deployment methodologies before the final implementation.
-| Dependency on Wikidata | As the system relies on Wikidata, any service downtime could disrupt functionality. To address this, we have implemented a local question database to provide temporary resilience.
-| Data integrity in database modifications | Structural changes in the relational database model require creating a new database, resulting in potential data loss. Establishing proper migration strategies and backup mechanisms will reduce this risk.
-| Filtering and validation of Wikidata responses | Inconsistencies in Wikidata labeling can lead to inaccurate or irrelevant questions and answers. We have implemented filtering mechanisms but recognize the need for further refinement to improve accuracy.
-| Code redundancy in game modes | Due to limited JavaScript experience, there is redundant code across different game modes, making maintenance difficult. Refactoring and modularizing common functionalities will enhance maintainability.
-| Session management | The current session implementation does not include expiration, which poses security risks. Implementing session expiration policies will improve security and user management.
-| Lack of automated testing | Currently, there is no automated testing strategy in place, which increases the risk of introducing bugs and regressions. Implementing unit and integration tests will improve code reliability and reduce debugging time.
 | Documentation gaps | The absence of comprehensive documentation makes onboarding new developers and maintaining the system more difficult. Creating and maintaining updated technical documentation will help streamline development and troubleshooting processes.
+| Code cleanup and adaptation from last year’s project | The project inherits code from last year’s implementation, which may not meet current requirements or best practices. To address this, we will dedicate time to learning how to properly transfer and adapt the previous project to align with the updated requirements. This includes improving code quality, removing redundant code, and ensuring compatibility with the new project scope.
 |===
+
 
 By systematically addressing these risks and technical debts, we aim to enhance project stability, maintainability, and long-term viability.

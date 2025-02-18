@@ -1,103 +1,100 @@
 ifndef::imagesdir[:imagesdir: ../images]
 
 [[section-glossary]]
-== Glosario
+== Glossary
 
-En esta sección vamos a definir y traducir algunos conceptos que consideramos clave para entender nuestra aplicación.
+In this section, we will define and translate some key concepts we consider essential to understand our application.
 
-=== ¿Por qué hacer un glosario?
-Cuando trabajamos en un equipo, es importante que todos hablemos el mismo "idioma" y no nos confundamos con términos técnicos o propios del dominio del proyecto. Este glosario nos ayuda a:
+The format is simple: a table with the term, its definition, and, if applicable, its Spanish translation.
 
-* Asegurar que todos entiendan lo mismo cuando usamos ciertos términos.
-* Evitar confusiones por sinónimos o palabras que pueden significar varias cosas.
-* Tener referencias claras, especialmente si trabajamos con más de un idioma.
+For more information, check the arc42 documentation: https://docs.arc42.org/section-12/[Glossary].
 
-El formato es simple: una tabla con el término, su definición y, si aplica, su traducción al español.
-
-Para más info, puedes echarle un vistazo a la documentación de arc42: https://docs.arc42.org/section-12/[Glosario].
-
-=== Acrónimos
+=== Acronyms
 [cols="1,1,3",options="header"]
 |===
-|Acrónimo |Término |Definición
+|Acronym |Term |Definition
 
 |ADR
 |Architectural Design Record
-|Documento donde se registra una decisión importante sobre la arquitectura del software. Describe qué se decidió, el contexto de la decisión y sus consecuencias. Su objetivo es asegurarse de que el diseño cumple con requisitos funcionales, estéticos y de seguridad antes de avanzar con el desarrollo.
+|A document where an important decision about the software architecture is recorded. It describes what was decided, the decision's context, and its consequences. Its purpose is to ensure that the design meets functional, aesthetic, and security requirements before proceeding with development.
 
 |API
 |Application Programming Interface
-|Conjunto de reglas y herramientas que permiten que diferentes aplicaciones se comuniquen entre sí. Define métodos y formatos de datos que los desarrolladores pueden usar para intercambiar información entre distintos sistemas.
+|A set of rules and tools that allow different applications to communicate with each other. It defines methods and data formats developers can use to exchange information between various systems.
 
 |CI/CD
 |Continuous Integration & Continuous Delivery
-|Prácticas de desarrollo que automatizan la integración y entrega de código. CI se enfoca en integrar cambios de código frecuentemente, mientras que CD automatiza pruebas y despliegues. Continuous Delivery requiere una aprobación manual antes de pasar a producción, mientras que Continuous Deployment lo hace automáticamente.
+|Development practices that automate code integration and delivery. CI focuses on frequently integrating code changes, while CD automates testing and deployments. Continuous Delivery requires manual approval before moving to production, while Continuous Deployment does this automatically.
+
+|LLM
+|Large Language Model
+|A type of AI model that processes natural language to generate human-like text, answer questions, and more. Used in applications for enhanced text comprehension and generation.
 
 |WICHAT
 |https://github.com/Arquisoft/wichat_es01a/
-|Nombre de la aplicación web donde los usuarios pueden registrarse e iniciar sesión para jugar diferentes tipos de rondas.
+|The name of the web application where users can register and log in to play different types of rounds.
 |===
 
-=== Términos del dominio
+=== Domain Terms
 [cols="1,3,1",options="header"]
 |===
-|Término |Definición |Traducción al español
+|Term |Definition |Spanish Translation
 
 |Discovering Cities
-|Prueba donde los participantes reciben pistas sobre una ciudad y deben adivinar cuál es. Las pistas pueden incluir características geográficas, monumentos, eventos históricos o culturales.
+|A challenge where participants receive clues about a city and must guess which one it is. Clues can include geographical features, monuments, historical or cultural events.
 |Descubriendo ciudades
 
 |ChattySw
-|Nombre ficticio de la empresa en la que simulamos haber sido contratados para desarrollar la aplicación.
+|Fictional company name we simulate being hired by to develop the application.
 |_N/A_
 
 |Know & Win
-|Programa de televisión español que mezcla concursos de preguntas con aprendizaje. Se emite en La 2 de Televisión Española y presenta desafíos de cultura general, historia, ciencia, arte, etc.
+|Spanish television program that mixes quiz contests with learning. It is broadcast on La 2 of Televisión Española and features challenges in general culture, history, science, art, etc.
 |"Saber y Ganar"
 
 |Player
-|Usuario que se registra en la aplicación para jugar a los distintos quizzes disponibles.
+|A user who registers in the application to play the various available quizzes.
 |Jugador
 
 |The Challenge
-|Prueba donde los concursantes responden preguntas o realizan actividades que ponen a prueba su conocimiento en distintos temas. Puede incluir preguntas de opción múltiple, completar frases, identificar imágenes, entre otros.
+|A test where contestants answer questions or perform activities to test their knowledge on various topics. It may include multiple-choice questions, completing phrases, identifying images, and more.
 |El desafío
 
 |Warm Question
-|Ronda en la que los concursantes deben responder preguntas de manera rápida y precisa. Las preguntas se presentan sin pausas, por lo que hay que pensar rápido, pero sin arriesgar demasiado porque las respuestas incorrectas pueden restar puntos.
+|A round where contestants must answer questions quickly and accurately. The questions are presented without pauses, requiring fast thinking, but without risking too much because incorrect answers can deduct points.
 |Pregunta caliente
 
 |Wise Men Stack
-|Prueba con preguntas de distintos temas (literatura, historia, ciencia, cultura popular, etc.). El objetivo es responder correctamente el mayor número posible en un tiempo limitado.
+|A challenge with questions from various topics (literature, history, science, pop culture, etc.). The goal is to answer as many questions correctly as possible within a limited time.
 |Batería de sabios
 |===
 
-=== Términos técnicos
+=== Technical Terms
 [cols="1,3,1",options="header"]
 |===
-|Término |Definición |Traducción al español
+|Term |Definition |Spanish Translation
 
 |arc42
-|Conjunto de recomendaciones para documentar y diseñar arquitecturas de software. Proporciona una plantilla estructurada para comunicar mejor los aspectos técnicos del sistema.
+|A set of recommendations for documenting and designing software architectures. It provides a structured template to better communicate the system’s technical aspects.
 |_N/A_
 
 |Backend
-|Parte del software que funciona en el servidor y no es visible para los usuarios. Se encarga del procesamiento de datos, almacenamiento en bases de datos y lógica de negocio.
+|The part of the software that runs on the server and is not visible to users. It handles data processing, database storage, and business logic.
 |_N/A_
 
 |Container
-|Unidad ligera y portátil que incluye todo lo necesario para ejecutar una aplicación (código, dependencias, librerías, etc.), asegurando que funcione igual en cualquier entorno.
+|A lightweight and portable unit that includes everything needed to run an application (code, dependencies, libraries, etc.), ensuring it works the same in any environment.
 |Contenedor
 
 |Frontend
-|Parte del software que interactúa directamente con el usuario. Incluye la interfaz gráfica y la experiencia de usuario en el navegador o en una aplicación.
+|The part of the software that directly interacts with the user. It includes the graphical interface and the user experience in the browser or an application.
 |_N/A_
 
 |Git
-|Sistema de control de versiones gratuito y de código abierto que permite gestionar los cambios en el código y colaborar con otros desarrolladores.
+|A free and open-source version control system that allows managing code changes and collaborating with other developers.
 |_N/A_
 
 |Wikidata
-|Base de datos abierta y gratuita que almacena información estructurada de proyectos Wikimedia y otros. Permite compartir y consultar datos sobre personas, lugares, eventos, conceptos, etc.
+|An open and free database that stores structured information from Wikimedia projects and others. It allows sharing and querying data about people, places, events, concepts, etc.
 |_N/A_
 |===

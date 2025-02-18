@@ -4,7 +4,7 @@ ifndef::imagesdir[:imagesdir: ../images]
 == Solution Strategy
 
 [role="arc42help"]
-**
+****
 .Contents
 A short summary and explanation of the fundamental decisions and solution strategies, that shape system architecture. It includes
 
@@ -22,8 +22,7 @@ Keep the explanations of such key decisions short.
 Motivate what was decided and why it was decided that way,
 based upon problem statement, quality goals and key constraints.
 Refer to details in the following sections.
-
-**
+****
 
 === Technology decisions
 
@@ -38,7 +37,9 @@ To develop the app we will use the following technologies:
 
 We chose these technologies because they were already being used in the project we based our work on.
 This allowed us to build upon an existing foundation, facilitating development and ensuring compatibility while leveraging JavaScript’s agility and ReactJS’s efficiency in building user interfaces.
+
 === Implementation design
+
 ==== Image generation strategy
 
 For the image generation process, we retrieve data from Wikidata using SPARQL queries based on a structured JSON format. This JSON structure defines categories and properties that guide the generation of image prompts.
@@ -89,7 +90,7 @@ This approach enables the dynamic creation of images based on specific categorie
 
 === Decisions about the top-level decomposition of the system
 
-We decided to use a microservices arquitecture, having different modules for each functionality. 
+We decided to use a microservices arquitecture, having different modules for each functionality.
 For example, we will use a microservice to generate the images.
 
 
@@ -97,17 +98,14 @@ For example, we will use a microservice to generate the images.
 
 The quality goals are explained in more detail in another section.
 
-[options="header",cols="1,2"] 
-|=== 
-|Quality Goal| Strategies to Achieve It 
-|Usability| We will conduct tests with real users to evaluate the app's interface and improve it based on their feedback. 
-|Availability| Docker Compose will be used to streamline the app deployment process and prevent issues. Additionally, web hosting will be used to make the app accessible on the internet. 
-|Testability| We have created unit and end-to-end (e2e) test suites to ensure the app functions as expected. 
+[options="header",cols="1,2"]
+|===
+|Quality Goal| Strategies to Achieve It
+|Usability| We will conduct tests with real users to evaluate the app's interface and improve it based on their feedback.
+|Availability| Docker Compose will be used to streamline the app deployment process and prevent issues. Additionally, web hosting will be used to make the app accessible on the internet.
+|Testability| We have created unit and end-to-end (e2e) test suites to ensure the app functions as expected.
 |Performance| We will minimize API calls to maintain quick response times, for instance, by using bulk requests when necessary.
- |===
-
-
-
+|===
 
 === Key Organizational Decisions
 

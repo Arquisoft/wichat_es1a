@@ -59,7 +59,7 @@ The different containers used will be listed below:
 - Questions: Generates questions to use in the game. The questions will have three wrong answers and one correct answer.
 - Multiplayer: Permits users to play multiplayer games with other users.
 
-image:07_deployment_view.png["Deployment View"]
+image:Deployment Diagram.jpg["Deployment View"]
 
 
 .Further Information

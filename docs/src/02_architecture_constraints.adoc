@@ -39,6 +39,7 @@ There are various architectural constraints that affect this application. They h
 | User management | Users can register and log in to play. Registered users can also check their participation history in the system (number of games, correct/incorrect answers, times, etc.).
 | API usage | APIs will be used to access users and generated questions information.
 | Docker | Docker will be used to deploy the application locally and remotely.
+| LLM | An LLM will be used to assist the user during their game.
 |===
 
 === Documentation

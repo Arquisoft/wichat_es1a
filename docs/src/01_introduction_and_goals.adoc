@@ -27,6 +27,7 @@ This is basically a Trivial Pursuit like game inspired in spanish TV show "Saber
 * Scoring systems based on response times
 * Different question categories
 * A history of past games
+* A LLM that gives hints to the player
 
 .Requirements Overview
 
@@ -38,6 +39,8 @@ The application must have the following functionalities:
 * All the questions data must be obtained from the WikiData knowledge database.
 * The application must have an API to obtain users information.
 * The application must have an API to obtain generated questions.
+* Each question should have a correct answer and several incorrect ones or distractors
+* The application must use LLM to give hints to the user
 
 Further information can be found link:https://docs.google.com/document/d/1-wvrh7Udjmnkv1aiDgulEFjaMvAOL2Cu22d5Hq_6s6s/edit?tab=t.0#heading=h.knuq2aw7zapd[here].
 
@@ -57,12 +60,6 @@ The following table describes the project's quality goals in descending order.
 | *_Maintainability_*
 | Projects must always have enough quality to be able to be modified without making more changes than necessary.
 Not following this principle would heavily increase costs in new feature implementation or bug solving that may arise in the future.
-
-| *_Scalability_*
-| Given an exponential growth of users, the application should allow for capacity resizing and overall a robust handling for a large number of connections.
-
-| *_Testability_*
-| The performance of the system is needed to be tested covering as many use cases as possible so all the other goals will be met.
 
 | *_Security_*
 | Security is always key and therefore effort will be put into fighting against unauthorised access of information, including the users' personal or sensitive data that the information system may contain.
@@ -95,6 +92,16 @@ a|
 a|
 - Final users of WIChat
 | They are just expected to use this project as it is intended to work.
+
+| *_ChattySw_*
+a|
+- Software development company
+| They company that was hired to develop the software
+
+| *_RTVE_*
+a|
+- Client that wants the app
+| RTVE hired ChattySw to develop the app
 
 |===
 

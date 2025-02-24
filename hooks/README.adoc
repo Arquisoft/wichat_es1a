@@ -1,0 +1,9 @@
+= Git Hooks
+Git hooks to ease development.
+
+== pre-commit
+This script strips trailing whitespaces from the files on the index.
+Whitespace changes make commit diffs more difficult to read.
+
+To install it, copy the pre-commit script to .git/hooks +
+*Note*: Make sure the script is executable

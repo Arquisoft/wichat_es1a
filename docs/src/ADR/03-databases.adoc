@@ -1,0 +1,17 @@
+=== Database
+
+Last year's project use two different databases:
+
+. MariaDB for users
+. MongoDB for questions
+
+Because of a problem with MariaDB database, we all agree on still using two databases changing MariaDB to SQLite and maintaining MongoDB.
+Then project's databases will be:
+
+. SQLite for users
+. MongoDB for questions
+
+We think that is the easiest option for us in terms of implementation and to adapt old system functionality. 
+SQLite is not only open source but also easy to use and efficient for small applications.
+
+Status: **Accepted**

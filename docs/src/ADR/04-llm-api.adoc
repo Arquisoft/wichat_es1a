@@ -1,0 +1,28 @@
+=== Gemini as our LLM
+
+After discussing which LLM Api use for WIChat we had two options we liked the most: Gemini and Empathy.
+
+**Gemini Advantages**
+
+- Better analyzing pictures and creating hints
+- Well-documented
+- Free
+
+**Gemini Disadvantages**
+
+- Less natural conversational language
+
+**Empathy Advantages**
+
+- Contest
+- More human-like and conversational language
+
+**Empathy Disadvantages**
+
+- Less documentation
+- Worst hints
+- More difficult implementation
+
+Finally, Gemini es the best option for us because of its multiple advantages.
+
+Status: **Accepted**

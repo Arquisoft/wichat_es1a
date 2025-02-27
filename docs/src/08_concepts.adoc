@@ -105,4 +105,5 @@ This part is currently in progress.
 - **Testing**: Includes unit tests for each functionality and end-to-end (e2e) tests for core gameplay features.
 - https://arquisoft.github.io/wiq_es04a/#_acronyms[**CI/CD**]: The application is in continuous integration and deployment. Team members commit frequently into the repository where the project is stored. This makes it easier when assembling project parts involving collaboration from different team members.
 
+image::Mindmap_08.png["Mindmap of the app"]
 

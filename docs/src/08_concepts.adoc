@@ -93,7 +93,8 @@ This part is currently in progress.
 * We have implemented some security in the application, which will be listed now. 
 - Some blocked sites if the user is not logged in an account: This way, we avoid external people to be able to access our application as it could lead to other security issues.
 - Passwords with a minimal security level: They need to be at least 8 characters longs and they must contain upper and lower letters, numbers and special characters. 
-- Encrypted passwords: In case that the batabase is stolen, data would still be secure and the passwords will contain other things, which will improve more the security of the app. 
+- Encrypted passwords: In case that the batabase is stolen, data would still be secure and the passwords will contain other things, which will improve more the security of the app.
+- Passwords with salt: our passwords will have a random secuence of characters before hashing them, so they will have more security and will be more difficult to hack and obtain the passwords.
 
 === Architecture and Design Patterns
 - https://arquisoft.github.io/wiq_es04a/#_technical_terms[**Microservice**]: In this application there are some microservices such as the User Management, which involves signing up, logging in and everything related to the points and timing of the user. Microservices provide an easy way of creating a complex application composed by independent systems.

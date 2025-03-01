@@ -23,8 +23,6 @@ services:
       - mynetwork
     volumes:
       - users_data:/var/
-    environment:
-      DATABASE_URL: mariadb:3306/userdb
     restart: always
 
   questions:

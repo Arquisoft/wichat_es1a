@@ -1,3 +1,11 @@
+import axios from 'axios';
+
+const apiUrl = 'https://query.wikidata.org/sparql';
+const headers = {
+    'User-Agent': 'QuestionGeneration/1.0',
+    'Accept': 'application/json',
+};
+
 class PropertyAssoc {
     id: Number
     name: String
@@ -9,6 +17,11 @@ class PropertyAssoc {
         this.optional = optional;
     }
 }
+
+// export class WikidataEntity {
+//     name: String,
+//     label
+// }
 
 export class WikidataQueryBuilder {
     _instanceOf: Number | null;
@@ -52,4 +65,15 @@ export class WikidataQueryBuilder {
         }
         return query
     }
+
+    public async send() {
+        return await axios.get(apiUrl, {
+            params: {
+                query: this.build(),
+                format: "json"
+            },
+            headers
+        })
+    }
+
 }

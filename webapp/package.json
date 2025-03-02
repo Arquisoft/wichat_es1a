@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@babel/plugin-transform-private-property-in-object": "^7.25.9",
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.5",
     "@mui/icons-material": "^5.15.10",
@@ -58,7 +58,6 @@
     ]
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@testing-library/react": "^14.2.2",
     "axios-mock-adapter": "^1.22.0",
     "expect-puppeteer": "^9.0.2",

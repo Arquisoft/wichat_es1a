@@ -31,7 +31,7 @@ Therefore, there is a need to know the infrastructure.
 
 .Form
 
-Maybe a highest level deployment diagram is already contained in section 3.2. as
+Maybe a highest level deployment diagram is already contained in (https://github.com/Arquisoft/wichat_es1a/blob/master/docs/src/03_system_scope_and_context.adoc[**Section 3.2**]) as
 technical context with your own infrastructure as ONE black box. In this section one can
 zoom into this black box using additional deployment diagrams:
 
@@ -49,16 +49,17 @@ These services will help us to simplify deployment, maintenance, and other featu
 
 The different containers used will be listed below:
 
-- WebApp: The primary user interface that interacts with the system. It retrieves data from the Gateway Service.
+- WebApp: The primary user interface that interacts with the system. Retrieves data from the Gateway Service.
 - Gateway Service: Data access interface for services.
-- Users: Manages authentication and statistics about users.
-- MariaDB: Persistance system used in the users data.
-- MongoDB: Persistance system used in the questions data.
-- Grafana and Prometeus: Responsible for system monitoring and performance analytics.
-- Questions: Generates questions to use in the game.
-- Multiplayer: Permits users to play multiplayer games.
+- Users: Manages everything related to users, for example authentification.
+- LLMService: Manages LLM chat with the user to help them with the questions generated. **It is worth clarifying that the LLM has not been chosen yet.**
+- Two databases, which are:
+- MongoDB: for questions management (store the questions with the distractors and the correct answer from a specified JSON file, and do several things with that information).
+- SQLite: for users management (create various roles, e.g. User,  which has many parameters, a group of users and groups, among others).
+- Questions: Generates questions to use in the game. The questions will have three wrong answers and one correct answer.
+- Multiplayer: Permits users to play multiplayer games with other users.
 
-image:07_deployment_view.png["Deployment View"]
+image:Deployment Diagram.jpg["Deployment View"]
 
 
 .Further Information

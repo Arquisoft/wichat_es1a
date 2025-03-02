@@ -1,8 +1,8 @@
 // Imports (express syntax)
-const express = require('express');
-const cors = require('cors');
+import express from 'express';
+import cors from 'cors';
 // Routes:
-const questionRoutes = require('./routes/question-routes.js');
+import { router as questionRoutes } from './routes/question-routes.js';
 
 // App definition and
 const app = express();
@@ -16,8 +16,7 @@ app.use(express.json());
 app.use('/questions', questionRoutes);
 
 // Start the service
-const server = app.listen(port, () => {
+export const server = app.listen(port, () => {
   console.log(`Question Service listening at http://localhost:${port}`);
 });
 
-module.exports = server

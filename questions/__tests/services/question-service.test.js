@@ -1,7 +1,7 @@
-const assert = require('assert');
-const mongoose = require('mongoose');
-const Question = require('../../services/question-data-model');
-const { MongoMemoryServer } = require('mongodb-memory-server');
+import * as assert from 'assert';
+import * as mongoose from 'mongoose';
+import * as Question from '../../services/question-data-model.js';
+import { MongoMemoryServer } from 'mongodb-memory-server';
 
 let mongoServer;
 let questionFunctions;
@@ -84,7 +84,7 @@ describe('Question Functions', function() {
         };
         const newQuestion = new Question(questionData);
         await newQuestion.save();
-        
+
         assert.strictEqual(await questionFunctions.getQuestionCount("en"), 1);
     });
 
@@ -107,7 +107,7 @@ describe('Question Functions', function() {
         };
         const newQuestion = new Question(questionData);
         await newQuestion.save();
-        
+
         assert.strictEqual(await questionFunctions.getQuestionCountByCategory("Geography","en"), 1);
         assert.strictEqual(await questionFunctions.getQuestionCountByCategory("Political","en"), 0);
     });
@@ -132,7 +132,7 @@ describe('Question Functions', function() {
         const newQuestion = new Question(questionData);
         const savedQuestion = await newQuestion.save();
         const savedQuestionId = savedQuestion._id;
-        
+
         assert.strictEqual(await questionFunctions.getQuestionCount("en"), 1);
         await questionFunctions.deleteQuestionById(savedQuestionId);
         assert.strictEqual(await questionFunctions.getQuestionCount("en"), 0);
@@ -177,7 +177,7 @@ describe('Question Functions', function() {
       await questionFunctions.addQuestion(questionData3);
 
       const randomQuestions = await questionFunctions.getRandomQuestions(2,"en");
-        
+
       assert.strictEqual(randomQuestions.length, 2);
     });
 
@@ -231,7 +231,7 @@ describe('Question Functions', function() {
       await questionFunctions.addQuestion(questionData4);
 
       const randomQuestions = await questionFunctions.getRandomQuestionsByCategory(2, "Geography","en");
-        
+
       assert.strictEqual(randomQuestions.length, 2);
 
       randomQuestions.forEach(question => {
@@ -239,7 +239,7 @@ describe('Question Functions', function() {
       });
 
       const randomQuestionPolitical = await questionFunctions.getRandomQuestionsByCategory(1, "Political","en");
-        
+
       assert.strictEqual(randomQuestionPolitical.length, 1);
 
       randomQuestionPolitical.forEach(question => {

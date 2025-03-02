@@ -1,13 +1,13 @@
-const express = require('express');
-// const dbService = require('../services/question-data-service');
-const generateQuestionsService = require('../services/generate-questions-service');
+import * as express from 'express';
+// import * as dbService from '../services/question-data-service';
+import * as generateQuestionsService from '../services/generate-questions-service.js';
 const router = express.Router();
 
-const { QuestionDBService, WikidataQuestion } = require('../services/question-db-service.ts');
+import { QuestionDBService, WikidataQuestion } from '../services/question-db-service.ts';
 
 const dbService = QuestionDBService.getInstance()
 
-router.get("/", async (_req,res) => {
+router.get("/random", async (_req,res) => {
     const questions = await dbService.getRandomQuestions()
     res.json(questions[0].getJson())
 })
@@ -143,4 +143,7 @@ router.get("/", async (_req,res) => {
 //    }
 //});
 
-module.exports = router;
+
+export { router };
+
+

@@ -1,4 +1,4 @@
-const axios = require('axios');
+import axios from 'axios';
 
 async function getRandomEntity(entity, pos, language) {
 
@@ -14,9 +14,9 @@ async function getRandomEntity(entity, pos, language) {
     const consultaSparql = `
         SELECT ?entity ?entityLabel ?property
         WHERE {
-            ?entity wdt:P31 wd:${instance};   
-                wdt:${property} ?property.   
-            ?entity rdfs:label ?entityLabel.  
+            ?entity wdt:P31 wd:${instance};
+                wdt:${property} ?property.
+            ?entity rdfs:label ?entityLabel.
             FILTER(LANG(?entityLabel) = "${language}")
             ${filter}
     }
@@ -37,7 +37,7 @@ async function getRandomEntity(entity, pos, language) {
             },
             headers: headers,
           });
-        
+
 
         const data = await response.data
         const entities = data.results.bindings;
@@ -67,10 +67,10 @@ async function getProperties(property, language, filt) {
     const consultaSparql = `
         SELECT DISTINCT ?property
         WHERE {
-            ?entity wdt:${property} ?property. 
-            ?entity rdfs:label ?entityLabel. 
+            ?entity wdt:${property} ?property.
+            ?entity rdfs:label ?entityLabel.
             FILTER(LANG(?entityLabel) = "${language}")
-            ${filter}  
+            ${filter}
         }
         LIMIT 400
     `;
@@ -80,7 +80,7 @@ async function getProperties(property, language, filt) {
         response = await axios.get(urlApiWikidata, {
             params: {
               query: consultaSparql,
-              format: 'json' 
+              format: 'json'
             },
             timeout: 30000 //means error
         });
@@ -120,10 +120,10 @@ async function getEntityLabel(entityUrl) {
     if(entity.labels.es) {
         return entity.labels.es.value;
     }
-     
+
     return "no label (TEST)";
   }
-  
+
   // Change entities urls to labels
   async function convertUrlsToLabels(options) {
     const newOptions = options.map(url => {
@@ -134,7 +134,7 @@ async function getEntityLabel(entityUrl) {
     return labels;
   }
 
-module.exports = {
+export {
     getRandomEntity,
     getProperties,
     convertUrlsToLabels

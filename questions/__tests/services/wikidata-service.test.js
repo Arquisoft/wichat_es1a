@@ -1,6 +1,6 @@
-const axios = require('axios');
-const wikidataService = require('../../services/wikidata-service');
-const MockAdapter = require('axios-mock-adapter');
+import * as axios from 'axios';
+import * as wikidataService from '../../services/wikidata-service';
+import * as MockAdapter from 'axios-mock-adapter';
 
 const mockAxios = new MockAdapter(axios);
 
@@ -10,9 +10,9 @@ const entity = {
     "name": "country",
     "instance": "Q6256",
     "properties": [
-        {   
+        {
             "property": "P1082",
-            "template": 
+            "template":
                 [{
                 "lang": "es",
                 "question": "Cuál es la población de x"
@@ -30,12 +30,12 @@ const entity = {
 
 beforeEach(() => {
     mockAxios.reset();
-    
+
   });
 describe('Get entity from wikidata', function() {
         it('It should get an entity', async function() {
-            mockAxios.onGet(urlApiWikidata).reply(200, 
-                { 
+            mockAxios.onGet(urlApiWikidata).reply(200,
+                {
                     results: {
                     bindings: [{
                         entityLabel: {
@@ -60,8 +60,8 @@ describe('Get entity from wikidata', function() {
     });
 
     it('It should fail when generating a question', async function() {
-        mockAxios.onGet(urlApiWikidata).reply(200, 
-            { 
+        mockAxios.onGet(urlApiWikidata).reply(200,
+            {
                 results: {
                 bindings: []
             }
@@ -75,8 +75,8 @@ describe('Get entity from wikidata', function() {
 
 describe('Get properties from wikidata', function() {
     it('It should get a list of properties', async function() {
-        mockAxios.onGet(urlApiWikidata).reply(200, 
-            { 
+        mockAxios.onGet(urlApiWikidata).reply(200,
+            {
                 results: {
                 bindings: [{
                     property: {
@@ -99,8 +99,8 @@ describe('Get properties from wikidata', function() {
     });
 
     it('It should fail when getting properties', async function() {
-    mockAxios.onGet(urlApiWikidata).reply(200, 
-        { 
+    mockAxios.onGet(urlApiWikidata).reply(200,
+        {
             results: {
             bindings: []
         }

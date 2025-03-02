@@ -1,5 +1,5 @@
-const generalQuestions = require('../../utils/generalQuestions')
-const assert = require('assert');
+import * as generalQuestions from '../../utils/generalQuestions'
+import * as assert from 'assert';
 
 describe('Shuffle array', function() {
     it('It should shuffle an array', async function() {

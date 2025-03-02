@@ -1,11 +1,12 @@
-import { json } from "stream/consumers";
-import { Serializer } from "v8";
+// import { json } from "stream/consumers";
+// import { Serializer } from "v8";
 
-import mongoose from 'mongoose';
-import Question from './question-data-model.js';
-import * as dotenv from 'dotenv' ;
+import * as mongoose from 'mongoose';
+import * as Question from './question-data-model.js';
 import { WikidataQueryBuilder } from "./query_builder.ts";
-dotenv.config()
+
+import * as dotenv from "dotenv";
+dotenv.config();
 
 let uri = process.env.DATABASE_URI || 'mongodb://localhost:27017/questionDB';
 mongoose.connect(uri);

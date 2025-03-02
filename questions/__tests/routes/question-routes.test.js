@@ -1,9 +1,9 @@
-const Question = require('../../services/question-data-model.js');
-const { MongoMemoryServer } = require('mongodb-memory-server');
-const request = require('supertest');
-const mongoose = require('mongoose');
-const express = require('express');
-const bodyParser = require('body-parser');
+import * as Question from '../../services/question-data-model.js';
+import { MongoMemoryServer } from 'mongodb-memory-server';
+import * as request from 'supertest';
+import * as mongoose from 'mongoose';
+import * as express from 'express';
+import * as bodyParser from 'body-parser';
 
 let mongoServer;
 let questionFunctions;
@@ -79,7 +79,7 @@ describe('Question routes', function() {
 
     describe("Get question (TEMPORAL TEST)", () => {
         it("Should get a default dummy question", async () => {
-            const response = await request(app).get("/questions/");
+            const response = await request(app).get("/questions/random");
             expect(response.status).toBe(200)
             expect(response.body.url).toBe("")
         })

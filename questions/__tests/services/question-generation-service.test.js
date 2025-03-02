@@ -1,7 +1,7 @@
-const generator = require('../../services/generate-questions-service');
-const dbService = require('../../services/question-data-service');
-const wikidataService = require('../../services/wikidata-service');
-const generalQuestions = require('../../utils/generalQuestions');
+import * as generator from '../../services/generate-questions-service.js';
+import * as dbService from '../../services/question-data-service.js';
+import * as wikidataService from '../../services/wikidata-service.js';
+import * as generalQuestions from '../../utils/generalQuestions.js';
 
 jest.mock('../../utils/generalQuestions');
 jest.mock('../../services/wikidata-service');
@@ -14,7 +14,7 @@ const entity = {
         "name": "country",
         "instance": "Q6256",
         "properties": [
-            {   
+            {
                 "property": "P1082",
                 "template": {
                     "es": "Cuál es la población de x",
@@ -26,7 +26,7 @@ const entity = {
         ]
 };
 
-    
+
 beforeEach(() => {
     // Reinicia el estado de los mocks antes de cada prueba
     jest.clearAllMocks();
@@ -40,17 +40,17 @@ describe('Question generation', function() {
         const entityName = 'Madrid';
         const searched_property = 'P18';
         wikidataService.getRandomEntity.mockResolvedValue([entityName, searched_property]);
-    
+
         wikidataService.getProperties.mockResolvedValue(['Barcelona', 'Paris', 'London']);
         wikidataService.convertUrlsToLabels.mockResolvedValue(['Barcelona', 'Paris', 'London','Madrid']);
 
         generalQuestions.shuffleArray.mockResolvedValue(['Barcelona', 'Paris', 'London','Madrid']);
-    
+
         dbService.getQuestion.mockResolvedValue("undefined");
         dbService.addQuestion.mockResolvedValue();
         // Llama a la función que deseas probar
         await generator.generateQuestions(1,"en","Geography");
-    
+
         // Verifica que la función haya realizado las operaciones esperadas
         expect(dbService.addQuestion).toHaveBeenCalledTimes(1);
       });
@@ -63,18 +63,18 @@ describe('Question generation', function() {
         const entityName = 'Madrid';
         const searched_property = 'P18';
         wikidataService.getRandomEntity.mockResolvedValue([entityName, searched_property]);
-    
+
         wikidataService.getProperties.mockResolvedValue(['Barcelona', 'Paris', 'London']);
         wikidataService.convertUrlsToLabels.mockResolvedValue(['Barcelona', 'Paris', 'London']);
 
         generalQuestions.shuffleArray.mockResolvedValue(['Barcelona', 'Paris', 'London','Madrid'])
-    
+
         dbService.addQuestion.mockResolvedValue();
 
         console.error = jest.fn();
         // Llama a la función que deseas probar
         await generator.generateQuestions(1,"en");
-    
+
         // Verifica que la función haya realizado las operaciones esperadas
         expect(dbService.addQuestion).toHaveBeenCalledTimes(0);
 

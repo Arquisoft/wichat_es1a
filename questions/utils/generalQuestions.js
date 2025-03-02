@@ -1,4 +1,4 @@
-const fs = require('fs').promises;
+import { promises as fs } from "fs";
 
 async function readFromFile(filePath) {
     try {
@@ -19,7 +19,7 @@ function shuffleArray(array) {
     return array;
 }
 
-module.exports = {
+export {
     readFromFile,
     shuffleArray
-};
+}

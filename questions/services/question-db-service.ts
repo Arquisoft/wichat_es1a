@@ -2,7 +2,8 @@
 // import { Serializer } from "v8";
 
 import * as mongoose from 'mongoose';
-import * as Question from './question-data-model.js';
+import { Question } from './question-data-model.js';
+
 import { WikidataQueryBuilder } from "./query_builder.ts";
 
 import * as dotenv from "dotenv";
@@ -16,13 +17,13 @@ export class WikidataQuestion {
     response: String;
     wrong: String[];
 
-    constructor(image_url: String, response: String, wrong: String[]) {
-        this.image_url = image_url
-        this.response = response;
-        this.wrong = wrong;
+    constructor(entity: WikidataEntity) {
+        this.image_url = entity.image_url;
+        this.response = ""
+        this.wrong = [""]
     }
 
-    getJson() : any {
+    public getJson() : any {
         return {
             url: this.image_url
         }
@@ -47,19 +48,25 @@ export class QuestionDBService {
     }
 
     async getRandomQuestions(n: number = 1) : Promise<WikidataQuestion[]> {
+        let entities = await this.getRandomEntities(n);
+        return entities.map((e) => new WikidataQuestion(e))
+    }
+
+    private async getRandomEntities(n: number = 1) : Promise<WikidataEntity[]> {
         if (await this.getQuestionsCount() <= n) {
-            await this.generateQuestions()
+            // TODO: Generate more?
+            await this.generateQuestions(n)
         }
-        return Question.aggregate([
-            { $sample: { size: n }}
-        ]);
+        let q = await Question.aggregate([{ $sample: { size: n } }]);
+        return q.map((q: any) => new WikidataEntity(q.image_url))
     }
 
     async getQuestionsCount() : Promise<number> {
       return await Question.countDocuments()
     }
 
-    private async generateQuestions() {
+    private async generateQuestions(n: number) {
+        // TODO: Generate the specified number
         const response = await new WikidataQueryBuilder()
             .instanceOf(729)
             .assocProperty(18, "imagen")
@@ -67,7 +74,7 @@ export class QuestionDBService {
         await response.data.results.bindings.forEach(async (elem: any) => {
             new Question({
                 image_url: elem.imagen.value
-            }).save();
+            }).save()
         });
     }
 

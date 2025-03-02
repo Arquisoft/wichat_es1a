@@ -6,7 +6,8 @@ const questionSchema = new mongoose.Schema({
     options: [String],
     correctAnswer: String,
     categories: [String],
-    language: String
+    // language: String,
+    image_url: String,
 });
 
 //Auto generated id

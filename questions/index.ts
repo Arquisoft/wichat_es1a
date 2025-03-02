@@ -2,7 +2,7 @@
 import express from 'express';
 import cors from 'cors';
 // Routes:
-import { router as questionRoutes } from './routes/question-routes.js';
+import { router as questionRoutes } from './routes/question-routes.ts';
 
 // App definition and
 const app = express();

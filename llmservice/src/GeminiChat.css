@@ -1,0 +1,94 @@
+/* Contenedor principal */
+.gemini-chat-container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  font-family: "Arial", sans-serif;
+}
+
+/* Título */
+.gemini-chat-container h2 {
+  color: #333;
+  font-size: 22px;
+}
+
+/* Área de entrada */
+.gemini-input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  resize: none;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.gemini-input:focus {
+  border-color: #007bff;
+}
+
+/* Botón */
+.gemini-button {
+  background: #007bff;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-top: 10px;
+}
+
+.gemini-button:hover {
+  background: #0056b3;
+}
+
+.gemini-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+/* Input de archivos */
+.gemini-file-input {
+  margin-top: 10px;
+  display: block;
+  width: 100%;
+}
+
+/* Vista previa de imagen */
+.gemini-image-preview {
+  max-width: 100%;
+  margin-top: 10px;
+  border-radius: 5px;
+  border: 2px solid #ddd;
+}
+
+/* Contenedor de la respuesta */
+.gemini-response-container {
+  margin-top: 20px;
+  text-align: left;
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 5px;
+  white-space: pre-wrap;
+  min-height: 50px;
+  border: 1px solid #ddd;
+}
+
+/* Estilo de la respuesta */
+.gemini-response-container strong {
+  color: #333;
+  font-size: 16px;
+}
+
+.gemini-response-container p {
+  color: #555;
+  font-size: 14px;
+  margin-top: 5px;
+}

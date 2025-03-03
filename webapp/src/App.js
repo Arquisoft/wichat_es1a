@@ -23,6 +23,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Box } from '@mui/material';
 import PrivateRoute from './pages/PrivateRoute';
 import NotFound from './pages/NotFound';
+import PictureGame from "./pages/games/PicturesGame";
 
 const theme = createTheme({
   palette: {
@@ -60,6 +61,7 @@ function App() {
             <Route path="/register" element={<Register />}/>
             <Route path="/instructions" element={<PrivateRoute element={Instructions}/>} />
             <Route path="/homepage" element={<PrivateRoute element={Homepage}/>}/>
+            <Route path="/pictureGame" element={<PrivateRoute element={PictureGame}/>}/>
             <Route path="/game" element={<PrivateRoute element={Game} />} />
             <Route path="/discoveringCitiesGame" element={<PrivateRoute element={DiscoveringCitiesGame}/>}/>
             <Route path="/wiseMenStackGame" element={<PrivateRoute element={WiseMenStackGame}/>}/>

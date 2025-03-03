@@ -1,10 +1,8 @@
-// import { json } from "stream/consumers";
-// import { Serializer } from "v8";
-
 import * as mongoose from 'mongoose';
 import { Question } from './question-data-model.js';
 
-import { WikidataQueryBuilder, WikidataStatement } from "./query_builder.ts";
+import { WikidataEntity } from "./wikidata";
+import { WikidataQueryBuilder } from "./wikidata/query_builder.ts";
 
 import * as dotenv from "dotenv";
 dotenv.config();
@@ -30,15 +28,6 @@ export class WikidataQuestion {
     }
 }
 
-class WikidataEntity {
-    image_url: String;
-    common_name: String;
-
-    constructor(image_url: String, common_name: String) {
-        this.image_url = image_url;
-        this.common_name = common_name;
-    }
-}
 
 export class QuestionDBService {
     private pendingPromises: Promise<any>[] = [];
@@ -69,10 +58,9 @@ export class QuestionDBService {
          */
         await this.resolvePendingPromises();
 
-        let entities = await this.getRandomEntities(n);
-        let ret = entities.map((e) => new WikidataQuestion(e))
-
-        return ret;
+        return this.getRandomEntities(n).then((entities) => {
+            return entities.map((e) => new WikidataQuestion(e))
+        })
     }
 
     private async getRandomEntities(n: number = 1) : Promise<WikidataEntity[]> {
@@ -110,10 +98,12 @@ export class QuestionDBService {
             .random()
             .limit(n);
 
+        // For debugging
         // console.log("Executing query: " + query.build());
         const response = await query.send();
 
-        const genQuestions = response.data.results.bindings.map((elem: any) => {
+        const genQuestions: Promise<Question>[] =
+        response.data.results.bindings.map((elem: any) => {
             return new Question({
                 image_url: elem.imagen.value,
                 common_name: elem.common_name.value,

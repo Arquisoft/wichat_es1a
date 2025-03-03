@@ -25,11 +25,6 @@ export class WDPropertyAssoc {
     }
 }
 
-// export class WikidataEntity {
-//     name: String,
-//     label
-// }
-
 export class WikidataStatement {
     name: String;
     prop: Number;
@@ -142,3 +137,4 @@ export class WikidataQueryBuilder {
     }
 
 }
+

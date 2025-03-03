@@ -6,15 +6,22 @@ const headers = {
     'Accept': 'application/json',
 };
 
-class PropertyAssoc {
+export class WDPropertyAssoc {
     id: Number
     name: String
     optional: boolean
 
-    constructor(id: Number, name: String, optional: boolean) {
+    constructor(id: Number, name: String, optional: boolean = false) {
         this.id = id;
         this.name = name;
         this.optional = optional;
+    }
+
+    toString() : String {
+        let text = `wdt:P${this.id} ?${this.name};`;
+        if (this.optional)
+            text = `OPTIONAL{${text}}`
+        return text;
     }
 }
 
@@ -23,45 +30,103 @@ class PropertyAssoc {
 //     label
 // }
 
+export class WikidataStatement {
+    name: String;
+    prop: Number;
+    value: Number;
+
+    constructor(prop: Number, value: Number, name: String = "item") {
+        this.name = name;
+        this.prop = prop;
+        this.value = value;
+    }
+
+    toString() : String {
+        return `?${this.name} wdt:P${this.prop} wd:Q${this.value};`;
+    }
+}
+
 export class WikidataQueryBuilder {
-    _instanceOf: Number | null;
-    _assocProperties: PropertyAssoc[];
-    _limit: Number | null;
+    private _statements: WikidataStatement[];
+    private _assocProperties: WDPropertyAssoc[];
+    private _random: Boolean = false;
+    private _limit: Number | null;
+    private _orderBy: String | null
+    private _language: String = "es";
 
     constructor() {
-        this._instanceOf = null;
+        this._statements = [];
         this._assocProperties = [];
     }
 
     instanceOf(category: Number) : WikidataQueryBuilder {
-        this._instanceOf = category;
+        this._statements.push(new WikidataStatement(31, category));
+        return this;
+    }
+
+    subclassOf(category: Number) : WikidataQueryBuilder {
+        this._statements.push(new WikidataStatement(279, category));
+        return this;
+    }
+
+    statement(stmt: WikidataStatement) : WikidataQueryBuilder {
+        this._statements.push(stmt);
         return this;
     }
 
     assocProperty(id: Number, name: String, optional: boolean = false) : WikidataQueryBuilder {
-        this._assocProperties.push({id, name, optional});
+        this._assocProperties.push(new WDPropertyAssoc(id, name, optional));
+        return this;
+    }
+
+    orderBy(ord: String) : WikidataQueryBuilder {
+        this._orderBy = ord;
+        return this
+    }
+
+    random() : WikidataQueryBuilder {
+        this._random = true;
+        return this
+    }
+
+    limit(n: Number) : WikidataQueryBuilder {
+        this._limit = n;
+        return this
+    }
+
+    language(lang: String) : WikidataQueryBuilder {
+        this._language = lang;
         return this;
     }
 
     build() : String {
         let query = "SELECT ?item "
-        this._assocProperties.forEach(prop => query += `?${prop.name} `);
-        query += "WHERE {"
-
-        if (this._instanceOf) {
-            query += `?item wdt:P31 wd:Q${this._instanceOf};`
+        this._assocProperties.forEach(prop => query += `?${prop.name} ?${prop.name}Label `);
+        if (this._random) {
+            query += "(MD5(CONCAT(str(?item),str(RAND()))) as ?random) ";
         }
+        query += " WHERE {"
 
-        this._assocProperties.forEach(prop => {
-            let text = `wdt:P${prop.id} ?${prop.name};`;
-            if (prop.optional)
-                text = `OPTIONAL{${text}}`
-            query += text
+        this._statements.forEach((stmt) => {
+            query += stmt.toString()
+        })
+
+        this._assocProperties.forEach((prop) => {
+            query += prop.toString()
         });
 
+        query += `SERVICE wikibase:label { bd:serviceParam wikibase:language "${this._language}"}`;
+
+
         query += "}";
+        if (this._random) {
+            query += " ORDER BY ?random";
+        }
+        if (this._orderBy) {
+            query += " ORDER BY " + this._orderBy;
+        }
         if (this._limit) {
-            query += "LIMIT " + this._limit;
+            query += " LIMIT " + this._limit;
         }
         return query
     }

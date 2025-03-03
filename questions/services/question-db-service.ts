@@ -4,7 +4,7 @@
 import * as mongoose from 'mongoose';
 import { Question } from './question-data-model.js';
 
-import { WikidataQueryBuilder } from "./query_builder.ts";
+import { WikidataQueryBuilder, WikidataStatement } from "./query_builder.ts";
 
 import * as dotenv from "dotenv";
 dotenv.config();
@@ -30,52 +30,97 @@ export class WikidataQuestion {
     }
 }
 
-export class WikidataEntity {
+class WikidataEntity {
     image_url: String;
+    common_name: String;
 
-    constructor(image_url: String) {
+    constructor(image_url: String, common_name: String) {
         this.image_url = image_url;
+        this.common_name = common_name;
     }
 }
 
 export class QuestionDBService {
+    private pendingPromises: Promise<any>[] = [];
 
-    private constructor() {}
+    private constructor() {
+        this.pendingPromises.push(
+            Question.deleteMany().then(() => {
+                this.generateQuestions(20)
+            })
+        )
+    }
+
     private static _instance: QuestionDBService = new QuestionDBService()
 
     public static getInstance() : QuestionDBService {
         return this._instance
     }
 
+    private async resolvePendingPromises() {
+        await Promise.all(this.pendingPromises);
+        this.pendingPromises = []
+    }
+
     async getRandomQuestions(n: number = 1) : Promise<WikidataQuestion[]> {
+        /* At this point, we need to sync previously postponed promises.
+         * Like question deletion, or the initial question generation
+         * from the constructor.
+         */
+        await this.resolvePendingPromises();
+
         let entities = await this.getRandomEntities(n);
-        return entities.map((e) => new WikidataQuestion(e))
+        let ret = entities.map((e) => new WikidataQuestion(e))
+
+        return ret;
     }
 
     private async getRandomEntities(n: number = 1) : Promise<WikidataEntity[]> {
-        if (await this.getQuestionsCount() <= n) {
-            // TODO: Generate more?
-            await this.generateQuestions(n)
+        let n_questions = await this.getQuestionsCount();
+        if (n_questions <= n) {
+            await this.generateQuestions(Math.max(n * 2, 20));
         }
+
         let q = await Question.aggregate([{ $sample: { size: n } }]);
-        return q.map((q: any) => new WikidataEntity(q.image_url))
+
+        /* Store the promise of the deletion, instead of blocking.
+         * The next time we call resolvePendingPromises, it'll be
+         * awaited. But, for now, it's faster to not block.
+         */
+        let deletions = q.map((e: Question) => {
+            return Question.deleteOne({_id: e._id})
+                           .then(() => console.log("Deleted " + e.wdUri))
+        })
+        this.pendingPromises.push(Promise.all(deletions));
+
+        return q.map((q: Question) => new WikidataEntity(q.image_url, q.common_name))
     }
 
     async getQuestionsCount() : Promise<number> {
       return await Question.countDocuments()
     }
 
-    private async generateQuestions(n: number) {
-        // TODO: Generate the specified number
-        const response = await new WikidataQueryBuilder()
-            .instanceOf(729)
+    private async generateQuestions(n: number) : Promise<Question[]> {
+        console.log("Generating a batch of " + n + " questions")
+
+        const query = new WikidataQueryBuilder()
+            .subclassOf(729)
             .assocProperty(18, "imagen")
-            .send();
-        await response.data.results.bindings.forEach(async (elem: any) => {
-            new Question({
-                image_url: elem.imagen.value
+            .assocProperty(1843, "common_name")
+            .random()
+            .limit(n);
+
+        // console.log("Executing query: " + query.build());
+        const response = await query.send();
+
+        const genQuestions = response.data.results.bindings.map((elem: any) => {
+            return new Question({
+                image_url: elem.imagen.value,
+                common_name: elem.common_name.value,
+                wdUri: elem.item.value,
             }).save()
         });
+        return Promise.all(genQuestions);
     }
 
 }

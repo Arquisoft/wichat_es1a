@@ -1,20 +1,26 @@
-# Use an official Node.js runtime as a parent image
-FROM node:22
+# 1️⃣ Usa Node.js para construir la aplicación React
+FROM node:22 as build
 
-# Set the working directory in the container
-WORKDIR /usr/src/llmservice
+WORKDIR /llmservice
 
-# Copy package.json and package-lock.json to the working directory
-COPY package*.json ./
-
-# Install app dependencies
+# Copia los archivos y ejecuta la instalación
+COPY llmservicepackage*.json ./
 RUN npm install
 
-# Copy the app source code to the working directory
+# Copia el resto del código fuente
 COPY . .
 
-# Expose the port the app runs on
-EXPOSE 8003
+# Construye la aplicación
+RUN npm run build
 
-# Define the command to run your app
-CMD ["node", "llm-service.js"]
+# 2️⃣ Usa Nginx para servir la aplicación en producción
+FROM nginx:alpine
+
+# Copia los archivos de la build a la carpeta de Nginx
+COPY --from=build /llmservice/build /usr/share/nginx/html
+
+# Expone el puerto 80
+EXPOSE 80
+
+# Comando para iniciar Nginx
+CMD ["nginx", "-g", "daemon off;"]

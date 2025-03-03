@@ -142,7 +142,6 @@ const Homepage = () => {
     }, [setActiveIndex, changeGameLink]);
 
     // Responsible for generating the buttons with the names of the games and the pagination element
-    /**
     const displayGames = React.useCallback((info) => {
         setGames(
             <Grid container spacing={2} justifyContent="center" alignItems="center">
@@ -161,8 +160,8 @@ const Homepage = () => {
         );
     }, [xxl, styles.cardButtonMax, styles.cardButton, activeIndex, handleButtonClick]);
 
-    **/
 
+    /**
     const displayGames = React.useCallback((info) => {
         // Filtra solo el juego "Picture"
         const filteredGames = info.filter(game => game.nombre === "Picture");
@@ -183,6 +182,7 @@ const Homepage = () => {
             </Grid>
         );
     }, [xxl, styles.cardButtonMax, styles.cardButton, activeIndex, handleButtonClick]);
+     **/
 
 
     //Update the game information

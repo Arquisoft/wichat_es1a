@@ -1,12 +1,12 @@
 import * as React from "react";
-import { useTheme, Button, Typography, Grid, Box , CssBaseline, useMediaQuery  } from "@mui/material";
+import { useTheme, Button, Typography, Box , CssBaseline, useMediaQuery  } from "@mui/material";
 import data from "../data/gameInfo.json";
-import { useTranslation } from 'react-i18next';
+//import { useTranslation } from 'react-i18next';
 
 
 const Instructions = () => {
     const lg = useMediaQuery('(min-width: 1200px)');
-    const { t } = useTranslation();
+    //const { t } = useTranslation();
     const theme = useTheme();
 
 
@@ -119,6 +119,11 @@ const Instructions = () => {
             backgroundColor: 'rgba(255,255,255,0.7)',
         },
 
+        buttons: {
+            display: 'flex',
+            justifyContent: 'center'
+        }
+
     };
 
     // Whole information about games
@@ -145,8 +150,7 @@ const Instructions = () => {
                     <img src={info[index].foto} alt="Foto del minijuego" style={lg ? styles.imgRow : styles.imgColumn}/>
                     <Box sx={lg ? styles.textRow : styles.textColumn}>
                         <Typography variant="h3" align="center" fontWeight="bold" sx={{fontSize:'2rem'}}> {info[index].nombre} </Typography>
-                        <Typography  variant="body1" align="center" sx={{ textAlign: "center", background: "none", paddingTop:'2rem', width:'80%', fontSize:'1rem'}}> {t("Games." 
-                        + info[index].nombre +".desc")} </Typography>
+                        <Typography  variant="body1" align="center" sx={{ textAlign: "center", background: "none", paddingTop:'2rem', width:'80%', fontSize:'1rem'}}> {info[index].descripcion} </Typography>
                     </Box>
                 </Box>
             );
@@ -168,19 +172,17 @@ const Instructions = () => {
             </video>
             <CssBaseline />
 
+            <Typography variant="h2" align="center" fontWeight="bold" sx={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)', fontSize:'3rem' }}>INSTRUCTIONS</Typography>
             <Box sx={{...styles.fullScreen, width:'80%', margin:'1rem'}}>
-                <Grid container spacing={{ xs: 2, md: 4 }} columns={{ xs: 1, sm: 3, lg: 5 }}>
-                    <Grid item xs={1} sm={3} md={5}>
-                        <Typography variant="h2" align="center" fontWeight="bold" sx={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)', fontSize:'3rem' }}>INSTRUCTIONS</Typography>
-                    </Grid>
+                <div style={{...styles.buttons}}>
                     {info.map((option, index) => (
-                        <Grid item xs={1} key={option.nombre} >
+                        <div key={option.nombre} >
                             <Button width="100%"  size="large" variant="outlined" sx={ (gameDisplayedIndex === index)  ? styles.selectedButton : styles.button } onClick={() => displayGameInfo(index)} >
                                 {option.nombre}
                             </Button>
-                        </Grid>
+                        </div>
                     ))}
-                </Grid>
+                </div>
                 {gameInfo}
             </Box>
 

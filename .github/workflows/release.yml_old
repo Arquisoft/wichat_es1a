@@ -144,24 +144,3 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
         registry: ghcr.io
         workdir: llmservice
-  docker-push-gatewayservice:
-    name: Push gateway service Docker Image to GitHub Packages
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    needs: [e2e-tests]
-    steps:
-    - uses: actions/checkout@v4
-    - name: Update OpenAPI configuration
-      run: |
-        DEPLOY_HOST=${{ secrets.DEPLOY_HOST }}
-        sed -i "s/SOMEIP/${DEPLOY_HOST}/g" gatewayservice/openapi.yaml
-    - name: Publish to Registry
-      uses: elgohr/Publish-Docker-Github-Action@v5
-      with:
-        name: arquisoft/wichat_0/gatewayservice
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-        registry: ghcr.io
-        workdir: gatewayservice

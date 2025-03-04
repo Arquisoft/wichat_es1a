@@ -7,6 +7,7 @@ const GEMINI_URL = `https://generativelanguage.googleapis.com/v1/models/gemini-1
 function GeminiChat() {
   const [prompt, setPrompt] = useState("");
   const [image, setImage] = useState(null);
+  const [imageUrl, setImageUrl] = useState(""); // Nueva variable para la URL de la imagen
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -17,12 +18,13 @@ function GeminiChat() {
       reader.readAsDataURL(file);
       reader.onloadend = () => {
         setImage(reader.result); // Guarda la imagen en base64
+        setImageUrl(""); // Limpiar la URL si se sube una imagen
       };
     }
   };
 
   const fetchResponse = async () => {
-    if (!prompt.trim() && !image) return;
+    if (!prompt.trim() && !image && !imageUrl.trim()) return;
 
     setLoading(true);
     setResponse("");
@@ -31,27 +33,28 @@ function GeminiChat() {
       contents: [{ parts: [] }],
     };
 
-    // Mensaje de contexto para que la IA solo dé pistas en el juego
     const gameContext =
       "Estás ayudando en un juego de preguntas tipo '¿Quién quiere ser millonario?'. Solo puedes dar pistas, pero nunca revelar la respuesta. " +
       "Si te preguntan algo que no tenga que ver con el juego, responde 'Lo siento, solo puedo dar pistas en este juego.'. " +
-      "Si se sube una imagen, describe características sin decir qué es. Ejemplo: 'Tiene un pelaje anaranjado y una cola larga.' en vez de 'Es un zorro'.";
+      "Si se sube una imagen, describe características sin decir qué es.";
 
-    // Agregar contexto inicial
     requestBody.contents[0].parts.push({ text: gameContext });
 
-    // Agregar prompt si existe
     if (prompt.trim()) {
       requestBody.contents[0].parts.push({ text: `Pregunta del juego: ${prompt}` });
     }
 
-    // Agregar imagen si existe
+    // Agregar imagen si existe (base64 o URL)
     if (image) {
-      const mimeType = image.split(";")[0].split(":")[1]; // Extrae el MIME type
-      const base64Data = image.split(",")[1]; // Extrae los datos base64
+      const mimeType = image.split(";")[0].split(":")[1];
+      const base64Data = image.split(",")[1];
 
       requestBody.contents[0].parts.push({
         inlineData: { mimeType, data: base64Data },
+      });
+    } else if (imageUrl.trim()) {
+      requestBody.contents[0].parts.push({
+        text: `Imagen adjunta: ${imageUrl.trim()}`,
       });
     }
 
@@ -92,13 +95,21 @@ function GeminiChat() {
         className="gemini-file-input"
       />
 
-      {image && <img src={image} alt="Vista previa" className="gemini-image-preview" />}
+      <input
+        type="text"
+        placeholder="O ingresa una URL de imagen..."
+        className="gemini-url-input"
+        value={imageUrl}
+        onChange={(e) => {
+          setImageUrl(e.target.value);
+          setImage(null); // Limpiar imagen en base64 si se ingresa una URL
+        }}
+      />
 
-      <button
-        className="gemini-button"
-        onClick={fetchResponse}
-        disabled={loading}
-      >
+      {image && <img src={image} alt="Vista previa" className="gemini-image-preview" />}
+      {imageUrl && !image && <img src={imageUrl} alt="Vista previa" className="gemini-image-preview" />}
+
+      <button className="gemini-button" onClick={fetchResponse} disabled={loading}>
         {loading ? "Generando pista..." : "Obtener pista"}
       </button>
 

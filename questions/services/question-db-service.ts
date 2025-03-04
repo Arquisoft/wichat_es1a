@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose';
 import { Question } from './question-data-model.js';
 
-import { WikidataEntity } from "./wikidata";
+import { WikidataEntity, Q } from "./wikidata";
 import { WikidataQueryBuilder } from "./wikidata/query_builder.ts";
 
 import * as dotenv from "dotenv";
@@ -91,7 +91,7 @@ export class QuestionDBService {
         console.log("Generating a batch of " + n + " questions")
 
         const query = new WikidataQueryBuilder()
-            .subclassOf(729)
+            .subclassOf(Q.ANIMAL)
             .assocProperty(18, "imagen")
             .assocProperty(1843, "common_name")
             .random()

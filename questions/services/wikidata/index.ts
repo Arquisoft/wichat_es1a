@@ -7,3 +7,7 @@ export class WikidataEntity {
         this.common_name = common_name;
     }
 }
+
+export const Q = {
+    ANIMAL : 729,
+}

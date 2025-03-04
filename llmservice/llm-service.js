@@ -1,10 +1,12 @@
 const axios = require("axios");
 const express = require("express");
+const cors = require("cors");
 
 const app = express();
 const port = 8003;
 
 app.use(express.json());
+app.use(cors());
 
 const llmConfigs = {
   gemini: {
@@ -14,7 +16,10 @@ const llmConfigs = {
       contents: [
         {
           parts: [
-            { text: "Describe las características de la imagen adjunta sin revelar exactamente qué es." },
+            { text: "Eres una IA en un juego donde se muestra la imagen de un animal y cuatro opciones de respuesta," +
+                 " de las cuales solo una es correcta. Tu tarea es dar una pista sobre el animal en la imagen sin revelar su nombre," +
+                 " pero ayudando al jugador a elegir la opción correcta." },
+
             { text: `Imagen adjunta: ${imageUrl.trim()}` },
           ],
         },
@@ -76,6 +81,5 @@ const server = app.listen(port, () => {
 });
 
 module.exports = server;
-
 
 

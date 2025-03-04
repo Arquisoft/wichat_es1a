@@ -23,7 +23,7 @@ export class WikidataQuestion {
 
     public getJson() : any {
         return {
-            url: this.image_url
+            image_url: this.image_url
         }
     }
 }
@@ -64,8 +64,7 @@ export class QuestionDBService {
     }
 
     private async getRandomEntities(n: number = 1) : Promise<WikidataEntity[]> {
-        let n_questions = await this.getQuestionsCount();
-        if (n_questions <= n) {
+        while (await this.getQuestionsCount() <= n) {
             await this.generateQuestions(Math.max(n * 2, 20));
         }
 

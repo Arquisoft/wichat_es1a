@@ -1,6 +1,5 @@
 import * as express from 'express';
-// import * as dbService from '../services/question-data-service';
-import * as generateQuestionsService from '../services/generate-questions-service.js';
+
 const router = express.Router();
 
 import { QuestionDBService, WikidataQuestion } from '../services/question-db-service.ts';
@@ -10,6 +9,11 @@ const dbService = QuestionDBService.getInstance()
 router.get("/random", async (_req,res) => {
     const questions = await dbService.getRandomQuestions()
     res.json(questions[0].getJson())
+})
+router.get("/random/:n", async (req,res) => {
+    const n = Number(req.params.n);
+    const questions = await dbService.getRandomQuestions(n)
+    res.json(questions.map((q) => q.getJson()))
 })
 
 ////Get random question from db and deleting it, adding questions if there are less than 10: http://localhost:8010/questions

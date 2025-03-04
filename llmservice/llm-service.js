@@ -82,6 +82,26 @@ app.post('/ask', async (req, res) => {
   }
 });
 
+
+app.get('/ask', (req, res) => {
+  res.send(`
+    <script>
+      fetch('/ask', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          question: "Hola, ¿cómo estás?",
+          model: "gemini",
+          apiKey: "TU_API_KEY"
+        })
+      })
+      .then(response => response.json())
+      .then(data => document.body.innerHTML = "<h1>Pregunta:</h1><p>Hola, ¿cómo estás?</p><h1>Respuesta:</h1><p>" + (data.answer || "Error en la respuesta") + "</p>")
+      .catch(error => document.body.innerHTML = "<h1>Error:</h1><p>" + error + "</p>");
+    </script>
+  `);
+});
+
 const server = app.listen(port, () => {
   console.log(`LLM Service listening at http://localhost:${port}`);
 });

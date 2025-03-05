@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba de IA con Gemini</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        input, button {
+            margin: 10px;
+            padding: 10px;
+            width: 80%;
+            max-width: 400px;
+        }
+        img {
+            margin-top: 20px;
+            max-width: 300px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h2>Prueba de IA con Gemini</h2>
+    <input type="text" id="imageUrl" placeholder="Ingresa URL de la imagen">
+    <input type="text" id="apiKey" placeholder="Ingresa tu API Key">
+    <button onclick="getDescription()">Obtener Descripción</button>
+    <p id="response"></p>
+    <img id="preview" alt="Vista previa de la imagen">
+
+    <script>
+        async function getDescription() {
+            const imageUrl = document.getElementById("imageUrl").value.trim();
+            const apiKey = document.getElementById("apiKey").value.trim();
+            const responseText = document.getElementById("response");
+            const imagePreview = document.getElementById("preview");
+
+            if (!imageUrl || !apiKey) {
+                responseText.innerText = "Por favor, ingresa la URL de la imagen y la API Key.";
+                return;
+            }
+
+            // Mostrar vista previa de la imagen
+            imagePreview.src = imageUrl;
+            imagePreview.style.display = "block";
+
+            try {
+                const response = await fetch("http://localhost:8003/getHint", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ imageUrl, apiKey })
+                });
+
+                const data = await response.json();
+                responseText.innerText = data.hint || "No se recibió una descripción.";
+            } catch (error) {
+                responseText.innerText = "Error al conectar con el servidor.";
+                console.error(error);
+            }
+        }
+    </script>
+</body>
+</html>

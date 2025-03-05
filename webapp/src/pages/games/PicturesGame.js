@@ -1,6 +1,21 @@
 import * as React from 'react';
 import axios from 'axios';
-import { Container, Box, Button, CssBaseline, Grid, Typography, CircularProgress, Card, Select, MenuItem, IconButton, useTheme, Paper } from '@mui/material';
+import {
+    Container,
+    Box,
+    Button,
+    CssBaseline,
+    Grid,
+    Typography,
+    CircularProgress,
+    Card,
+    Select,
+    MenuItem,
+    IconButton,
+    useTheme,
+    Paper,
+    DialogActions, DialogTitle, DialogContent, DialogContentText, Dialog
+} from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import { PlayArrow, Pause } from '@mui/icons-material';
@@ -50,6 +65,8 @@ const PictureGame = () => {
     const [paused, setPaused] = React.useState(false);
     const [passNewRound, setPassNewRound] = React.useState(false);
 
+    const [hint, setHint] = React.useState(null);
+
     const [questionHistorial, setQuestionHistorial] = React.useState(Array(round).fill(null));
 
     // hook to initiating new rounds if the current number of rounds is less than or equal to 3
@@ -98,7 +115,7 @@ const PictureGame = () => {
         axios.get(`${apiEndpoint}/questions/${language}/${category}`)
             .then(quest => {
                 // every new round it gets a new question from db
-                quest.data[0].image = 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Everest_North_Face_toward_Base_Camp_Tibet_Luca_Galuzzi_2006_%28square%29.jpg/800px-Everest_North_Face_toward_Base_Camp_Tibet_Luca_Galuzzi_2006_%28square%29.jpg';
+                quest.data[0].image = 'https://www.fundacionaquae.org/wp-content/uploads/2016/05/zorro-e1649086718471-1024x503.jpg';
                 setQuestionData(quest.data[0]);
                 setButtonStates(new Array(4).fill(null));
                 getPossibleOptions(quest.data[0]);
@@ -228,6 +245,10 @@ const PictureGame = () => {
             setQuestionHistorial(newQuestionHistorial);
         }
 
+        if (round === 5) {
+            endGame();
+        }
+
         setButtonStates(newButtonStates);
 
         setTimeout(async() => {
@@ -307,6 +328,23 @@ const PictureGame = () => {
         );
     }
 
+    async function getHint() {
+        try {
+            const apiKey = ''; //process.env.GEMINI_API_KEY;
+            const response = await fetch("http://localhost:8003/getHint", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ imageUrl: questionData.image, apiKey })
+            });
+
+            const data = await response.json();
+            setHint(data.hint || "No se recibió una descripción.");
+        } catch (error) {
+            setHint("Error al conectar con el servidor.");
+            console.error(error);
+        }
+    }
+
     return (
         <Container sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around', alignItems: 'center', textAlign: 'center', flex: '1', gap: '2em', margin: '0 auto', padding: '1em 0' }}>
             <CssBaseline />
@@ -346,6 +384,12 @@ const PictureGame = () => {
                             </Button>
                         </Grid>
                     ))}
+                    <Grid item xs={6} display="flex" justifyContent="center">
+                        <Button variant="contained" onClick={() => getHint()}
+                                sx={{ height: "3.3em", width: "90%", borderRadius: "10px"}}>
+                            Pista
+                        </Button>
+                    </Grid>
                 </Grid>
             </Container>
 
@@ -353,6 +397,28 @@ const PictureGame = () => {
                 {questionHistorialBar()}
                 { answered || round === 1 ? <Box></Box> : <Card data-testid='prog_bar_final' sx={{ width: `${100 / round}%`, padding:'0.2em', margin:'0 0.1em', backgroundColor: 'gray' }}/> }
             </Container>
+
+            <Dialog
+                open={hint !== null}
+                onClose={() => setHint(null)}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    Pista
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        {hint}
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setHint(null)} autoFocus>
+                        Aceptar
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
         </Container>
     );
 };

@@ -55,7 +55,7 @@ function NavBar() {
 
   const logo = (
     <Button component={Link} to="/" sx={{'&:hover': { backgroundColor: '#5f7e94' },}}>
-      <img src="/white_logo.png" alt="Logo" style={{ height: 40 }} />
+      <img src="/logo_wichat_white.png" alt="Logo" style={{ height: 40 }} />
     </Button>
   )
 

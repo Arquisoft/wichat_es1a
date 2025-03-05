@@ -102,7 +102,7 @@ const Home = () => {
     return (
         <Box sx={styles.fullScreen}>
             <Box data-testid="xxl" sx={xxl ? styles.maxLogo : styles.logo}>
-                <img src="./home/HomeLogo.png" alt="Logo" style={{ width: '100%' }} />
+                <img src="./home/logo_wichat.png" alt="Logo" style={{ width: '100%' }} />
             </Box>
 
             <Button variant='contained' href={redirectPath} sx={styles.playButton}> {t("Home")} </Button>

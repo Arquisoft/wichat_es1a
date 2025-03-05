@@ -48,7 +48,7 @@ const theme = createTheme({
 function App() {
 
   React.useEffect(() => {
-    document.title = "WIQ - Wikidata Infinite Quest";
+    document.title = "WIChat";
   }, []);
 
   return (

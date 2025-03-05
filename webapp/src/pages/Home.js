@@ -111,8 +111,8 @@ const Home = () => {
                 <source src="./home/Background-White.webm" type="video/mp4" />
             </video>
             
-
-            <a
+            
+           {/*  <a   ANDROID BUTTON
             href="https://mega.nz/file/vNVkhQwT#l3K-nttaNWJ1tjdUVXJlCClmYm9rmpgBS_ULNewASL4"
             target="_blank"
             rel="noopener noreferrer"
@@ -132,8 +132,8 @@ const Home = () => {
             >
             {t("Footer.apk_link")}
             </Button>
-          </a>
-
+          </a> */}
+          
         </Box>
     );
 };

@@ -103,7 +103,7 @@ function NavBar() {
                     </Link>
                   </MenuItem>
                 ))}
-              <Box sx={{ display: "flex", alignItems: "center", borderRadius: '0.5em', '&:hover': { backgroundColor: '#5f7e94' }}}>
+              {/* <Box sx={{ display: "flex", alignItems: "center", borderRadius: '0.5em', '&:hover': { backgroundColor: '#5f7e94' }}}>
                 <TranslateIcon />
                 <Select value={lang} autoWidth onChange={(e) => handleChangeLang(e.target.value)} data-testid="select-lang"
                     sx={{ color: 'black', boxShadow: 'none', '.MuiOutlinedInput-notchedOutline': { border: 0 } }}>
@@ -111,7 +111,7 @@ function NavBar() {
                   <MenuItem value={"es"} data-testid="es_selector">{t("NavBar.languages.es")}</MenuItem>
                   <MenuItem value={"fr"} data-testid="fr_selector">{t("NavBar.languages.fr")}</MenuItem>
                 </Select>
-              </Box>
+              </Box> */}
             </Menu>
             { logo }
           </Box>
@@ -141,7 +141,7 @@ function NavBar() {
         <Box sx={{ display: "flex", gap: {sm: "0.5em", lg: "2em"} }}>
 
           {/* Internacionalization */} 
-          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: "center", borderRadius: '0.5em', '&:hover': { backgroundColor: '#5f7e94' }}}>
+          {/* <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: "center", borderRadius: '0.5em', '&:hover': { backgroundColor: '#5f7e94' }}}>
             <TranslateIcon />
             <Select value={lang} autoWidth onChange={(e) => handleChangeLang(e.target.value)} data-testid="select-lang"
                     sx={{ color: 'white', boxShadow: 'none', '.MuiOutlinedInput-notchedOutline': { border: 0 } }}>
@@ -149,7 +149,7 @@ function NavBar() {
               <MenuItem value={"es"} data-testid="es_selector">{t("NavBar.languages.es")}</MenuItem>
               <MenuItem value={"fr"} data-testid="fr_selector">{t("NavBar.languages.fr")}</MenuItem>
             </Select>
-          </Box>
+          </Box> */}
           {isLoggedIn ? (
             <>
               <Box sx={{ display:'flex', alignItems:'center' }}>

@@ -268,13 +268,13 @@ const PictureGame = () => {
                                 {t("Game.config.category")}:
                             </Typography>
                             <Select value={category} onChange={(event) => setCategory(event.target.value)} style={{ minWidth: '120px' }}>
-                                <MenuItem value="Geography">{t("Game.categories.geography")}</MenuItem>
+                               {/*  <MenuItem value="Geography">{t("Game.categories.geography")}</MenuItem>
                                 <MenuItem value="Political">{t("Game.categories.political")}</MenuItem>
                                 <MenuItem value="Sports">{t("Game.categories.sports")}</MenuItem>
                                 <MenuItem value="Cities">{t("Game.categories.cities")}</MenuItem>
                                 <MenuItem value="Art">{t("Game.categories.art")}</MenuItem>
                                 <MenuItem value="Entertainment">{t("Game.categories.entertainment")}</MenuItem>
-                                <MenuItem value="Games">{t("Game.categories.games")}</MenuItem>
+                                <MenuItem value="Games">{t("Game.categories.games")}</MenuItem> */}
                                 <MenuItem value="Animals">{t("Game.categories.animals")}</MenuItem>
                             </Select>
                         </Box>

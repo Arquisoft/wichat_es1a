@@ -109,7 +109,7 @@ const PictureGame = () => {
 
     };
 
-    // It puts 2 possible answers into an array making sure that the correct answer is not repeated
+    // It puts 4 possible answers into an array making sure that the correct answer is not repeated
     const getPossibleOptions = async (question) => {
         var options = [];
         options.push(question.correctAnswer);
@@ -268,13 +268,6 @@ const PictureGame = () => {
                                 {t("Game.config.category")}:
                             </Typography>
                             <Select value={category} onChange={(event) => setCategory(event.target.value)} style={{ minWidth: '120px' }}>
-                               {/*  <MenuItem value="Geography">{t("Game.categories.geography")}</MenuItem>
-                                <MenuItem value="Political">{t("Game.categories.political")}</MenuItem>
-                                <MenuItem value="Sports">{t("Game.categories.sports")}</MenuItem>
-                                <MenuItem value="Cities">{t("Game.categories.cities")}</MenuItem>
-                                <MenuItem value="Art">{t("Game.categories.art")}</MenuItem>
-                                <MenuItem value="Entertainment">{t("Game.categories.entertainment")}</MenuItem>
-                                <MenuItem value="Games">{t("Game.categories.games")}</MenuItem> */}
                                 <MenuItem value="Animals">{t("Game.categories.animals")}</MenuItem>
                             </Select>
                         </Box>
@@ -317,19 +310,37 @@ const PictureGame = () => {
     return (
         <Container sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around', alignItems: 'center', textAlign: 'center', flex: '1', gap: '2em', margin: '0 auto', padding: '1em 0' }}>
             <CssBaseline />
+            <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }} >
+                { false ?
+                     // Pausa
+                    <IconButton variant="contained" size="large" color="primary" aria-label={ paused ? t("Game.play") : t("Game.pause") }
+                        onClick={() => togglePause()} sx={{ height: 100, width: 100, border: `2px solid ${theme.palette.primary.main}` }} 
+                         data-testid={ paused ? "play" : "pause"} >
+                        { paused ? <PlayArrow sx={{ fontSize:75 }} /> : <Pause sx={{ fontSize:75 }} /> }
+                    </IconButton>
+                                :
+                     // Cronómetro
+                    <CountdownCircleTimer data-testid="circleTimer" key={questionCountdownKey} isPlaying = {questionCountdownRunning} duration={targetTime} colorsTime={[10, 6, 3, 0]}
+                        colors={[theme.palette.success.main, "#F7B801", "#f50707", theme.palette.error.main]} size={100} onComplete={() => endGame()}>
+                        {({ remainingTime }) => {
+                            return (
+                                <Box style={{ display: 'flex', alignItems: 'center' }}>
+                                    <Typography fontSize='1.2em' fontWeight='bold'>{remainingTime}</Typography>
+                                </Box>
+                            );
+                        }}
+                    </CountdownCircleTimer>
+                }
+            </Container>
 
             <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1em' }} >
                 <img style={{maxHeight: '30em', maxWidth: '30em'}} src={questionData.image} alt="Imagen pregunta"/>
-                <Typography variant="h4" data-testid="question" fontWeight="bold" >
-                    {questionData.question.toUpperCase()}
-                </Typography>
-
-                <Grid container spacing={2} gap="0.7em">
+                <Grid container spacing={2} justifyContent="center">
                     {possibleAnswers.map((option, index) => (
-                        <Grid item xs={12} key={index}>
+                        <Grid item xs={6} key={index} display="flex" justifyContent="center">
                             <Button data-testid={buttonStates[index] === "success" ? `success${index}` : buttonStates[index] === "failure" ? `fail${index}` : `answer${index}`}
                                     variant="contained" onClick={() => selectResponse(index, option)} disabled={buttonStates[index] !== null || answered}
-                                    sx={{ height: "3.3em", width: "50%", borderRadius: "10px", "&:disabled": { backgroundColor: buttonStates[index] === "success" ? theme.palette.success.main : buttonStates[index] === "failure" ? theme.palette.error.main : "gray", color: "white"}}}>
+                                    sx={{ height: "3.3em", width: "90%", borderRadius: "10px", "&:disabled": { backgroundColor: buttonStates[index] === "success" ? theme.palette.success.main : buttonStates[index] === "failure" ? theme.palette.error.main : "gray", color: "white"}}}>
                                 {buttonStates[index] === "success" ? <CheckIcon /> : buttonStates[index] === "failure" ? <ClearIcon /> : null}
                                 {option}
                             </Button>

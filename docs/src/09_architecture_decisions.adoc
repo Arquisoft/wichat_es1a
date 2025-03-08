@@ -40,3 +40,5 @@ include::ADR/02-git-workflow.adoc[]
 include::ADR/03-databases.adoc[]
 
 include::ADR/04-llm-api.adoc[]
+
+include::ADR/05-typescript.adoc[]

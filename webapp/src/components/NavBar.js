@@ -44,12 +44,11 @@ function NavBar() {
   // List of site pages for the menu. We have to address if it wouldnt be more consistent to extract this to a fragment / global const as it could be used outside.
   // Also as the element added is subjected to internazionalization, so we ll have to address it
   const pages = [
-    // Inicio not appearing as WIQ logo is used for that
     { path: '/homepage', text: t("NavBar.play") },
     { path: '/statistics', text: t("NavBar.statistics") },
     { path: '/instructions', text: t("NavBar.instructions") },
-    { path: '/group/menu', text: t("NavBar.groups") },
-    { path: '/ranking', text: t("NavBar.ranking") }
+    /* { path: '/group/menu', text: t("NavBar.groups") },
+    { path: '/ranking', text: t("NavBar.ranking") } */
     // Add an object for each new page
   ];
 

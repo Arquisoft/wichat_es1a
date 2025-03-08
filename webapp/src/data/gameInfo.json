@@ -2,7 +2,7 @@
 
     {
       "nombre": "Picture Game",
-      "descripcion": "El jugador elige un tema entre las opciones disponibles y se le mostrarán varias imágenes y 4 opciones para cada una de ellas. El objetivo es averiguar de qué trata la imagen.",
+      "descripcion": "El jugador elige un tema entre las opciones disponibles y se le mostrarán varias imágenes y 4 opciones para cada una de ellas. El objetivo es averiguar de qué trata la imagen. Podrás obtener pistas si las necesitas",
       "foto": "../homePage/fotos.jpg",
       "card":"El jugador elige un tema y debe descubrir de qué trata la imagen.",
       "cardFoto": "../homePage/fotos.jpg"

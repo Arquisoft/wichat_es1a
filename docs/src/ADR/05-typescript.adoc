@@ -1,0 +1,31 @@
+=== Use Typescript
+
+Typescript is a "type-safe" language. It offers a stricter type system than
+Javascript. We should use it, when possible, since it's fairly simple to
+integrate in our project.
+
+This proposal is to use typescript for new modules, guaranteeing compatibility
+with our existing javascript codebase. Still, new modules could be written on
+Javascript, depending on what the maintainers of those modules think is best.
+This is a tradeoff between code safety and inertia. So typescript it's
+recommended, not enforced.
+
+**Advantages**
+
+- The strict type system allows us to produce safer code, and to avoid runtime
+  errors
+- There is a lot of tooling available to integrate typescript with a javascript
+  application, so we should be able to transition to typescript at our own pace.
+
+**Disadvantages**
+
+- Despite the tooling available, typescript is a different language, and
+  integrating it with our javascript code won't be trivial. But we think it
+  will be worth the effort.
+
+- Typescript's safety ends on typescript domain. If we use a typescript
+  module from a javascript program, all the mentioned type-safety will be gone.
+  It's not a magical solution, just a nice thing that could improve the quality
+  of the code.
+
+Status: **Accepted**

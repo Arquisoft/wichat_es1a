@@ -162,7 +162,7 @@ const Instructions = () => {
     React.useEffect(() => {if (videoRef.current) {videoRef.current.playbackRate = 0.85;}}, []);
 
     if (!info) {
-        return <div>Loading...</div>; // Shows a loading message while the information is being obtained
+        return <div>Cargando...</div>; // Shows a loading message while the information is being obtained
     }
 
     return (
@@ -172,7 +172,7 @@ const Instructions = () => {
             </video>
             <CssBaseline />
 
-            <Typography variant="h2" align="center" fontWeight="bold" sx={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)', fontSize:'3rem' }}>INSTRUCTIONS</Typography>
+            <Typography variant="h2" align="center" fontWeight="bold" sx={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)', fontSize:'3rem' }}>INSTRUCCIONES</Typography>
             <Box sx={{...styles.fullScreen, width:'80%', margin:'1rem'}}>
                 <div style={{...styles.buttons}}>
                     {info.map((option, index) => (

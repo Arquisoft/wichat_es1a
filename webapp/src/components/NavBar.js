@@ -29,7 +29,7 @@ function NavBar() {
   };
 
   // Internacionalization ---
-  const [lang, setLang] = React.useState(["en", "es"].includes(i18n.language) ? i18n.language : "en");
+  const [lang, setLang] = React.useState(["en", "es"].includes(i18n.language) ? i18n.language : "es");
   const { t } = useTranslation();
 
   const handleChangeLang = (newLang) => {
@@ -103,15 +103,6 @@ function NavBar() {
                     </Link>
                   </MenuItem>
                 ))}
-              {/* <Box sx={{ display: "flex", alignItems: "center", borderRadius: '0.5em', '&:hover': { backgroundColor: '#5f7e94' }}}>
-                <TranslateIcon />
-                <Select value={lang} autoWidth onChange={(e) => handleChangeLang(e.target.value)} data-testid="select-lang"
-                    sx={{ color: 'black', boxShadow: 'none', '.MuiOutlinedInput-notchedOutline': { border: 0 } }}>
-                  <MenuItem value={"en"} data-testid="en_selector">{t("NavBar.languages.en")}</MenuItem>
-                  <MenuItem value={"es"} data-testid="es_selector">{t("NavBar.languages.es")}</MenuItem>
-                  <MenuItem value={"fr"} data-testid="fr_selector">{t("NavBar.languages.fr")}</MenuItem>
-                </Select>
-              </Box> */}
             </Menu>
             { logo }
           </Box>
@@ -140,16 +131,6 @@ function NavBar() {
 
         <Box sx={{ display: "flex", gap: {sm: "0.5em", lg: "2em"} }}>
 
-          {/* Internacionalization */} 
-          {/* <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: "center", borderRadius: '0.5em', '&:hover': { backgroundColor: '#5f7e94' }}}>
-            <TranslateIcon />
-            <Select value={lang} autoWidth onChange={(e) => handleChangeLang(e.target.value)} data-testid="select-lang"
-                    sx={{ color: 'white', boxShadow: 'none', '.MuiOutlinedInput-notchedOutline': { border: 0 } }}>
-              <MenuItem value={"en"} data-testid="en_selector">{t("NavBar.languages.en")}</MenuItem>
-              <MenuItem value={"es"} data-testid="es_selector">{t("NavBar.languages.es")}</MenuItem>
-              <MenuItem value={"fr"} data-testid="fr_selector">{t("NavBar.languages.fr")}</MenuItem>
-            </Select>
-          </Box> */}
           {isLoggedIn ? (
             <>
               <Box sx={{ display:'flex', alignItems:'center' }}>

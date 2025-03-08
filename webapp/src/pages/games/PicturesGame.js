@@ -306,10 +306,10 @@ const PictureGame = () => {
 
     // redirect to homepage if game over
     if (shouldRedirect) {
-        // Redirect after 4 seconds
+        // Redirect after 5 seconds
         setTimeout(() => {
             navigate('/homepage');
-        }, 4000);
+        }, 5000);
 
         return (
             <Container sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '4em', textAlign: 'center', flex: '1'}}>
@@ -321,7 +321,6 @@ const PictureGame = () => {
                     <Typography variant="h4">{ t("Game.correct") }: {correctlyAnsweredQuestions}</Typography>
                     <Typography variant="h4">{ t("Game.incorrect") }: {incorrectlyAnsweredQuestions}</Typography>
                     <Typography variant="h4">{ t("Game.money") }: {totalScore}</Typography>
-                    <Typography variant="h4">{ t("Game.time") }: {totalTimePlayed}</Typography>
                 </Container>
                 {showConfetti && <Confetti />}
             </Container>
@@ -330,7 +329,7 @@ const PictureGame = () => {
 
     async function getHint() {
         try {
-            const apiKey = ''; //process.env.GEMINI_API_KEY;
+            const apiKey = '';//process.env.GEMINI_API_KEY;
             const response = await fetch("http://localhost:8003/getHint", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -371,27 +370,62 @@ const PictureGame = () => {
                 }
             </Container>
 
-            <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1em' }} >
-                <img style={{maxHeight: '30em', maxWidth: '30em'}} src={questionData.image} alt="Imagen pregunta"/>
+            <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1em', position: 'relative' }} >
+                <Box sx={{ position: "relative", display: "inline-block" }}>
+                    <img style={{ maxHeight: '30em', maxWidth: '30em' }} src={questionData.image} alt="Imagen pregunta" />
+                    <Button
+                        variant="contained"
+                        onClick={() => getHint()}
+                        sx={{
+                            position: "absolute",
+                            top: "50%", 
+                            left: "calc(100% + 30px)", 
+                            transform: "translateY(-50%)", 
+                            backgroundColor: "yellow",
+                            color: "black",
+                            borderRadius: "50%",
+                            width: "90px",
+                            height: "50px",
+                            minWidth: "unset",
+                            fontSize: "1.25rem",
+                            fontWeight: "600",
+                            "&:hover": {
+                                backgroundColor: "gold",
+                            },
+                        }}>
+                    Pista
+                    </Button>
+                </Box>
+
                 <Grid container spacing={2} justifyContent="center">
                     {possibleAnswers.map((option, index) => (
-                        <Grid item xs={6} key={index} display="flex" justifyContent="center">
-                            <Button data-testid={buttonStates[index] === "success" ? `success${index}` : buttonStates[index] === "failure" ? `fail${index}` : `answer${index}`}
-                                    variant="contained" onClick={() => selectResponse(index, option)} disabled={buttonStates[index] !== null || answered}
-                                    sx={{ height: "3.3em", width: "90%", borderRadius: "10px", "&:disabled": { backgroundColor: buttonStates[index] === "success" ? theme.palette.success.main : buttonStates[index] === "failure" ? theme.palette.error.main : "gray", color: "white"}}}>
-                                {buttonStates[index] === "success" ? <CheckIcon /> : buttonStates[index] === "failure" ? <ClearIcon /> : null}
-                                {option}
-                            </Button>
-                        </Grid>
-                    ))}
-                    <Grid item xs={6} display="flex" justifyContent="center">
-                        <Button variant="contained" onClick={() => getHint()}
-                                sx={{ height: "3.3em", width: "90%", borderRadius: "10px"}}>
-                            Pista
+                    <Grid item xs={6} key={index} display="flex" justifyContent="center">
+                        <Button
+                        data-testid={buttonStates[index] === "success" ? `success${index}` : buttonStates[index] === "failure" ? `fail${index}` : `answer${index}`}
+                        variant="contained"
+                        onClick={() => selectResponse(index, option)}
+                        disabled={buttonStates[index] !== null || answered}
+                        sx={{
+                            height: "3.3em",
+                            width: "90%",
+                            borderRadius: "10px",
+                            "&:disabled": {
+                                backgroundColor: buttonStates[index] === "success"
+                                    ? theme.palette.success.main
+                                    : buttonStates[index] === "failure"
+                                    ? theme.palette.error.main
+                                    : "gray",
+                                color: "white"
+                            }
+                        }}>
+                        {buttonStates[index] === "success" ? <CheckIcon /> : buttonStates[index] === "failure" ? <ClearIcon /> : null}
+                        {option}
                         </Button>
                     </Grid>
+                    ))}
                 </Grid>
             </Container>
+
 
             <Container sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginTop:'2em' }} >
                 {questionHistorialBar()}

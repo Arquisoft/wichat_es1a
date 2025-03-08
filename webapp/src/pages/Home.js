@@ -110,29 +110,6 @@ const Home = () => {
             <video data-testid="video" ref={videoRef} autoPlay muted loop style={{ ...styles.video}}>
                 <source src="./home/Background-White.webm" type="video/mp4" />
             </video>
-            
-            
-           {/*  <a   ANDROID BUTTON
-            href="https://mega.nz/file/vNVkhQwT#l3K-nttaNWJ1tjdUVXJlCClmYm9rmpgBS_ULNewASL4"
-            target="_blank"
-            rel="noopener noreferrer"
-            >
-            <Button
-                variant="contained"
-                size={isMobile ? 'small' : 'big'}
-                color="primary"
-                startIcon={<AndroidIcon style={{ marginRight: '0.2em', color: "3DDC84", fontSize: '2em' }} />}
-                style={{ marginTop: '0.8em' }}
-                sx={{
-                    '&:hover': {
-                      border: `2px solid #3DDC84`, 
-                      backgroundColor: 'primary.light', 
-                    },
-                  }}
-            >
-            {t("Footer.apk_link")}
-            </Button>
-          </a> */}
           
         </Box>
     );

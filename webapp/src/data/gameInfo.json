@@ -2,9 +2,9 @@
 
     {
       "nombre": "Picture Game",
-      "descripcion": "The player chooses a topic from the available options and will be shown several pictures and 4 options for each one of them. The aim is to find out what the image is about",
+      "descripcion": "El jugador elige un tema entre las opciones disponibles y se le mostrarán varias imágenes y 4 opciones para cada una de ellas. El objetivo es averiguar de qué trata la imagen.",
       "foto": "../homePage/fotos.jpg",
-      "card":"The player chooses a topic and must find out what the image is about.",
+      "card":"El jugador elige un tema y debe descubrir de qué trata la imagen.",
       "cardFoto": "../homePage/fotos.jpg"
     }
 

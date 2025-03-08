@@ -161,28 +161,6 @@ const Homepage = () => {
     }, [xxl, styles.cardButtonMax, styles.cardButton, activeIndex, handleButtonClick]);
 
 
-    /**
-    const displayGames = React.useCallback((info) => {
-        // Filtra solo el juego "Picture"
-        const filteredGames = info.filter(game => game.nombre === "Picture");
-
-        setGames(
-            <Grid container spacing={2} justifyContent="center" alignItems="center">
-                {filteredGames.map((option, index) => (
-                    <Grid item xs={6} sm={4} md={2} lg={2} xl={2} key={'game-' + index} sx={{display: "flex", flexDirection: "column", justifyContent: "center", alignItems: 'center',}}>
-                        <Button sx={xxl ? styles.cardButtonMax : styles.cardButton} onClick={() => handleButtonClick(index)}>
-                            <CardComponent
-                                imageUrl={option.cardFoto}
-                                title={option.nombre}
-                                isActive={index === activeIndex}
-                            />
-                        </Button>
-                    </Grid>
-                ))}
-            </Grid>
-        );
-    }, [xxl, styles.cardButtonMax, styles.cardButton, activeIndex, handleButtonClick]);
-     **/
 
 
     //Update the game information

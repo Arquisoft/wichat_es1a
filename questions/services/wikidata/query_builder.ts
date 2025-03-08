@@ -10,17 +10,23 @@ export class WDPropertyAssoc {
     id: Number
     name: String
     optional: boolean
+    lang: String | null
 
-    constructor(id: Number, name: String, optional: boolean = false) {
+    constructor(id: Number, name: String, optional: boolean = false, lang = null) {
         this.id = id;
         this.name = name;
         this.optional = optional;
+        this.lang = lang;
     }
 
     toString() : String {
-        let text = `wdt:P${this.id} ?${this.name};`;
+        let filter = ";";
+        if (this.lang != null) {
+            filter = ` . FILTER (lang(?${this.name}) = "${this.lang}") `;
+        }
+        let text = `wdt:P${this.id} ?${this.name} ${filter}`;
         if (this.optional)
-            text = `OPTIONAL{${text}}`
+            text = `OPTIONAL{ ?item ${text}}`
         return text;
     }
 }
@@ -69,8 +75,8 @@ export class WikidataQueryBuilder {
         return this;
     }
 
-    assocProperty(id: Number, name: String, optional: boolean = false) : WikidataQueryBuilder {
-        this._assocProperties.push(new WDPropertyAssoc(id, name, optional));
+    assocProperty(id: Number, name: String, optional: boolean = false, lang: String = null) : WikidataQueryBuilder {
+        this._assocProperties.push(new WDPropertyAssoc(id, name, optional, lang));
         return this;
     }
 
@@ -95,10 +101,14 @@ export class WikidataQueryBuilder {
     }
 
     build() : String {
-        let query = "SELECT ?item "
-        this._assocProperties.forEach(prop => query += `?${prop.name} ?${prop.name}Label `);
+        let query = "";
+        query += "SELECT DISTINCT ?item "
+        this._assocProperties.forEach(prop => {
+            query += `(SAMPLE(?${prop.name}) AS ?${prop.name})`
+            query += `(SAMPLE(?${prop.name}Label) AS ?${prop.name}Label) `
+        });
         if (this._random) {
-            query += "(MD5(CONCAT(str(?item),str(RAND()))) as ?random) ";
+            query += `(MD5(CONCAT(str(?item),str(RAND()),str(${Date.now()}))) as ?random) `;
         }
         query += " WHERE {"
 
@@ -106,7 +116,11 @@ export class WikidataQueryBuilder {
             query += stmt.toString()
         })
 
-        this._assocProperties.forEach((prop) => {
+        this._assocProperties.filter((p) => !p.optional).forEach((prop) => {
+            query += prop.toString()
+        });
+
+        this._assocProperties.filter((p) => p.optional).forEach((prop) => {
             query += prop.toString()
         });
 
@@ -114,6 +128,7 @@ export class WikidataQueryBuilder {
 
 
         query += "}";
+        query += " GROUP BY ?item "
         if (this._random) {
             query += " ORDER BY ?random";
         }

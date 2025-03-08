@@ -31,6 +31,7 @@ export class WikidataQuestion {
 
 export class QuestionDBService {
     private pendingPromises: Promise<any>[] = [];
+    private questionsCache: Set<Number> = new Set();
 
     private constructor() {
         this.pendingPromises.push(
@@ -64,8 +65,18 @@ export class QuestionDBService {
     }
 
     private async getRandomEntities(n: number = 1) : Promise<WikidataEntity[]> {
+
+        const MAX_ITERATIONS = 3;
+        let n_iterations = 0;
+
         while (await this.getQuestionsCount() <= n) {
             await this.generateQuestions(Math.max(n * 2, 20));
+
+            n_iterations += 1;
+            if (n_iterations >= MAX_ITERATIONS) {
+                console.log("ERROR: Too many requests, giving up");
+                break;
+            }
         }
 
         let q = await Question.aggregate([{ $sample: { size: n } }]);
@@ -76,7 +87,7 @@ export class QuestionDBService {
          */
         let deletions = q.map((e: Question) => {
             return Question.deleteOne({_id: e._id})
-                           .then(() => console.log("Deleted " + e.wdUri))
+                           .then(() => { /*console.log("Deleted " + e.wdUri) */ })
         })
         this.pendingPromises.push(Promise.all(deletions));
 
@@ -91,24 +102,44 @@ export class QuestionDBService {
         console.log("Generating a batch of " + n + " questions")
 
         const query = new WikidataQueryBuilder()
-            .subclassOf(Q.ANIMAL)
-            .assocProperty(18, "imagen")
-            .assocProperty(1843, "common_name")
-            .random()
-            .limit(n);
+                .subclassOf(Q.ANIMAL)
+                .assocProperty(18, "imagen")
+                .assocProperty(1843, "common_name", true, "es")
+                .assocProperty(225, "taxon_name", false)
+                .random()
+                .limit(n);
 
         // For debugging
         // console.log("Executing query: " + query.build());
         const response = await query.send();
 
+        const bindings = response.data.results.bindings.filter((e: any) => {
+            /* TODO: We need to enable this, but for now wikidata returns only a few items */
+            return true;
+
+            // const pattern = /.*Q/;
+            // let n = Number(e.item.value.replace(pattern, ""));
+            // if (this.questionsCache.has(n)) {
+            //     console.log("Repeated " + n)
+            //     return false;
+            // } else {
+            //     this.questionsCache.add(n);
+            //     return true;
+            // }
+        })
+
         const genQuestions: Promise<Question>[] =
-        response.data.results.bindings.map((elem: any) => {
+            bindings.map((elem: any) => {
+            let common_name = elem.common_name ? elem.common_name.value : "UNKNOWN";
             return new Question({
                 image_url: elem.imagen.value,
-                common_name: elem.common_name.value,
+                common_name,
                 wdUri: elem.item.value,
             }).save()
         });
+
+        console.log("  Generated " + genQuestions.length);
+
         return Promise.all(genQuestions);
     }
 

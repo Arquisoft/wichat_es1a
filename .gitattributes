@@ -1,5 +1,6 @@
 *.adoc text
 *.js text
+*.ts text
 *.html text
 *.yml text
 *.json text

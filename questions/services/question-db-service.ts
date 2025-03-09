@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import { Question } from './question-data-model.js';
+import { Question, IQuestion } from '../../questions/services/question-data-model.ts';
 
 import { WikidataEntity, Q } from "./wikidata";
 import { WikidataQueryBuilder } from "./wikidata/query_builder.ts";
@@ -85,20 +85,20 @@ export class QuestionDBService {
          * The next time we call resolvePendingPromises, it'll be
          * awaited. But, for now, it's faster to not block.
          */
-        let deletions = q.map((e: Question) => {
+        let deletions = q.map((e: IQuestion) => {
             return Question.deleteOne({_id: e._id})
                            .then(() => { /*console.log("Deleted " + e.wdUri) */ })
         })
         this.pendingPromises.push(Promise.all(deletions));
 
-        return q.map((q: Question) => new WikidataEntity(q.image_url, q.common_name))
+        return q.map((q: IQuestion) => new WikidataEntity(q.image_url, q.common_name))
     }
 
     async getQuestionsCount() : Promise<number> {
       return await Question.countDocuments()
     }
 
-    async generateQuestions(n: number) : Promise<Question[]> {
+    async generateQuestions(n: number) : Promise<IQuestion[]> {
         console.log("Generating a batch of " + n + " questions")
 
         const query = new WikidataQueryBuilder()
@@ -128,7 +128,7 @@ export class QuestionDBService {
             // }
         })
 
-        const genQuestions: Promise<Question>[] =
+        const genQuestions: Promise<IQuestion>[] =
             bindings.map((elem: any) => {
             let common_name = elem.common_name ? elem.common_name.value : "UNKNOWN";
             return new Question({

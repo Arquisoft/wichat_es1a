@@ -8,6 +8,7 @@ interface IQuestion extends Document {
     wdUri: string;
     image_url: string;
     common_name: string;
+    taxon_name: string;
 }
 
 const questionSchema: Schema<IQuestion> = new Schema({
@@ -18,6 +19,7 @@ const questionSchema: Schema<IQuestion> = new Schema({
     wdUri: { type: String, required: false },
     image_url: { type: String, required: false },
     common_name: { type: String, required: false },
+    taxon_name: { type: String, required: false },
 }, { timestamps: true });
 
 // Modelo de Mongoose

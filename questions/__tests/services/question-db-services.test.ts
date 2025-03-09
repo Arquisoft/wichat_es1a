@@ -5,7 +5,7 @@ import { router } from '../../routes/question-routes'; // Ajusta la ruta si es n
 import * as bodyParser from 'body-parser';
 import { QuestionDBService } from "../../services/question-db-service";
 import { WikidataEntity } from "../../services/wikidata/index";
-import { Question } from "../../services/question-data-model"; 
+import { Question } from "../../services/question-data-model";
 
 let mongoServer;
 let app = express();
@@ -74,18 +74,7 @@ describe('QuestionDBService', () => {
             await service.generateQuestions(2);
 
             expect(saveMock).toHaveBeenCalledTimes(2);
-            
-        });
-    });
 
-    describe('resolvePendingPromises', () => {
-        it('should resolve pending promises', async () => {
-            // Simular que hay una promesa pendiente
-            service.pendingPromises.push(Promise.resolve('Resolved'));
-
-            await service.resolvePendingPromises();
-
-            expect(service.pendingPromises).toHaveLength(0);
         });
     });
 

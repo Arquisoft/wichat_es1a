@@ -1,10 +1,12 @@
 import * as mongoose from 'mongoose';
 import { Question, IQuestion } from '../../questions/services/question-data-model.ts';
+import "../utils/array-chunks.ts"
 
 import { WikidataEntity, Q } from "./wikidata";
 import { WikidataQueryBuilder } from "./wikidata/query_builder.ts";
 
 import * as dotenv from "dotenv";
+import { PromiseStore } from '../utils/promises.ts';
 
 dotenv.config();
 
@@ -41,28 +43,16 @@ export class WikidataQuestion {
     }
 }
 
-declare global {
-    interface Array<T> {
-        chunks(n: number) : Array<Array<T>>;
-    }
-}
-
-function chunks<T>(this: Array<T>, n: number) : Array<Array<T>> {
-    return this.map((_,i) => i%n ===0 && this.slice(i,i+n))
-}
-
-Array.prototype.chunks = chunks;
-
-export class QuestionDBService {
-    pendingPromises: Promise<any>[] = [];
+export class QuestionDBService extends PromiseStore {
     private questionsCache: Set<Number> = new Set();
 
     private constructor() {
-        this.pendingPromises.push(
+        super();
+        this.addPromise(
             Question.deleteMany().then(() => {
                 this.generateQuestions(20)
             })
-        )
+        );
     }
 
     private static _instance: QuestionDBService = new QuestionDBService()
@@ -71,17 +61,12 @@ export class QuestionDBService {
         return this._instance
     }
 
-    async resolvePendingPromises() {
-        await Promise.all(this.pendingPromises);
-        this.pendingPromises = []
-    }
-
     async getRandomQuestions(n: number = 1) : Promise<WikidataQuestion[]> {
         /* At this point, we need to sync previously postponed promises.
          * Like question deletion, or the initial question generation
          * from the constructor.
          */
-        await this.resolvePendingPromises();
+        await this.syncPendingPromises();
 
         return this.getRandomEntities(n * 4).then((entities) => {
             return entities.chunks(4).map((chunk) => {
@@ -119,7 +104,7 @@ export class QuestionDBService {
             return Question.deleteOne({_id: e._id})
                            .then(() => { /*console.log("Deleted " + e.wdUri) */ })
         })
-        this.pendingPromises.push(Promise.all(deletions));
+        this.addPromise(Promise.all(deletions));
 
         return q.map((q: IQuestion) => new WikidataEntity(q.image_url, q.common_name, q.taxon_name))
     }

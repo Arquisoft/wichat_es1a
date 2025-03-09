@@ -30,7 +30,7 @@ export class WikidataQuestion {
 
 
 export class QuestionDBService {
-    private pendingPromises: Promise<any>[] = [];
+    pendingPromises: Promise<any>[] = [];
     private questionsCache: Set<Number> = new Set();
 
     private constructor() {
@@ -47,7 +47,7 @@ export class QuestionDBService {
         return this._instance
     }
 
-    private async resolvePendingPromises() {
+    async resolvePendingPromises() {
         await Promise.all(this.pendingPromises);
         this.pendingPromises = []
     }
@@ -64,7 +64,7 @@ export class QuestionDBService {
         })
     }
 
-    private async getRandomEntities(n: number = 1) : Promise<WikidataEntity[]> {
+    async getRandomEntities(n: number = 1) : Promise<WikidataEntity[]> {
 
         const MAX_ITERATIONS = 3;
         let n_iterations = 0;
@@ -98,7 +98,7 @@ export class QuestionDBService {
       return await Question.countDocuments()
     }
 
-    private async generateQuestions(n: number) : Promise<Question[]> {
+    async generateQuestions(n: number) : Promise<Question[]> {
         console.log("Generating a batch of " + n + " questions")
 
         const query = new WikidataQueryBuilder()

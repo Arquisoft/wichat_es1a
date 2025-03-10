@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "esModuleInterop": true,
+        "module": "commonjs",
+        "noEmit": true,
+        "allowImportingTsExtensions": true,
+        "types": ["jest", "node"],
+    }
+}

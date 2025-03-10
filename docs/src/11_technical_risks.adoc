@@ -30,11 +30,21 @@ To evaluate the significance of the identified risks, we use a scale from 1 to 3
 === Technical Debts
 [cols="1,3", options="header"]
 |===
-| Technical Debt | Considerations
-| Code maintainability and quality | Adopting new languages and frameworks can lead to inconsistencies in coding standards. To prevent this, we will enforce code reviews through pull requests, ensuring peer validation and adherence to best practices.
-| Documentation gaps | The absence of comprehensive documentation makes onboarding new developers and maintaining the system more difficult. Creating and maintaining updated technical documentation will help streamline development and troubleshooting processes.
-| Code cleanup and adaptation from last year’s project | The project inherits code from last year’s implementation, which may not meet current requirements or best practices. To address this, we will dedicate time to learning how to properly transfer and adapt the previous project to align with the updated requirements. This includes improving code quality, removing redundant code, and ensuring compatibility with the new project scope.
-|===
+| Technical Debt
+| Considerations
 
+| Code maintainability and quality
+| Adopting new languages and frameworks can lead to inconsistencies in coding standards. To prevent this, we will enforce code reviews through pull requests, ensuring peer validation and adherence to best practices.
+
+| Documentation gaps
+| The absence of comprehensive documentation makes onboarding new developers and
+maintaining the system more difficult. Creating and maintaining updated
+technical documentation will help streamline development and troubleshooting
+processes. We need to update our documentation, since it doesn't reflect the
+current architecture.
+
+| Code cleanup and adaptation from last year’s project
+| The project inherits code from last year’s implementation, which may not meet current requirements or best practices. To address this, we will dedicate time to learning how to properly transfer and adapt the previous project to align with the updated requirements. This includes improving code quality, removing redundant code, and ensuring compatibility with the new project scope.
+|===
 
 By systematically addressing these risks and technical debts, we aim to enhance project stability, maintainability, and long-term viability.

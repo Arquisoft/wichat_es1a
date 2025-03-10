@@ -281,7 +281,8 @@ router.post('/', async (req, res) => {
             surname,
             imageUrl
         });
-        console.log(newUser)
+        console.log(`Created new user '${username}'`);
+
         assert(newUser.salt === salt)
 
         // Create the user statistics
@@ -289,7 +290,7 @@ router.post('/', async (req, res) => {
             username
         })
 
-        res.json(newUser);
+        res.json({username});
     } catch (error) {
         res.status(400).json({ error: error.message });
     }

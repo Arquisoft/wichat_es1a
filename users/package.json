@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "start": "node index.js",
-        "test": "cross-env NODE_ENV=test jest"
+        "test": "cross-env TEST=true jest"
     },
     "repository": {
         "type": "git",
@@ -20,13 +20,13 @@
     "dependencies": {
         "bcrypt": "^5.1.1",
         "body-parser": "^1.20.2",
-        "dotenv": "^16.4.5",
+        "dotenv": "^16.4.7",
         "express": "^4.18.2",
         "express-session": "^1.18.0",
         "jose": "5.2.2",
         "jsonwebtoken": "^9.0.2",
-        "sqlite3": "^5.1.7",
-        "sequelize": "^6.6.5"
+        "sequelize": "^6.6.5",
+        "sqlite3": "^5.1.7"
     },
     "devDependencies": {
         "cross-env": "^7.0.3",

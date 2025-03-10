@@ -1,5 +1,5 @@
 # Use an official Node.js runtime as a parent image
-FROM node:22
+FROM node:20
 
 # Set the working directory in the container
 WORKDIR /usr/src/llmservice
@@ -12,9 +12,6 @@ RUN npm install
 
 # Copy the app source code to the working directory
 COPY . .
-
-# Expose the port the app runs on
-EXPOSE 8003
 
 # Define the command to run your app
 CMD ["node", "llm-service.js"]

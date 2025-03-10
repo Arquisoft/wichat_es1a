@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 
 const Homepage = () => {
     const xxl = useMediaQuery('(min-width:1920px)');
-    
+
     const { t } = useTranslation();
 
     const styles = React.useMemo(() => ({
@@ -101,7 +101,7 @@ const Homepage = () => {
     const [info, setInfo] = React.useState(null);
 
     // Link to each game page
-    const [gameLink, setGameLink] = React.useState("/pictureGame");
+    const [gameLink, setGameLink] = React.useState("/wiseMenStackGame");
 
     //Selected index
     const [activeIndex, setActiveIndex] = React.useState(0);
@@ -109,7 +109,6 @@ const Homepage = () => {
     //if online mode -> change link to go to online room
     const changeGameLink = React.useCallback((index) => {
         switch (info[index].nombre) {
-            /**
             case "Wise Men Stack":
                 setGameLink("/wiseMenStackGame");
                 break;
@@ -125,12 +124,8 @@ const Homepage = () => {
             case "Multiplayer":
                 setGameLink("/multiplayerRoom");
                 break;
-                **/
-            case "Picture":
-                setGameLink("/pictureGame");
-                break;
             default:
-                setGameLink("/pictureGame");
+                setGameLink("/wiseMenStackGame");
                 break;
         }
     }, [info]);
@@ -159,9 +154,6 @@ const Homepage = () => {
             </Grid>
         );
     }, [xxl, styles.cardButtonMax, styles.cardButton, activeIndex, handleButtonClick]);
-
-
-
 
     //Update the game information
     React.useEffect(() => {

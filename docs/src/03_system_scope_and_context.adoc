@@ -52,6 +52,9 @@ image:03_Business_1.png["Diagram 3.1: Business Context"]
 - **WIChat** is a web application that allows users to register, log in, play "Saber y Ganar," and view statistics about their game performance.
 - **Wikidata ** is a free and open knowledge base that serves as a central repository for structured data. Its API will be used to retrieve the information needed to generate questions and answers within the application.
 
+- **Large Language Models (LLMs) ** are advanced AI systems designed to understand and generate human language.
+
+
 === Technical Context
 
 [role="arc42help"]

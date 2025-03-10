@@ -70,35 +70,6 @@ const Statistics = () => {
         };
 
         switch (selectedMode) {
-            case 'TheChallenge':
-                return (
-                    <TableContainer>
-                        <Table sx={{ minWidth: 360, backgroundColor:'rgba(84,95,95,0.3)', borderRadius:'10px' }} aria-label="The Challenge Statistics">
-                            <TableBody>
-                                <TableRow>
-                                    <TableCell>{ t("Statistics.table.money") }:</TableCell>
-                                    <TableCell>{formatStats(userStatics.the_callenge_earned_money)}</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell>{ t("Statistics.table.questions_corr") }:</TableCell>
-                                    <TableCell>{formatStats(userStatics.the_callenge_correctly_answered_questions)}</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell>{ t("Statistics.table.questions_incorr") }:</TableCell>
-                                    <TableCell>{formatStats(userStatics.the_callenge_incorrectly_answered_questions)}</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell>{ t("Statistics.table.total_time") }:</TableCell>
-                                    <TableCell>{formatStats(userStatics.the_callenge_total_time_played)} ''</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell>{ t("Statistics.table.played_games") }:</TableCell>
-                                    <TableCell>{formatStats(userStatics.the_callenge_games_played)}</TableCell>
-                                </TableRow>
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                );
             case 'WiseMenStack':
                 return (
                     <TableContainer>
@@ -124,89 +95,7 @@ const Statistics = () => {
                         </Table>
                     </TableContainer>
                 );
-            case 'WarmQuestion':
-                return (
-                    <TableContainer>
-                        <Table sx={{ minWidth: 360, backgroundColor:'rgba(84,95,95,0.3)', borderRadius:'10px' }} aria-label="Warm Question Statistics">
-                            <TableBody>
-                                <TableRow>
-                                    <TableCell>{ t("Statistics.table.money") }:</TableCell>
-                                    <TableCell>{formatStats(userStatics.warm_question_earned_money > 0? userStatics.warm_question_earned_money : 0)}</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell>{ t("Statistics.table.questions_corr") }:</TableCell>
-                                    <TableCell>{formatStats(userStatics.warm_question_correctly_answered_questions)}</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell>{ t("Statistics.table.questions_incorr") }:</TableCell>
-                                    <TableCell>{formatStats(userStatics.warm_question_incorrectly_answered_questions)}</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell>{ t("Statistics.table.questions_pass") }:</TableCell>
-                                    <TableCell>{formatStats(userStatics.warm_question_passed_questions)}</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell>{ t("Statistics.table.played_games") }:</TableCell>
-                                    <TableCell>{formatStats(userStatics.warm_question_games_played)}</TableCell>
-                                </TableRow>
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                );
-            case 'DiscoveringCities':
-                return (
-                    <TableContainer>
-                        <Table sx={{ minWidth: 360, backgroundColor:'rgba(84,95,95,0.3)', borderRadius:'10px' }} aria-label="Discovering Cities Statistics">
-                            <TableBody>
-                                <TableRow>
-                                    <TableCell>{ t("Statistics.table.money") }:</TableCell>
-                                    <TableCell>{formatStats(userStatics.discovering_cities_earned_money)}</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell>{ t("Statistics.table.cities_corr") }:</TableCell>
-                                    <TableCell>{formatStats(userStatics.discovering_cities_correctly_answered_questions)}</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell>{ t("Statistics.table.cities_incorr") }:</TableCell>
-                                    <TableCell>{formatStats(userStatics.discovering_cities_incorrectly_answered_questions)}</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell>{ t("Statistics.table.played_games") }:</TableCell>
-                                    <TableCell>{formatStats(userStatics.discovering_cities_games_played)}</TableCell>
-                                </TableRow>
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                );
-                case 'OnlineMode':
-                return (
-                    <TableContainer>
-                        <Table sx={{ minWidth: 360, backgroundColor:'rgba(84,95,95,0.3)', borderRadius:'10px' }} aria-label="Online Mode Statistics">
-                            <TableBody>
-                                <TableRow>
-                                    <TableCell>{ t("Statistics.table.money") }:</TableCell>
-                                    <TableCell>{formatStats(userStatics.online_earned_money)}</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell>{ t("Statistics.table.questions_corr") }:</TableCell>
-                                    <TableCell>{formatStats(userStatics.online_correctly_answered_questions)}</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell>{ t("Statistics.table.questions_incorr") }:</TableCell>
-                                    <TableCell>{formatStats(userStatics.online_incorrectly_answered_questions)}</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell>{ t("Statistics.table.total_time") }:</TableCell>
-                                    <TableCell>{formatStats(userStatics.online_total_time_played)} ''</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell>{ t("Statistics.table.played_games") }:</TableCell>
-                                    <TableCell>{formatStats(userStatics.online_games_played)}</TableCell>
-                                </TableRow>
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                );
+
             default:
                 return null;
         }
@@ -222,7 +111,7 @@ const Statistics = () => {
             const indexOfLastItem = currentPage * itemsPerPage;
             const indexOfFirstItem = indexOfLastItem - itemsPerPage;
             const currentItems = questionsRecord.slice(indexOfFirstItem, indexOfLastItem);
-    
+
             return (
                 <div>
                     {currentItems.map((record, index) => (
@@ -244,7 +133,7 @@ const Statistics = () => {
                                                 key={optionIndex}
                                                 sx={{
                                                     bgcolor: option === question.correctAnswer ? theme.palette.success.main : question.response === option ? theme.palette.error.main : '#ffffff',
-                                                    color: option === question.correctAnswer || option === question.response ? '#ffffff' : 'inherit', 
+                                                    color: option === question.correctAnswer || option === question.response ? '#ffffff' : 'inherit',
                                                     borderRadius: '20px',
                                                     padding: '2%',
                                                     border: '1px solid #ccc',
@@ -307,13 +196,14 @@ const Statistics = () => {
             ):(
                 <Box>
                     <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px', gap:'1em' }}>
-                    <Button onClick={() => setSelectedMode('TheChallenge')} variant="contained" sx={{ marginBottom: isSmallScreen ? '0.5em' : '0', backgroundColor: theme.palette.primary.main, color: theme.palette.secondary.main, borderColor: theme.palette.primary.main, '&:hover': { backgroundColor: theme.palette.secondary.main, color: theme.palette.primary.main, borderColor: theme.palette.primary.main } }}>
+                    {/* <Button onClick={() => setSelectedMode('TheChallenge')} variant="contained" sx={{ marginBottom: isSmallScreen ? '0.5em' : '0', backgroundColor: theme.palette.primary.main, color: theme.palette.secondary.main, borderColor: theme.palette.primary.main, '&:hover': { backgroundColor: theme.palette.secondary.main, color: theme.palette.primary.main, borderColor: theme.palette.primary.main } }}>
                             { t("Games.Challenge.name") }
-                        </Button>
+                        </Button> */}
                         <Button onClick={() => setSelectedMode('WiseMenStack')} variant="contained" sx={{ marginBottom: isSmallScreen ? '0.5em' : '0', backgroundColor: theme.palette.primary.main, color: theme.palette.secondary.main, borderColor: theme.palette.primary.main, '&:hover': { backgroundColor: theme.palette.secondary.main, color: theme.palette.primary.main, borderColor: theme.palette.primary.main } }}>
-                            { t("Games.Wise Men Stack.name") }
+                            {/* t("Games.Wise Men Stack.name") */}
+                            Picture Game
                         </Button>
-                        <Button onClick={() => setSelectedMode('WarmQuestion')} variant="contained" sx={{ marginBottom: isSmallScreen ? '0.5em' : '0', backgroundColor: theme.palette.primary.main, color: theme.palette.secondary.main, borderColor: theme.palette.primary.main, '&:hover': { backgroundColor: theme.palette.secondary.main, color: theme.palette.primary.main, borderColor: theme.palette.primary.main } }}>
+                        {/* <Button onClick={() => setSelectedMode('WarmQuestion')} variant="contained" sx={{ marginBottom: isSmallScreen ? '0.5em' : '0', backgroundColor: theme.palette.primary.main, color: theme.palette.secondary.main, borderColor: theme.palette.primary.main, '&:hover': { backgroundColor: theme.palette.secondary.main, color: theme.palette.primary.main, borderColor: theme.palette.primary.main } }}>
                             { t("Games.Warm Question.name") }
                         </Button>
                         <Button onClick={() => setSelectedMode('DiscoveringCities')} variant="contained" sx={{ marginBottom: isSmallScreen ? '0.5em' : '0', backgroundColor: theme.palette.primary.main, color: theme.palette.secondary.main, borderColor: theme.palette.primary.main, '&:hover': { backgroundColor: theme.palette.secondary.main, color: theme.palette.primary.main, borderColor: theme.palette.primary.main } }}>
@@ -321,7 +211,7 @@ const Statistics = () => {
                         </Button>
                         <Button onClick={() => setSelectedMode('OnlineMode')} variant="contained" sx={{ marginBottom: isSmallScreen ? '0.5em' : '0', backgroundColor: theme.palette.primary.main, color: theme.palette.secondary.main, borderColor: theme.palette.primary.main, '&:hover': { backgroundColor: theme.palette.secondary.main, color: theme.palette.primary.main, borderColor: theme.palette.primary.main } }}>
                             { t("Games.Multiplayer.name") }
-                        </Button>
+                        </Button> */}
                     </div>
                     {renderStatistics()}
                     <Button
@@ -333,7 +223,7 @@ const Statistics = () => {
                     </Button>
                     {renderQuestions()}
                 </Box>
-            )}    
+            )}
         </Container>
     );
 };

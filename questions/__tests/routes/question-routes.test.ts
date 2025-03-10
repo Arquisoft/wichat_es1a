@@ -1,26 +1,27 @@
 const request = require('supertest');
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import * as mongoose from 'mongoose';
 import express from 'express';
-import { router } from '../../routes/question-routes'; // Ajusta la ruta si es necesario
+import { generate_router } from '../../routes/question-routes'; // Ajusta la ruta si es necesario
 import * as bodyParser from 'body-parser';
+import { QuestionDBService } from '../../services/question-db-service';
 
-let mongoServer;
+let mongoServer: MongoMemoryServer;
+
 let app = express();
 
 beforeAll(async () => {
     // Crea un servidor de MongoDB en memoria
     mongoServer = await MongoMemoryServer.create();
-    const mongoURI = mongoServer.getUri();
+    QuestionDBService.setMongodbUri(mongoServer.getUri());
 
     // Configurar Express
     app.use(bodyParser.json());
-    app.use('/questions', router); // Usamos el router de las rutas de la API
+    app.use('/questions', generate_router(QuestionDBService.getInstance())); // Usamos el router de las rutas de la API
 });
 
 afterAll(async () => {
     // Desconectar la base de datos y parar el servidor de memoria
-    await mongoose.disconnect();
+    await QuestionDBService.destroy();
     await mongoServer.stop();
 });
 

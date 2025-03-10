@@ -1,41 +1,39 @@
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import * as mongoose from 'mongoose';
-import express from 'express';
-import { router } from '../../routes/question-routes'; // Ajusta la ruta si es necesario
-import * as bodyParser from 'body-parser';
 import { QuestionDBService } from "../../services/question-db-service";
 import { WikidataEntity } from "../../services/wikidata/index";
 import { Question } from "../../services/question-data-model";
 
-let mongoServer;
-let app = express();
+let mongoServer: MongoMemoryServer;
 let service: QuestionDBService;
 
 beforeAll(async () => {
     // Crea un servidor de MongoDB en memoria
     mongoServer = await MongoMemoryServer.create();
-    const mongoURI = mongoServer.getUri();
-
-    // Configurar Express
-    app.use(bodyParser.json());
-    app.use('/questions', router); // Usamos el router de las rutas de la API
+    QuestionDBService.setMongodbUri(mongoServer.getUri());
 
     service = QuestionDBService.getInstance(); // Crear la instancia del servicio
-});
+}, 20000);
 
 afterAll(async () => {
     // Desconectar la base de datos y parar el servidor de memoria
     await mongoose.disconnect();
     await mongoServer.stop();
-});
+}, 20000);
 
 describe('QuestionDBService', () => {
     describe('getRandomQuestions', () => {
         it('should fetch random questions and return them as WikidataQuestion instances', async () => {
             // Mock de la función que obtiene las entidades
             const mockEntities = [
-                new WikidataEntity('https://example.com/image1', 'Common Name 1'),
-                new WikidataEntity('https://example.com/image2', 'Common Name 2'),
+                new WikidataEntity('https://example.com/image1', 'Common Name 1', "taxon"),
+                new WikidataEntity('https://example.com/image2', 'Common Name 2', "taxon"),
+                new WikidataEntity('https://example.com/image1', 'Common Name 1', "taxon"),
+                new WikidataEntity('https://example.com/image1', 'Common Name 1', "taxon"),
+                new WikidataEntity('https://example.com/image2', 'Common Name 2', "taxon"),
+                new WikidataEntity('https://example.com/image2', 'Common Name 2', "taxon"),
+                new WikidataEntity('https://example.com/image2', 'Common Name 2', "taxon"),
+                new WikidataEntity('https://example.com/image2', 'Common Name 2', "taxon"),
             ];
 
             service.getRandomEntities = jest.fn().mockResolvedValue(mockEntities);
@@ -45,8 +43,8 @@ describe('QuestionDBService', () => {
             expect(questions).toHaveLength(2);
             expect(questions[0]).toHaveProperty('image_url');
             expect(questions[1]).toHaveProperty('image_url');
-            expect(questions[0].response).toBe('');
-            expect(questions[0].wrong).toEqual(['']);
+            expect(questions[0].response).toBe('taxon');
+            expect(questions[0].distractors).toEqual(['taxon','taxon','taxon']);
         });
 
         it('should handle an error when fetching random questions', async () => {

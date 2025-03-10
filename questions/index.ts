@@ -2,7 +2,11 @@
 import express from 'express';
 import cors from 'cors';
 // Routes:
-import { router as questionRoutes } from './routes/question-routes.ts';
+import { QuestionDBService } from './services/question-db-service.ts';
+
+import { generate_router } from './routes/question-routes.ts';
+
+const questionRoutes = generate_router(QuestionDBService.getInstance());
 
 // App definition and
 const app = express();

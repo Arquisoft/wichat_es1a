@@ -7,38 +7,36 @@ import { WikidataQueryBuilder } from "./wikidata/query_builder.ts";
 
 import * as dotenv from "dotenv";
 import { PromiseStore } from '../utils/promises.ts';
+import { constrainedMemory } from 'process';
 
 dotenv.config();
 
-let uri = process.env.DATABASE_URI || 'mongodb://localhost:27017/questionDB';
-mongoose.connect(uri);
-
 export class WikidataQuestion {
     image_url: String;
-    _response: String;
-    wrong: String[];
+    response: String;
+    distractors: String[];
 
     constructor(entity: WikidataEntity) {
         this.image_url = entity.image_url;
-        this._response = ""
-        this.wrong = [""]
+        this.response = ""
+        this.distractors = []
     }
 
-    public response(res: String) : WikidataQuestion {
-        this._response = res;
+    public set_response(res: String) : WikidataQuestion {
+        this.response = res;
         return this;
     }
 
-    public distractor(dist: String) : WikidataQuestion {
-        this.wrong.push(dist);
+    public set_distractor(dist: String) : WikidataQuestion {
+        this.distractors.push(dist);
         return this;
     }
 
     public getJson() : any {
         return {
             image_url: this.image_url,
-            response: this._response,
-            distractors: this.wrong,
+            response: this.response,
+            distractors: this.distractors,
         }
     }
 }
@@ -49,16 +47,32 @@ export class QuestionDBService extends PromiseStore {
     private constructor() {
         super();
         this.addPromise(
-            Question.deleteMany().then(() => {
-                this.generateQuestions(20)
-            })
+            mongoose.connect(QuestionDBService._mongodbUri)
+                    .then(async () => {
+                        await Question.deleteMany().then(async () => {
+                            await this.generateQuestions(20)
+                        })
+                    })
         );
     }
 
-    private static _instance: QuestionDBService = new QuestionDBService()
+    private static _instance: QuestionDBService = null;
+    private static _mongodbUri: string = process.env.DATABASE_URI || 'mongodb://localhost:27017/questionDB';
+
+    public static setMongodbUri(uri: string) {
+        this._mongodbUri = uri;
+    }
 
     public static getInstance() : QuestionDBService {
+        if (this._instance == null)
+            this._instance = new QuestionDBService();
         return this._instance
+    }
+
+    public static async destroy() {
+        await this._instance.syncPendingPromises();
+        await mongoose.disconnect();
+        this._instance = null;
     }
 
     async getRandomQuestions(n: number = 1) : Promise<WikidataQuestion[]> {
@@ -71,10 +85,10 @@ export class QuestionDBService extends PromiseStore {
         return this.getRandomEntities(n * 4).then((entities) => {
             return entities.chunks(4).map((chunk) => {
                 return new WikidataQuestion(chunk[0])
-                            .response(chunk[0].taxon_name)
-                            .distractor(chunk[1].taxon_name)
-                            .distractor(chunk[2].taxon_name)
-                            .distractor(chunk[3].taxon_name)
+                            .set_response(chunk[0].taxon_name)
+                            .set_distractor(chunk[1].taxon_name)
+                            .set_distractor(chunk[2].taxon_name)
+                            .set_distractor(chunk[3].taxon_name)
             });
         })
     }

@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.22">
+<meta name="generator" content="Asciidoctor 2.0.23">
 <title>WIChat</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -464,9 +464,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#section-solution-strategy">4. Solution Strategy</a>
 <ul class="sectlevel2">
 <li><a href="#_technology_decisions">4.1. Technology decisions</a></li>
-<li><a href="#_decisions_about_the_top_level_decomposition_of_the_system">4.2. Decisions about the top-level decomposition of the system</a></li>
-<li><a href="#_strategies_to_achieve_key_quality_goals">4.3. Strategies to Achieve Key Quality Goals</a></li>
-<li><a href="#_key_organizational_decisions">4.4. Key Organizational Decisions</a></li>
+<li><a href="#_implementation_design">4.2. Implementation design</a></li>
+<li><a href="#_decisions_about_the_top_level_decomposition_of_the_system">4.3. Decisions about the top-level decomposition of the system</a></li>
+<li><a href="#_strategies_to_achieve_key_quality_goals">4.4. Strategies to Achieve Key Quality Goals</a></li>
+<li><a href="#_key_organizational_decisions">4.5. Key Organizational Decisions</a></li>
 </ul>
 </li>
 <li><a href="#section-building-block-view">5. Building Block View</a>
@@ -501,6 +502,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_fork_a_project_from_last_year_to_use_as_a_base">9.1. Fork a project from last year to use as a base</a></li>
 <li><a href="#_trunk_based_development">9.2. Trunk based development</a></li>
+<li><a href="#_database">9.3. Database</a></li>
+<li><a href="#_gemini_as_our_llm">9.4. Gemini as our LLM</a></li>
+<li><a href="#_use_typescript">9.5. Use Typescript</a></li>
 </ul>
 </li>
 <li><a href="#section-quality-scenarios">10. Quality Requirements</a>
@@ -515,30 +519,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_technical_debts">11.2. Technical Debts</a></li>
 </ul>
 </li>
-<li><a href="#section-glossary">12. Glosario</a>
+<li><a href="#section-glossary">12. Glossary</a>
 <ul class="sectlevel2">
-<li><a href="#_por_qué_hacer_un_glosario">12.1. ¿Por qué hacer un glosario?</a></li>
-<li><a href="#_acrónimos">12.2. Acrónimos</a></li>
-<li><a href="#_términos_del_dominio">12.3. Términos del dominio</a></li>
-<li><a href="#_términos_técnicos">12.4. Términos técnicos</a></li>
+<li><a href="#_acronyms">12.1. Acronyms</a></li>
+<li><a href="#_domain_terms">12.2. Domain Terms</a></li>
+<li><a href="#_technical_terms">12.3. Technical Terms</a></li>
 </ul>
 </li>
-<li><a href="#section-load-tests">13. Appendix I: Load tests</a>
-<ul class="sectlevel2">
-<li><a href="#_test_1_1000_users_with_poor_question_generation_algorithm">13.1. Test 1: 1000 users with poor question generation algorithm</a></li>
-<li><a href="#_test_2_1000_users_with_new_question_generation_algorithm">13.2. Test 2: 1000 users with new question generation algorithm</a></li>
-<li><a href="#_users_distribution_along_the_simulation_and_response_time_distribution">13.3. Users distribution along the simulation and response time distribution</a></li>
-<li><a href="#_number_of_responses_per_second">13.4. Number of responses per second</a></li>
-</ul>
-</li>
-<li><a href="#section-other-tests">14. Appendix II: Other tests</a>
-<ul class="sectlevel2">
-<li><a href="#_unitary_tests">14.1. Unitary tests</a></li>
-<li><a href="#_acceptance_tests">14.2. Acceptance tests</a></li>
-<li><a href="#_usability_tests">14.3. Usability tests</a></li>
-</ul>
-</li>
-<li><a href="#section-monitoring">15. Appendix III: Application monitoring</a></li>
 </ul>
 </div>
 </div>
@@ -661,6 +648,9 @@ For documentation of your own system you use better the <em>plain</em> version.<
 <li>
 <p>A history of past games</p>
 </li>
+<li>
+<p>A LLM that gives hints to the player</p>
+</li>
 </ul>
 </div>
 <div class="paragraph">
@@ -684,6 +674,12 @@ The application must have the following functionalities:</p>
 </li>
 <li>
 <p>The application must have an API to obtain generated questions.</p>
+</li>
+<li>
+<p>Each question should have a correct answer and several incorrect ones or distractors</p>
+</li>
+<li>
+<p>The application must use LLM to give hints to the user</p>
 </li>
 </ul>
 </div>
@@ -718,14 +714,6 @@ The application must have the following functionalities:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong><em>Maintainability</em></strong></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Projects must always have enough quality to be able to be modified without making more changes than necessary.
 Not following this principle would heavily increase costs in new feature implementation or bug solving that may arise in the future.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><em>Scalability</em></strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Given an exponential growth of users, the application should allow for capacity resizing and overall a robust handling for a large number of connections.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><em>Testability</em></strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The performance of the system is needed to be tested covering as many use cases as possible so all the other goals will be met.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong><em>Security</em></strong></p></td>
@@ -801,6 +789,28 @@ Not following this principle would heavily increase costs in new feature impleme
 </ul>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">They are just expected to use this project as it is intended to work.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><em>ChattySw</em></strong></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Software development company</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">They company that was hired to develop the software</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><em>RTVE</em></strong></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Client that wants the app</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">RTVE hired ChattySw to develop the app</p></td>
 </tr>
 </tbody>
 </table>
@@ -895,6 +905,10 @@ conventions (e.g. programming or versioning guidelines, documentation or naming 
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Docker</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Docker will be used to deploy the application locally and remotely.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LLM</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An LLM will be used to assist the user during their game.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1040,6 +1054,9 @@ The title of the table is the name of your system, the three columns contain the
 <li>
 <p><strong>Wikidata </strong> is a free and open knowledge base that serves as a central repository for structured data. Its API will be used to retrieve the information needed to generate questions and answers within the application.</p>
 </li>
+<li>
+<p><strong>Large Language Models (LLMs) </strong> are advanced AI systems designed to understand and generate human language.</p>
+</li>
 </ul>
 </div>
 </div>
@@ -1097,10 +1114,11 @@ together with a mapping table showing the relationships between channels and inp
 <div class="sect1">
 <h2 id="section-solution-strategy">4. Solution Strategy</h2>
 <div class="sectionbody">
-<div class="paragraph arc42help">
-<p>**
-.Contents
-A short summary and explanation of the fundamental decisions and solution strategies, that shape system architecture. It includes</p>
+<div class="sidebarblock arc42help">
+<div class="content">
+<div class="paragraph">
+<div class="title">Contents</div>
+<p>A short summary and explanation of the fundamental decisions and solution strategies, that shape system architecture. It includes</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1131,8 +1149,7 @@ A short summary and explanation of the fundamental decisions and solution strate
 based upon problem statement, quality goals and key constraints.
 Refer to details in the following sections.</p>
 </div>
-<div class="paragraph">
-<p>**</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_technology_decisions">4.1. Technology decisions</h3>
@@ -1163,10 +1180,13 @@ Refer to details in the following sections.</p>
 </div>
 <div class="paragraph">
 <p>We chose these technologies because they were already being used in the project we based our work on.
-This allowed us to build upon an existing foundation, facilitating development and ensuring compatibility while leveraging JavaScript’s agility and ReactJS’s efficiency in building user interfaces.
-=== Implementation design
-==== Image generation strategy</p>
+This allowed us to build upon an existing foundation, facilitating development and ensuring compatibility while leveraging JavaScript’s agility and ReactJS’s efficiency in building user interfaces.</p>
 </div>
+</div>
+<div class="sect2">
+<h3 id="_implementation_design">4.2. Implementation design</h3>
+<div class="sect3">
+<h4 id="_image_generation_strategy">4.2.1. Image generation strategy</h4>
 <div class="paragraph">
 <p>For the image generation process, we retrieve data from Wikidata using SPARQL queries based on a structured JSON format. This JSON structure defines categories and properties that guide the generation of image prompts.</p>
 </div>
@@ -1225,15 +1245,16 @@ This allowed us to build upon an existing foundation, facilitating development a
 <p>This approach enables the dynamic creation of images based on specific categories and properties, ensuring a diverse set of visual representations across different topics and languages.</p>
 </div>
 </div>
+</div>
 <div class="sect2">
-<h3 id="_decisions_about_the_top_level_decomposition_of_the_system">4.2. Decisions about the top-level decomposition of the system</h3>
+<h3 id="_decisions_about_the_top_level_decomposition_of_the_system">4.3. Decisions about the top-level decomposition of the system</h3>
 <div class="paragraph">
 <p>We decided to use a microservices arquitecture, having different modules for each functionality.
 For example, we will use a microservice to generate the images.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_strategies_to_achieve_key_quality_goals">4.3. Strategies to Achieve Key Quality Goals</h3>
+<h3 id="_strategies_to_achieve_key_quality_goals">4.4. Strategies to Achieve Key Quality Goals</h3>
 <div class="paragraph">
 <p>The quality goals are explained in more detail in another section.</p>
 </div>
@@ -1269,7 +1290,7 @@ For example, we will use a microservice to generate the images.</p>
 </table>
 </div>
 <div class="sect2">
-<h3 id="_key_organizational_decisions">4.4. Key Organizational Decisions</h3>
+<h3 id="_key_organizational_decisions">4.5. Key Organizational Decisions</h3>
 <div class="paragraph">
 <p>Our framework will involve weekly work sessions with meetings scheduled as needed. One meeting will always take place during lab time to assign tasks and make minor decisions.</p>
 </div>
@@ -1635,7 +1656,7 @@ Most diagrams are taken from the WIQ project, our base project, because that fun
 </div>
 <div class="paragraph">
 <div class="title">Form</div>
-<p>Maybe a highest level deployment diagram is already contained in section 3.2. as
+<p>Maybe a highest level deployment diagram is already contained in (<a href="https://github.com/Arquisoft/wichat_es1a/blob/master/docs/src/03_system_scope_and_context.adoc"><strong>Section 3.2</strong></a>) as
 technical context with your own infrastructure as ONE black box. In this section one can
 zoom into this black box using additional deployment diagrams:</p>
 </div>
@@ -1665,33 +1686,36 @@ when your infrastructure is more complex.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>WebApp: The primary user interface that interacts with the system. It retrieves data from the Gateway Service.</p>
+<p>WebApp: The primary user interface that interacts with the system. Retrieves data from the Gateway Service.</p>
 </li>
 <li>
 <p>Gateway Service: Data access interface for services.</p>
 </li>
 <li>
-<p>Users: Manages authentication and statistics about users.</p>
+<p>Users: Manages everything related to users, for example authentification.</p>
 </li>
 <li>
-<p>MariaDB: Persistance system used in the users data.</p>
+<p>LLMService: Manages LLM chat with the user to help them with the questions generated. <strong>It is worth clarifying that the LLM has not been chosen yet.</strong></p>
 </li>
 <li>
-<p>MongoDB: Persistance system used in the questions data.</p>
+<p>Two databases, which are:</p>
 </li>
 <li>
-<p>Grafana and Prometeus: Responsible for system monitoring and performance analytics.</p>
+<p>MongoDB: for questions management (store the questions with the distractors and the correct answer from a specified JSON file, and do several things with that information).</p>
 </li>
 <li>
-<p>Questions: Generates questions to use in the game.</p>
+<p>SQLite: for users management (create various roles, e.g. User,  which has many parameters, a group of users and groups, among others).</p>
 </li>
 <li>
-<p>Multiplayer: Permits users to play multiplayer games.</p>
+<p>Questions: Generates questions to use in the game. The questions will have three wrong answers and one correct answer.</p>
+</li>
+<li>
+<p>Multiplayer: Permits users to play multiplayer games with other users.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="./images/07_deployment_view.png" alt="Deployment View"></span></p>
+<p><span class="image"><img src="./images/Deployment%20Diagram.jpg" alt="Deployment View"></span></p>
 </div>
 <div class="paragraph">
 <div class="title">Further Information</div>
@@ -1850,7 +1874,7 @@ on this list.</p>
 <p><strong>Contest</strong>: The contest is the part that the User can see. It contains everything the user can do, such as play games, be part of groups or look for rankings and statistics.</p>
 </li>
 <li>
-<p><strong>Game</strong>: The User can play different games, including <em>The Challenge</em>, <em>Wise Men Stack</em> or even a multiplayer mode, which enables various Users to play together. Games consist of several questions to which users have to answer. Down below there is an schema that show the different game modes that are available.</p>
+<p><strong>Game</strong>: The User can play the game here.</p>
 </li>
 <li>
 <p><strong>Question</strong>: Each question has different answers but only one of them is correct. Answering correctly to the questions rewards users with <em>points</em>.</p>
@@ -1866,56 +1890,11 @@ on this list.</p>
 </li>
 </ul>
 </div>
-<div class="imageblock">
-<div class="content">
-<img src="./images/08_domain_model_2.png" alt="Current version of the game modes">
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>Wise Men Stack</strong>: The player chooses a topic from the available options and must answer a battery of questions related to it within 60 seconds. For each question, the host provides two options. If the contestant guesses correctly, they move on to the next question.</p>
-</li>
-<li>
-<p><strong>Warm Question</strong>: It consists of some topics of varied themes. For each correct answer, €100 is earned, and €10 are lost if the contestant passes, does not respond, or answers incorrectly.</p>
-</li>
-<li>
-<p><strong>Discovering Cities</strong>: The contestant will face a challenge where they will be repeatedly asked questions referring to different cities around the world. To successfully overcome the challenge, the contestant must answer as many questions as possible correctly throughout the test. Time and number of questions are fixed.</p>
-</li>
-<li>
-<p><strong>The Challenge</strong>: It is the quintessential game mode, as it allows you to customize the match to your liking. This game mode is tailored for those who wish to practice certain game formats before engaging in our various other game modes. Number of questions, time per question and category can be set.</p>
-</li>
-<li>
-<p><strong>Multiplayer</strong>: Create a room and share the room code with other players to play. It also has a room chat.</p>
-</li>
-</ul>
-</div>
 </div>
 <div class="sect2">
 <h3 id="_user_experience_ux">8.2. User Experience (UX)</h3>
-<div class="ulist">
-<ul>
-<li>
-<p>Easy registration: The user can register or log in with accounts already created on an intuitive page.</p>
-</li>
-<li>
-<p>Several modes: They can also play different game modes and to consult their historial record, statistics, and even some rankings.</p>
-</li>
-<li>
-<p><a href="https://arquisoft.github.io/wiq_es04a/#_technical_terms"><strong>Frontend</strong></a>: the frontend of this application consists of a deployed web app which is deployed.</p>
-</li>
-<li>
-<p><a href="https://arquisoft.github.io/wiq_es04a/#_technical_terms"><strong>Internationalization</strong></a> The application is available in various languages, including English as the main language. This would provide a better user experience as users could better tailor the application to their personal preferences.</p>
-</li>
-<li>
-<p>Better user experience: Users can easily choose the game mode they prefer and play.</p>
-</li>
-</ul>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="./images/08_homepage.png" alt="Current homepage window">
-</div>
+<div class="paragraph">
+<p>This part is currently in progress.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1927,12 +1906,6 @@ on this list.</p>
 </li>
 <li>
 <p>Usability affects User Experience as well, so it is an important aspect of the application.</p>
-</li>
-<li>
-<p>Tics and crosses as well as colours to know if questions are correct or not.</p>
-</li>
-<li>
-<p>Adaptive application for color blind people, for knowing if they got the answer correct or not easily.</p>
 </li>
 </ul>
 </div>
@@ -1952,7 +1925,10 @@ on this list.</p>
 <p>Passwords with a minimal security level: They need to be at least 8 characters longs and they must contain upper and lower letters, numbers and special characters.</p>
 </li>
 <li>
-<p>Encrypted passwords: In case that the batabase is stolen, data would still be secure.</p>
+<p>Encrypted passwords: In case that the batabase is stolen, data would still be secure and the passwords will contain other things, which will improve more the security of the app.</p>
+</li>
+<li>
+<p>Passwords with salt: our passwords will have a random secuence of characters before hashing them, so they will have more security and will be more difficult to hack and obtain the passwords.</p>
 </li>
 </ul>
 </div>
@@ -1973,10 +1949,10 @@ on this list.</p>
 <li>
 <p>Graphic interface: Users are able to communicate with the application to this service.</p>
 </li>
+<li>
+<p>Generation of the hints with LLM: the app will comunicate with a LLM to provide hints of the question, trying to be accurate with the answer.</p>
+</li>
 </ul>
-</div>
-<div class="paragraph">
-<p>All of the architectural decisions that have taken place through the application creation are specified in the <a href="https://github.com/Arquisoft/wiq_es04a/wiki">repository Wiki section</a></p>
 </div>
 </div>
 <div class="sect2">
@@ -1993,7 +1969,7 @@ on this list.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="./images/08_mindmap_concepts.png" alt="cross-cutting concepts">
+<img src="./images/Mindmap_08.png" alt="Mindmap of the app">
 </div>
 </div>
 <div style="page-break-after: always;"></div>
@@ -2113,6 +2089,161 @@ branches, and keeping them on sync.</p>
 </div>
 <div class="paragraph">
 <p><a href="https://github.com/Arquisoft/wichat_es1a/issues/11"><strong>Tracking Issue</strong></a></p>
+</div>
+<div class="paragraph">
+<p>Status: <strong>Accepted</strong></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_database">9.3. Database</h3>
+<div class="paragraph">
+<p>Last year&#8217;s project use two different databases:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>MariaDB for users</p>
+</li>
+<li>
+<p>MongoDB for questions</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Because of a problem with MariaDB database, we all agree on still using two databases changing MariaDB to SQLite and maintaining MongoDB.
+Then project&#8217;s databases will be:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>SQLite for users</p>
+</li>
+<li>
+<p>MongoDB for questions</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>We think that is the easiest option for us in terms of implementation and to adapt old system functionality.
+SQLite is not only open source but also easy to use and efficient for small applications.</p>
+</div>
+<div class="paragraph">
+<p>Status: <strong>Accepted</strong></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_gemini_as_our_llm">9.4. Gemini as our LLM</h3>
+<div class="paragraph">
+<p>After discussing which LLM Api use for WIChat we had two options we liked the most: Gemini and Empathy.</p>
+</div>
+<div class="paragraph">
+<p><strong>Gemini Advantages</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Better analyzing pictures and creating hints</p>
+</li>
+<li>
+<p>Well-documented</p>
+</li>
+<li>
+<p>Free</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Gemini Disadvantages</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Less natural conversational language</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Empathy Advantages</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Contest</p>
+</li>
+<li>
+<p>More human-like and conversational language</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Empathy Disadvantages</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Less documentation</p>
+</li>
+<li>
+<p>Worst hints</p>
+</li>
+<li>
+<p>More difficult implementation</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Finally, Gemini es the best option for us because of its multiple advantages.</p>
+</div>
+<div class="paragraph">
+<p>Status: <strong>Accepted</strong></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_use_typescript">9.5. Use Typescript</h3>
+<div class="paragraph">
+<p>Typescript is a "type-safe" language. It offers a stricter type system than
+Javascript. We should use it, when possible, since it&#8217;s fairly simple to
+integrate in our project.</p>
+</div>
+<div class="paragraph">
+<p>This proposal is to use typescript for new modules, guaranteeing compatibility
+with our existing javascript codebase. Still, new modules could be written on
+Javascript, depending on what the maintainers of those modules think is best.
+This is a tradeoff between code safety and inertia. So typescript it&#8217;s
+recommended, not enforced.</p>
+</div>
+<div class="paragraph">
+<p><strong>Advantages</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The strict type system allows us to produce safer code, and to avoid runtime
+errors</p>
+</li>
+<li>
+<p>There is a lot of tooling available to integrate typescript with a javascript
+application, so we should be able to transition to typescript at our own pace.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Disadvantages</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Despite the tooling available, typescript is a different language, and
+integrating it with our javascript code won&#8217;t be trivial. But we think it
+will be worth the effort.</p>
+</li>
+<li>
+<p>Typescript&#8217;s safety ends on typescript domain. If we use a typescript
+module from a javascript program, all the mentioned type-safety will be gone.
+It&#8217;s not a magical solution, just a nice thing that could improve the quality
+of the code.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p>Status: <strong>Accepted</strong></p>
@@ -2242,6 +2373,10 @@ concrete and measurable.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The user loses the game and decides to stop playing for a while. Five hours later, they decide to play again.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The system remains active and functions correctly.</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The user decides to chat with the LLM</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The chat window opens, and an interactive chatbot is started</p></td>
+</tr>
 </tbody>
 </table>
 <div class="paragraph">
@@ -2268,8 +2403,9 @@ concrete and measurable.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">When adding a new feature, the application&#8217;s usage methodology should not be distorted, ensuring it can still be used in the same manner.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Adding a new game language.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">When adding a new game language, the system should continue to function smoothly.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Changing the LLM backend</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The LLM service should be flexible enough to support multiple LLM&#8217;s in the
+future</p></td>
 </tr>
 </tbody>
 </table>
@@ -2291,7 +2427,7 @@ concrete and measurable.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The user starts a game</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The questions should be generated fast, and the user shouldn&#8217;t have to wait
-more than a second or two for the game to start.</p></td>
+  more than a second or two for the game to start.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The user starts a chat with the LLM, to ask questions.</p></td>
@@ -2321,6 +2457,11 @@ more than a second or two for the game to start.</p></td>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">A change on the codebase breaks functionality</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The existing test suite should fail and reveal the regression</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The system starts a test for the LLM service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The tests should run deterministically. Chats are simulated, so no LLM
+randomness affects the test. Tests for the LLM service should be deterministic.</p></td>
 </tr>
 </tbody>
 </table>
@@ -2372,13 +2513,6 @@ more precisely down to a level of scenarios that can be discussed and evaluated.
 <div class="paragraph arc42help">
 <div class="title">Contents</div>
 <p>A comprehensive list of identified technical risks and technical debts, prioritized based on their potential impact.</p>
-</div>
-<div class="paragraph">
-<div class="title">Motivation</div>
-<p>“Risk management is project management for grown-ups” (Tim Lister, Atlantic Systems Guild.)</p>
-</div>
-<div class="paragraph">
-<p>This principle underlines the importance of proactively identifying and assessing risks and technical debts in the architecture. Understanding these factors enables project managers, product owners, and other stakeholders to make informed decisions, ensuring stability and scalability.</p>
 </div>
 <div class="paragraph">
 <div class="title">Form</div>
@@ -2454,36 +2588,16 @@ more precisely down to a level of scenarios that can be discussed and evaluated.
 <td class="tableblock halign-left valign-top"><p class="tableblock">Adopting new languages and frameworks can lead to inconsistencies in coding standards. To prevent this, we will enforce code reviews through pull requests, ensuring peer validation and adherence to best practices.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Deployment complexities</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Since the team has limited experience with Docker and related deployment tools, deployment might pose challenges. To mitigate this, we will allocate time for learning and experimenting with deployment methodologies before the final implementation.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Dependency on Wikidata</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">As the system relies on Wikidata, any service downtime could disrupt functionality. To address this, we have implemented a local question database to provide temporary resilience.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Data integrity in database modifications</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Structural changes in the relational database model require creating a new database, resulting in potential data loss. Establishing proper migration strategies and backup mechanisms will reduce this risk.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Filtering and validation of Wikidata responses</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Inconsistencies in Wikidata labeling can lead to inaccurate or irrelevant questions and answers. We have implemented filtering mechanisms but recognize the need for further refinement to improve accuracy.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Code redundancy in game modes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Due to limited JavaScript experience, there is redundant code across different game modes, making maintenance difficult. Refactoring and modularizing common functionalities will enhance maintainability.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Session management</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The current session implementation does not include expiration, which poses security risks. Implementing session expiration policies will improve security and user management.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Lack of automated testing</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Currently, there is no automated testing strategy in place, which increases the risk of introducing bugs and regressions. Implementing unit and integration tests will improve code reliability and reduce debugging time.</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Documentation gaps</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The absence of comprehensive documentation makes onboarding new developers and maintaining the system more difficult. Creating and maintaining updated technical documentation will help streamline development and troubleshooting processes.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The absence of comprehensive documentation makes onboarding new developers and
+maintaining the system more difficult. Creating and maintaining updated
+technical documentation will help streamline development and troubleshooting
+processes. We need to update our documentation, since it doesn&#8217;t reflect the
+current architecture.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Code cleanup and adaptation from last year’s project</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The project inherits code from last year’s implementation, which may not meet current requirements or best practices. To address this, we will dedicate time to learning how to properly transfer and adapt the previous project to align with the updated requirements. This includes improving code quality, removing redundant code, and ensuring compatibility with the new project scope.</p></td>
 </tr>
 </tbody>
 </table>
@@ -2495,38 +2609,19 @@ more precisely down to a level of scenarios that can be discussed and evaluated.
 </div>
 </div>
 <div class="sect1">
-<h2 id="section-glossary">12. Glosario</h2>
+<h2 id="section-glossary">12. Glossary</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>En esta sección vamos a definir y traducir algunos conceptos que consideramos clave para entender nuestra aplicación.</p>
+<p>In this section, we will define and translate some key concepts we consider essential to understand our application.</p>
+</div>
+<div class="paragraph">
+<p>The format is simple: a table with the term, its definition, and, if applicable, its Spanish translation.</p>
+</div>
+<div class="paragraph">
+<p>For more information, check the arc42 documentation: <a href="https://docs.arc42.org/section-12/">Glossary</a>.</p>
 </div>
 <div class="sect2">
-<h3 id="_por_qué_hacer_un_glosario">12.1. ¿Por qué hacer un glosario?</h3>
-<div class="paragraph">
-<p>Cuando trabajamos en un equipo, es importante que todos hablemos el mismo "idioma" y no nos confundamos con términos técnicos o propios del dominio del proyecto. Este glosario nos ayuda a:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Asegurar que todos entiendan lo mismo cuando usamos ciertos términos.</p>
-</li>
-<li>
-<p>Evitar confusiones por sinónimos o palabras que pueden significar varias cosas.</p>
-</li>
-<li>
-<p>Tener referencias claras, especialmente si trabajamos con más de un idioma.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>El formato es simple: una tabla con el término, su definición y, si aplica, su traducción al español.</p>
-</div>
-<div class="paragraph">
-<p>Para más info, puedes echarle un vistazo a la documentación de arc42: <a href="https://docs.arc42.org/section-12/">Glosario</a>.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_acrónimos">12.2. Acrónimos</h3>
+<h3 id="_acronyms">12.1. Acronyms</h3>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -2535,37 +2630,42 @@ more precisely down to a level of scenarios that can be discussed and evaluated.
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Acrónimo</th>
-<th class="tableblock halign-left valign-top">Término</th>
-<th class="tableblock halign-left valign-top">Definición</th>
+<th class="tableblock halign-left valign-top">Acronym</th>
+<th class="tableblock halign-left valign-top">Term</th>
+<th class="tableblock halign-left valign-top">Definition</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ADR</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Architectural Design Record</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Documento donde se registra una decisión importante sobre la arquitectura del software. Describe qué se decidió, el contexto de la decisión y sus consecuencias. Su objetivo es asegurarse de que el diseño cumple con requisitos funcionales, estéticos y de seguridad antes de avanzar con el desarrollo.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A document where an important decision about the software architecture is recorded. It describes what was decided, the decision&#8217;s context, and its consequences. Its purpose is to ensure that the design meets functional, aesthetic, and security requirements before proceeding with development.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">API</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Application Programming Interface</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Conjunto de reglas y herramientas que permiten que diferentes aplicaciones se comuniquen entre sí. Define métodos y formatos de datos que los desarrolladores pueden usar para intercambiar información entre distintos sistemas.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A set of rules and tools that allow different applications to communicate with each other. It defines methods and data formats developers can use to exchange information between various systems.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">CI/CD</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Continuous Integration &amp; Continuous Delivery</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Prácticas de desarrollo que automatizan la integración y entrega de código. CI se enfoca en integrar cambios de código frecuentemente, mientras que CD automatiza pruebas y despliegues. Continuous Delivery requiere una aprobación manual antes de pasar a producción, mientras que Continuous Deployment lo hace automáticamente.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Development practices that automate code integration and delivery. CI focuses on frequently integrating code changes, while CD automates testing and deployments. Continuous Delivery requires manual approval before moving to production, while Continuous Deployment does this automatically.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LLM</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Large Language Model</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A type of AI model that processes natural language to generate human-like text, answer questions, and more. Used in applications for enhanced text comprehension and generation.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">WICHAT</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/Arquisoft/wichat_es01a/" class="bare">https://github.com/Arquisoft/wichat_es01a/</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Nombre de la aplicación web donde los usuarios pueden registrarse e iniciar sesión para jugar diferentes tipos de rondas.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the web application where users can register and log in to play different types of rounds.</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="sect2">
-<h3 id="_términos_del_dominio">12.3. Términos del dominio</h3>
+<h3 id="_domain_terms">12.2. Domain Terms</h3>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -2574,52 +2674,52 @@ more precisely down to a level of scenarios that can be discussed and evaluated.
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Término</th>
-<th class="tableblock halign-left valign-top">Definición</th>
-<th class="tableblock halign-left valign-top">Traducción al español</th>
+<th class="tableblock halign-left valign-top">Term</th>
+<th class="tableblock halign-left valign-top">Definition</th>
+<th class="tableblock halign-left valign-top">Spanish Translation</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Discovering Cities</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Prueba donde los participantes reciben pistas sobre una ciudad y deben adivinar cuál es. Las pistas pueden incluir características geográficas, monumentos, eventos históricos o culturales.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A challenge where participants receive clues about a city and must guess which one it is. Clues can include geographical features, monuments, historical or cultural events.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Descubriendo ciudades</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ChattySw</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Nombre ficticio de la empresa en la que simulamos haber sido contratados para desarrollar la aplicación.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fictional company name we simulate being hired by to develop the application.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>N/A</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Know &amp; Win</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Programa de televisión español que mezcla concursos de preguntas con aprendizaje. Se emite en La 2 de Televisión Española y presenta desafíos de cultura general, historia, ciencia, arte, etc.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Spanish television program that mixes quiz contests with learning. It is broadcast on La 2 of Televisión Española and features challenges in general culture, history, science, art, etc.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">"Saber y Ganar"</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Player</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Usuario que se registra en la aplicación para jugar a los distintos quizzes disponibles.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A user who registers in the application to play the various available quizzes.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Jugador</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The Challenge</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Prueba donde los concursantes responden preguntas o realizan actividades que ponen a prueba su conocimiento en distintos temas. Puede incluir preguntas de opción múltiple, completar frases, identificar imágenes, entre otros.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A test where contestants answer questions or perform activities to test their knowledge on various topics. It may include multiple-choice questions, completing phrases, identifying images, and more.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">El desafío</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Warm Question</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Ronda en la que los concursantes deben responder preguntas de manera rápida y precisa. Las preguntas se presentan sin pausas, por lo que hay que pensar rápido, pero sin arriesgar demasiado porque las respuestas incorrectas pueden restar puntos.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A round where contestants must answer questions quickly and accurately. The questions are presented without pauses, requiring fast thinking, but without risking too much because incorrect answers can deduct points.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Pregunta caliente</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Wise Men Stack</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Prueba con preguntas de distintos temas (literatura, historia, ciencia, cultura popular, etc.). El objetivo es responder correctamente el mayor número posible en un tiempo limitado.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A challenge with questions from various topics (literature, history, science, pop culture, etc.). The goal is to answer as many questions correctly as possible within a limited time.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Batería de sabios</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="sect2">
-<h3 id="_términos_técnicos">12.4. Términos técnicos</h3>
+<h3 id="_technical_terms">12.3. Technical Terms</h3>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -2628,215 +2728,44 @@ more precisely down to a level of scenarios that can be discussed and evaluated.
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Término</th>
-<th class="tableblock halign-left valign-top">Definición</th>
-<th class="tableblock halign-left valign-top">Traducción al español</th>
+<th class="tableblock halign-left valign-top">Term</th>
+<th class="tableblock halign-left valign-top">Definition</th>
+<th class="tableblock halign-left valign-top">Spanish Translation</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">arc42</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Conjunto de recomendaciones para documentar y diseñar arquitecturas de software. Proporciona una plantilla estructurada para comunicar mejor los aspectos técnicos del sistema.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A set of recommendations for documenting and designing software architectures. It provides a structured template to better communicate the system’s technical aspects.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>N/A</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Backend</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Parte del software que funciona en el servidor y no es visible para los usuarios. Se encarga del procesamiento de datos, almacenamiento en bases de datos y lógica de negocio.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The part of the software that runs on the server and is not visible to users. It handles data processing, database storage, and business logic.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>N/A</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Container</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Unidad ligera y portátil que incluye todo lo necesario para ejecutar una aplicación (código, dependencias, librerías, etc.), asegurando que funcione igual en cualquier entorno.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A lightweight and portable unit that includes everything needed to run an application (code, dependencies, libraries, etc.), ensuring it works the same in any environment.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Contenedor</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Frontend</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Parte del software que interactúa directamente con el usuario. Incluye la interfaz gráfica y la experiencia de usuario en el navegador o en una aplicación.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The part of the software that directly interacts with the user. It includes the graphical interface and the user experience in the browser or an application.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>N/A</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Git</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Sistema de control de versiones gratuito y de código abierto que permite gestionar los cambios en el código y colaborar con otros desarrolladores.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A free and open-source version control system that allows managing code changes and collaborating with other developers.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>N/A</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Wikidata</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Base de datos abierta y gratuita que almacena información estructurada de proyectos Wikimedia y otros. Permite compartir y consultar datos sobre personas, lugares, eventos, conceptos, etc.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An open and free database that stores structured information from Wikimedia projects and others. It allows sharing and querying data about people, places, events, concepts, etc.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>N/A</em></p></td>
 </tr>
 </tbody>
 </table>
-<div style="page-break-after: always;"></div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="section-load-tests">13. Appendix I: Load tests</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>We conducted load tests on our application using Gatling. This type of testing allows us to know how <em>strong</em> our application is in relation with the amount of users that interact with it at the same time. Initially, we recorded the specific functionalities we intended to test, and then we configured the tests accordingly. Our primary focus was on testing the game component, as it constitutes the core aspect of our application. After recording the functionality to be tested, we increased the number of requests to 1,000 and established that these requests be made gradually, simulating a real-life scenario.</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="./images/13_conf_recording_gatling_1.png" alt="Configuration for gatling recording 1">
-</div>
-</div>
-<div class="paragraph">
-<p>After setting this, me executed the load tests, obtaining results that were not too bad. However, as it is shown in the next picture, more than 25% of the requests failed. This means that there is a possibility that the game fails when playing, which is not acceptable in an application of this kind. Even most of the requests have a response we will try to reduce the amount of failed requests. In addition, instant response of petitions has not the highest priority for us. It is more important that as many requests as possible and responded correctly.</p>
-</div>
-<div class="sect2">
-<h3 id="_test_1_1000_users_with_poor_question_generation_algorithm">13.1. Test 1: 1000 users with poor question generation algorithm</h3>
-<div class="imageblock">
-<div class="content">
-<img src="./images/13_results_gatling_1.png" alt="Results for gatling recording test 1">
-</div>
-</div>
-<div class="paragraph">
-<p>After this load test, we tried to improve the question generation so as to avoid the failures mentioned above.
-We tested our application again, obtaining new results. We believe it is important to mention that even if the settings where the same in both tests, the application had more game modalities and new functionalities, which may affect to the number of requests and the time needed for each one.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_test_2_1000_users_with_new_question_generation_algorithm">13.2. Test 2: 1000 users with new question generation algorithm</h3>
-<div class="imageblock">
-<div class="content">
-<img src="./images/13_results_gatling_2.png" alt="Results for gatling recording test 2">
-</div>
-</div>
-<div class="paragraph">
-<p>As it can be seen in the picture above, the results have changed noticeably. From our point of view, there are two main aspects which seem remarkable. On one hand, the drastic decrease in the number of failed requests. The failed requests have decreased to 2% compared to 27% in the first test. This demonstrates that the changes made to the application have achieved their objective.
-On the other hand, the overall increase in the time it takes to respond to a request catches the eye as well. Nevertheless, given that the difference in time is milliseconds and it is not a real-time critical application, we consider that the objective of these tests has been fulfilled.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_users_distribution_along_the_simulation_and_response_time_distribution">13.3. Users distribution along the simulation and response time distribution</h3>
-<div class="paragraph">
-<p>We think that it is useful to compare some of the statistics that these tests have providad us with. For instance, seeing <em>Users distribution along the simulation</em> graphic allows us to see if the stablished settings get to a gradual users interaction with the application. Also, the <em>Response time distribution</em> graphic is very visual so as to see the average time requests take to respond.</p>
-</div>
-<div class="sect3">
-<h4 id="_test_1">13.3.1. Test 1</h4>
-<div class="imageblock">
-<div class="content">
-<img src="./images/13_statistics_1.png" alt="Some statistics for test 1">
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_test_2">13.3.2. Test 2</h4>
-<div class="imageblock">
-<div class="content">
-<img src="./images/13_statistics_2.png" alt="Some statistics for test 2">
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_number_of_responses_per_second">13.4. Number of responses per second</h3>
-<div class="paragraph">
-<p>Finally, we would like to compare another graph because we believe it illustrates the number of responses per second in a straightforward manner during the tests. This allows us to observe the percentage of failed requests each second. As mentioned earlier, our primary goal after the initial test was to reduce the number of failed requests, even if it meant slightly increasing the average response time for each request.</p>
-</div>
-<div class="sect3">
-<h4 id="_test_1_2">13.4.1. Test 1</h4>
-<div class="imageblock">
-<div class="content">
-<img src="./images/13_responses_per_seconds_1.png" alt="Responses per second 1">
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_test_2_2">13.4.2. Test 2</h4>
-<div class="imageblock">
-<div class="content">
-<img src="./images/13_responses_per_second_2.png" alt="Responses per second 2">
-</div>
-</div>
-<div class="paragraph">
-<p>As we can see, the second test shows a much more equilibrated graphic. Responses are distributed better in time and failures are a minimum percentage of the total responses.</p>
-</div>
-<div class="paragraph">
-<p>For these reasons, the load tests have motivated us to develop a more stable question generation algorithm. This reduces the likelihood of requests failing when users are interacting with our application. This ultimately leads to a better user experience, which is a crucial aspect of application development.</p>
-</div>
-<div style="page-break-after: always;"></div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="section-other-tests">14. Appendix II: Other tests</h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_unitary_tests">14.1. Unitary tests</h3>
-<div class="paragraph">
-<p>We did unitary tests through the whole application. These tests were useful when getting to know if what we had just implemented worked properly or not. It is also a very esasy way of checking if you changed something without noticing. For example, if anything were modified, unitary tests where adapted to this new functionality. However, the changes made in the application may affect some parts that we were not expecting to be affected. This way we could be able to garantee that the application continued to work properly and to check if there were some parts that depended on others when they should not. For these reasons, it is very important to have as much as possible of our code covered. We have achieved a coverage percentage greater than 80%.</p>
-</div>
-<div class="sect3">
-<h4 id="_sonarcloud">14.1.1. SonarCloud</h4>
-<div class="paragraph">
-<p>The picture below shows an overview done with SonarCloud to our repository. As it can be seen, all of the diferent services reach 80% or more, some of them reaaching almost 90%. The total coverage of our project is around 82%. However, it is important to remember that coverage is not only about numbers but about testing projects in a good way.</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="./images/14_coverage.png" alt="Code coverage">
-</div>
-</div>
-<div class="paragraph">
-<p>We would also like to mention that SonarCloud offers a graphic where risks in different part of the code are displayed. Bubbles in the top right side of the graphic means that the longer-term health may be at risk. Green bubbles at the bottom-left are best. Down below there is the graphic of our project, which shows all bubbles in green and most of them are in the left-bottom part.</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="./images/14_graphic_sonarcloud.png" alt="Risks graphic">
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_acceptance_tests">14.2. Acceptance tests</h3>
-<div class="paragraph">
-<p>Acceptance tests are also important. They do not focus on the functionality of the application but on the user experience. This way we were able to know easily if elements where rendered quickly. In addition, this tests let us measure how long it takes for an interaction with the application.
-For this tests we used a MariaDB database created only for these tests. We used MariaDB because we needed to get information from users, which are <a href="https://github.com/Arquisoft/wiq_es04a/wiki/ADR-04-‐-Users-and-Groups-with-MariaDB"> stored in this type of relational database.</a></p>
-</div>
-<div class="paragraph">
-<p>We focused in testing the different games available, as it is the core part of the application. It is important to mention that e2e tests can be executed two ways. The first way, using a graphic interface, which easier for the developer. We are able to see how the tests are executing so we may see some issues that otherwise we would not be able to detect.
-The second way is without graphic interface. It is done this way when e2e tests are executed through Github actions in deployment, not locally. It is sometimes more difficult to detect the issues but there is still a great overview of the tests execution which helps to detect problems.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_usability_tests">14.3. Usability tests</h3>
-<div class="paragraph">
-<p>One of our quality goals is 'Usability', we always have it in mind when we are developing new features. However, we need to check if we are doing it good. To test the usability of the application we made some rudimentary usability tests.</p>
-</div>
-<div class="paragraph">
-<p>We got three users to test the application in different stages of the development, helping us to change things that we did not notice when developing it:</p>
-</div>
-<div class="paragraph">
-<p>For instance, one user told us that our 'Play' button in home page always redirected to login, even if you were logged in. It caused confusion to the users so we changed it to redirect to game selection page if logged in.</p>
-</div>
-<div class="paragraph">
-<p>Other usability test was made with the Android application. The user noticed that some times the nav bar had a strange behaviour that messed up the entire interface. We adapted to the comments made by adapting the navbar.</p>
-</div>
-<div style="page-break-after: always;"></div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="section-monitoring">15. Appendix III: Application monitoring</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Monitoring an application is a crucial part of it. It is an easy way of knowing how well a web application is working through different graphics and metrics. For this, we adapted the monitoring system that was given to us and we personalized it. That means we are using Prometheus as well as Grafana to monitorize our project. Prometheus intercepts every request that reaches our application&#8217;s gateway. Grafana takes those data at paints them in easy-understanding graphics. We have a dashboard in Grafana to display some aspects that we consider relevant.</p>
-</div>
-<div class="paragraph">
-<p>The dashboard that we are using to monitorize our project is called <em>Wiq_es04 Dashboard</em> and it has 3 different panels. The first of them shows the number of requests through time. The second one shows requests that accessed pages that were not found. The third one paints a graphic of the average time each request takes.</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="./images/15_monitoring_graphics.png" alt="Grafana dashboard">
-</div>
-</div>
-<div class="paragraph">
-<p>We would like to mention that this monitorization is set to be available both in production and deployment environments. For this reason, our Grafana dashboard is  <a href="http://20.19.89.97:9091/d/1DYaynomMk/wiq-es04-dashboard?orgId=1"> accesible </a>.</p>
-</div>
-<div class="paragraph">
-<p>To see how Grafana works we have used Apache. We have stablished the number of requests and how fast we want them to execute. This lets us check easily how our project treats requests. Also, another interesting thing to mention are the <a href="http://20.19.89.97:8000/metrics"> metrics </a>. It shows every different request on the application and its status code.</p>
 </div>
 </div>
 </div>
@@ -2844,7 +2773,7 @@ The second way is without graphic interface. It is done this way when e2e tests 
 <div id="footer">
 <div id="footer-text">
 Version 8.2 EN<br>
-Last updated 2025-02-18 09:41:59 +0100
+Last updated 2025-03-10 18:17:49 +0100
 </div>
 </div>
 </body>

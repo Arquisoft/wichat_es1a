@@ -10,6 +10,8 @@ const questionRoutes = generate_router(QuestionDBService.getInstance());
 
 // App definition and
 const app = express();
+app.disable("x-powered-by");
+
 const port = 8010;
 
 // Middlewares added to the application

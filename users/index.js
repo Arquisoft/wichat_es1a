@@ -8,6 +8,8 @@ const userRoutes = require('./routes/user-routes.js');
 
 // App and users port definition
 const app = express();
+app.disable("x-powered-by");
+
 const port = 8001;
 let expressSession = require('express-session');
 

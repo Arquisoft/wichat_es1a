@@ -16,14 +16,29 @@ jobs:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0
+
+    - name: Cache node modules
+      id: cache-npm
+      uses: actions/cache@v4
+      env:
+        cache-name: cache-node-modules
+      with:
+        # npm cache files are stored in `~/.npm` on Linux/macOS
+        path: ~/.npm
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
+
     - uses: actions/setup-node@v4
       with:
         node-version: 20
-    - run: npm --prefix users ci
-    - run: npm --prefix questions ci
-    - run: npm --prefix gatewayservice ci
-    - run: npm --prefix webapp ci
-    - run: npm --prefix multiplayer ci
+    - run: npm --prefix users install
+    - run: npm --prefix questions install
+    - run: npm --prefix gatewayservice install
+    - run: npm --prefix webapp install
+    - run: npm --prefix multiplayer install
     - run: npm --prefix users test -- --coverage
     - run: npm --prefix questions test -- --coverage
     - run: npm --prefix gatewayservice test -- --coverage

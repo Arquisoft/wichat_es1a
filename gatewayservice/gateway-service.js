@@ -92,7 +92,7 @@ app.put('/questionsRecord', async (req, res) => {
   try {
     const questionsRecordUrl = new URL(`/user/questionsRecord`, userServiceUrl);
     const response = await axios.post(questionsRecordUrl.href, req.body);
-    res.json(response.data); 
+    res.json(response.data);
   } catch (error) {
     res.status(500).json({ error: "Error al actualizar el historial de preguntas" });
   }
@@ -140,14 +140,15 @@ app.post('/user', async (req, res) => {
   }
 });
 
-app.get('/questions/:lang', async (req, res) => {
+app.get('/questions/random/:n', async (req, res) => {
   try {
-    const language = encodeURIComponent(req.params.lang);
-    const questionsUrl = new URL(`/questions/${language}`, questionGenerationServiceUrl);
+    const n = encodeURIComponent(req.params.n);
+    const questionsUrl = new URL(`/questions/random/${n}`, questionGenerationServiceUrl);
     const questionsResponse = await axios.get(questionsUrl.href);
-    res.json(questionsResponse.data);
+    res.send(questionsResponse.data);
   } catch (error) {
-    res.status(error.response).json({ error: error.response });
+    console.log("GS: ERROR: " + error)
+    res.status(error.response).send({ error: error.response });
   }
 });
 

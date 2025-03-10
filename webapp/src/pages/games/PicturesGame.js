@@ -112,10 +112,10 @@ const PictureGame = () => {
 
         // Updates current language
         setCurrentLanguage(i18n.language);
-        axios.get(`${apiEndpoint}/questions/${language}/${category}`)
+        axios.get(`${apiEndpoint}/questions/random/4`)
             .then(quest => {
                 // every new round it gets a new question from db
-                quest.data[0].image = 'https://www.fundacionaquae.org/wp-content/uploads/2016/05/zorro-e1649086718471-1024x503.jpg';
+                // quest.data[0].image = 'https://www.fundacionaquae.org/wp-content/uploads/2016/05/zorro-e1649086718471-1024x503.jpg';
                 setQuestionData(quest.data[0]);
                 setButtonStates(new Array(4).fill(null));
                 getPossibleOptions(quest.data[0]);
@@ -129,12 +129,12 @@ const PictureGame = () => {
     // It puts 4 possible answers into an array making sure that the correct answer is not repeated
     const getPossibleOptions = async (question) => {
         var options = [];
-        options.push(question.correctAnswer);
+        options.push(question.response);
         for (let i = 0; i < 3; i++) {
             let randomNumber;
             do {
                 randomNumber = Math.floor(Math.random() * question.options.length);
-            } while (question.options[randomNumber] === question.correctAnswer);
+            } while (question.options[randomNumber] === question.response);
             options.push(question.options[randomNumber]);
         }
         options = shuffleArray(options);
@@ -202,12 +202,14 @@ const PictureGame = () => {
         //setQuestionCountdownRunning(false);
 
         //check answer
-        if (response === questionData.correctAnswer) {
+        if (response === questionData.response) {
+            let options = new Array(questionData.distractors);
+            options.push(questionData.response);
             const userResponse = {
                 question: questionData.question,
                 response: response,
-                options: possibleAnswers,
-                correctAnswer: questionData.correctAnswer
+                options,
+                correctAnswer: questionData.response
             };
             setUserResponses(prevResponses => [...prevResponses, userResponse]);
 
@@ -329,11 +331,10 @@ const PictureGame = () => {
 
     async function getHint() {
         try {
-            const apiKey = '';//process.env.GEMINI_API_KEY;
             const response = await fetch("http://localhost:8003/getHint", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ imageUrl: questionData.image, apiKey })
+                body: JSON.stringify({ imageUrl: questionData.image_url })
             });
 
             const data = await response.json();
@@ -372,7 +373,8 @@ const PictureGame = () => {
 
             <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1em', position: 'relative' }} >
                 <Box sx={{ position: "relative", display: "inline-block" }}>
-                    <img style={{ maxHeight: '30em', maxWidth: '30em' }} src={questionData.image} alt="Imagen pregunta" />
+                    <p> ¿Qué animal es este? </p>
+                    <img style={{ maxHeight: '30em', maxWidth: '30em' }} src={questionData.image_url} alt="Imagen pregunta" />
                     <Button
                         variant="contained"
                         onClick={() => getHint()}

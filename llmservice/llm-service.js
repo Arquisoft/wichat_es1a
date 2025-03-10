@@ -2,6 +2,8 @@ const axios = require("axios");
 const express = require("express");
 const cors = require("cors");
 
+require("dotenv").config();
+
 const app = express();
 const port = 8003;
 
@@ -66,9 +68,11 @@ async function sendImageToLLM(imageUrl, apiKey, model = "gemini") {
 // Endpoint POST que recibe la URL de la imagen y devuelve la pista
 app.post("/getHint", async (req, res) => {
   try {
-    validateRequiredFields(req, ["imageUrl", "apiKey"]);
+    validateRequiredFields(req, ["imageUrl"]);
 
-    const { imageUrl, apiKey } = req.body;
+    const apiKey = process.env.REACT_APP_GEMINI_API_KEY;
+
+    const { imageUrl } = req.body;
     const hint = await sendImageToLLM(imageUrl, apiKey);
     res.json({ hint });
   } catch (error) {

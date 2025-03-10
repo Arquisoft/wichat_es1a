@@ -32,10 +32,13 @@ export class WikidataQuestion {
     }
 
     public getJson() : any {
+        let options = this.distractors.slice();
+        options.push(this.response);
         return {
             image_url: this.image_url,
             response: this.response,
             distractors: this.distractors,
+            options,
         }
     }
 }

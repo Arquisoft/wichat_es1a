@@ -11,5 +11,11 @@ export class WikidataEntity {
 }
 
 export const Q = {
-    ANIMAL : 729,
+    ANIMAL: 729,
+}
+
+export const P = {
+    IMAGE: 18,
+    COMMON_NAME: 1843,
+    TAXON_NAME: 225,
 }

@@ -2,12 +2,11 @@ import * as mongoose from 'mongoose';
 import { Question, IQuestion } from '../../questions/services/question-data-model.ts';
 import "../utils/array-chunks.ts"
 
-import { WikidataEntity, Q } from "./wikidata";
+import { WikidataEntity, Q, P } from "./wikidata";
 import { WikidataQueryBuilder } from "./wikidata/query_builder.ts";
 
 import * as dotenv from "dotenv";
 import { PromiseStore } from '../utils/promises.ts';
-import { constrainedMemory } from 'process';
 
 dotenv.config();
 
@@ -132,9 +131,9 @@ export class QuestionDBService extends PromiseStore {
 
         const query = new WikidataQueryBuilder()
                 .subclassOf(Q.ANIMAL)
-                .assocProperty(18, "imagen")
-                .assocProperty(1843, "common_name", true, "es")
-                .assocProperty(225, "taxon_name", false)
+                .assocProperty(P.IMAGE, "imagen")
+                .assocProperty(P.COMMON_NAME, "common_name", true, "es")
+                .assocProperty(P.TAXON_NAME, "taxon_name", false)
                 .random()
                 .limit(n);
 

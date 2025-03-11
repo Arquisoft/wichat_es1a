@@ -74,7 +74,7 @@ function App() {
             <Route path="/statistics/:user" element={<PrivateRoute element={Statistics }/>}/>
             <Route path="/ranking" element={<PrivateRoute element={Ranking}/>}/>
             <Route path="/profile" element={<PrivateRoute element={Profile}/>}/>
-            <Route path="*" element={<NotFound />} /> 
+            <Route path="*" element={<NotFound />} />
           </Routes>
         <Footer/>
       </ThemeProvider>

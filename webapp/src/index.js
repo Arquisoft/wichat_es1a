@@ -7,6 +7,9 @@ import {BrowserRouter} from 'react-router-dom';
 import { SessionProvider } from './SessionContext';
 import './localize/i18n';
 
+import { setup_env } from "./.enviroment.js";
+setup_env();
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>

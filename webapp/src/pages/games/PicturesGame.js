@@ -28,6 +28,7 @@ import { useTranslation } from 'react-i18next';
 import i18n from '../../localize/i18n';
 
 const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
+const apiGatewayService = process.env.GATEWAY_SERVICE_API_ENDPOINT || 'http://localhost:8003';
 
 const PictureGame = () => {
     const navigate = useNavigate();
@@ -331,7 +332,7 @@ const PictureGame = () => {
 
     async function getHint() {
         try {
-            const response = await fetch("http://localhost:8003/getHint", {
+            const response = await fetch(`${apiGatewayService}/getHint`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ imageUrl: questionData.image_url })

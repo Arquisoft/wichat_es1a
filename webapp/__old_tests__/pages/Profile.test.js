@@ -13,7 +13,7 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
 }));
- 
+
 describe('Profile component', () => {
   const username = 'testuser';
   const initialUserInfo = {
@@ -25,7 +25,7 @@ describe('Profile component', () => {
   };
 
   beforeEach(() => {
-    mockAxios.reset(); 
+    mockAxios.reset();
   });
 
   it('should fetch and display user information', async () => {
@@ -103,8 +103,8 @@ describe('Profile component', () => {
         <Router>
           <Profile />
         </Router>
-      </SessionContext.Provider> 
-    ); 
+      </SessionContext.Provider>
+    );
 
     await waitFor(() => {
         expect(screen.getByText('Test')).toBeInTheDocument();

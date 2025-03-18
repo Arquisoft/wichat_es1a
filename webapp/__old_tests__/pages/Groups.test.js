@@ -61,13 +61,13 @@ describe('Groups component', () => {
   it('should show the FILLED button when group is already full', async () => {
     // Simulates a request response including the full group data
     mockAxios.onGet('http://localhost:8000/user/group').reply(200, { groups: [{ name: 'Group 1', isMember: false, isFull: true }] });
-    
+
     renderGroupsComponent();
-  
+
     await waitFor(() => {
       expect(mockAxios.history.get.length).toBe(1); // We wait till the new request is done and confirmed
     });
-  
+
     // We expect to have the correct FILLED button
     await checkButtons('FILLED');
 
@@ -76,13 +76,13 @@ describe('Groups component', () => {
   it('should show the DELETE button when user is the creator', async () => {
     // Simulates a request response including the full group data
     mockAxios.onGet('http://localhost:8000/user/group').reply(200, { groups: [{ name: 'Group 1', isMember: true, isCreator: true, isFull: false }] });
-    
+
     renderGroupsComponent();
-  
+
     await waitFor(() => {
       expect(mockAxios.history.get.length).toBe(1); // We wait till the new request is done and confirmed
     });
-  
+
     // We expect to have the correct DELETE button
     await checkButtons('DELETE');
 
@@ -91,17 +91,17 @@ describe('Groups component', () => {
   it('could see group details', async () => {
     // Simulates a request response including the joined group data
     mockAxios.onGet('http://localhost:8000/user/group').reply(200, { groups: [{ name: 'Group 1', isMember: false, isFull: false }] });
-  
+
     renderGroupsComponent();
-  
+
     await waitFor(() => {
       expect(mockAxios.history.get.length).toBe(1); // We wait till the new request is done and confirmed
     });
-  
+
     // We expect to have the correct JOIN IT! and See Members button
     await checkButtons('JOIN IT!');
 
-    
+
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: 'See Members' }));
       await waitFor(() => {
@@ -115,22 +115,22 @@ describe('Groups component', () => {
     // Simulates a request response including a list of groups with more than five items
     const mockedGroups = Array.from({ length: 10 }, (_, index) => ({ name: `Group ${index + 1}`, isMember: false, isFull: false }));
     mockAxios.onGet('http://localhost:8000/user/group').reply(200, { groups: mockedGroups });
-    
+
     renderGroupsComponent();
-    
+
     await waitFor(() => {
       expect(mockAxios.history.get.length).toBe(1); // We wait till the new request is done and confirmed
     });
-    
+
     // Expect the groups of the first page
     await waitFor(() => {
       expect(screen.getByText('Group 1')).toBeInTheDocument();
       expect(screen.queryByText('Group 6')).toBeNull();
     });
-  
+
     // Click the second page
     fireEvent.click(screen.getByText('2'));
-  
+
     // Expect the page to have changed
     await waitFor(() => {
       expect(screen.getByText('Group 6')).toBeInTheDocument();
@@ -142,16 +142,16 @@ describe('Groups component', () => {
     // Simulates a request response including the unjoined group data
     mockAxios.onGet('http://localhost:8000/user/group').reply(200, { groups: [{ name: 'Group1', isMember: false, isFull: false }] });
     mockAxios.onPut('http://localhost:8000/group/Group1').reply(200);
-  
+
     renderGroupsComponent();
-  
+
     await waitFor(() => {
       expect(mockAxios.history.get.length).toBe(1); // We wait till the new request is done and confirmed
     });
-  
+
     // We expect to have the correct JOIN IT! and See Members button
     await checkButtons('JOIN IT!');
-    
+
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: 'JOIN IT!' }));
     });
@@ -165,18 +165,18 @@ describe('Groups component', () => {
 
 
   // FROM HERE, LOW TIMEOUTS NEED TO BE USED INSTEAD OF WAITFORS
- 
+
   it('should display error message when group is already full', async () => {
     // Simulates a request response including the unjoined group data
     mockAxios.onGet('http://localhost:8000/user/group').reply(200, { groups: [{ name: 'Group1', isMember: false, isCreator: false , isFull: false }] });
     mockAxios.onPut('http://localhost:8000/group/Group1').reply(400, { error: 'Group is already full' });
-  
+
     renderGroupsComponent();
-  
+
     await waitFor(() => {
       expect(mockAxios.history.get.length).toBe(1); // We wait till the new request is done and confirmed
     });
-  
+
     // We expect to have the correct JOIN IT! and See Members button
     await checkButtons('JOIN IT!');
 
@@ -188,15 +188,15 @@ describe('Groups component', () => {
         expect(screen.getByText('Error: Group is already full')).toBeInTheDocument();
       }, 15);
     });
- 
+
   });
 
   it('should show an error message fetching data', async () => {
     // It simulates a request with an error fetching data
     mockAxios.onGet('http://localhost:8000/user/group').reply(500);
-  
+
     renderGroupsComponent();
-  
+
     // It expects to see the error
     setTimeout(() => {
       expect(screen.getByText('Error: Group is already full')).toBeInTheDocument();
@@ -206,13 +206,13 @@ describe('Groups component', () => {
   it('should successfully add a group', async () => {
     // It simulates a succesful group add request
     mockAxios.onPost('http://localhost:8000/group').reply(200);
-  
+
     renderGroupsComponent();
-  
+
     // It introduces a new group in the text field
     fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'New Group' } });
     fireEvent.click(screen.getByRole('button', { name: 'Create' }));
-  
+
     // It waits for the succesful message to be shown
     setTimeout(() => {
       expect(screen.queryByText('Group created successfully')).toBeInTheDocument();
@@ -222,13 +222,13 @@ describe('Groups component', () => {
   it('should show an error when another group with the same name exists', async () => {
     // Mocks a request error code with an already existing group
     mockAxios.onPost('http://localhost:8000/group').reply(400, { error: 'A group with the same name already exists.' });
-  
+
     renderGroupsComponent();
-  
+
     // Simulates the addition of a group with the same name as an existing one.
     fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'Existing Group' } });
     fireEvent.click(screen.getByRole('button', { name: 'Create' }));
-  
+
     // Waits for the error message to be shown
     setTimeout(() => {
       expect(screen.getByText('Error: A group with the same name already exists.')).toBeInTheDocument();
@@ -238,13 +238,13 @@ describe('Groups component', () => {
   it('should show generic error when adding a group fails', async () => {
     // Mocks a request generic error code
     mockAxios.onPost('http://localhost:8000/group').reply(500, { error: 'Internal Server Error' });
-  
+
     renderGroupsComponent();
-  
+
     // Introduces a new group
     fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'New Group' } });
     fireEvent.click(screen.getByRole('button', { name: 'Create' }));
-  
+
     // Waits for the error message to be shown
     setTimeout(() => {
       expect(screen.getByText('Error: Internal Server Error')).toBeInTheDocument();
@@ -254,19 +254,19 @@ describe('Groups component', () => {
   it('should show the JOINED button when user has joined the group', async () => {
     // Simulates a request response including the joined group data
     mockAxios.onGet('http://localhost:8000/user/group').reply(200, { groups: [{ name: 'Group 1', isMember: true, isFull: false }] });
-  
+
     renderGroupsComponent();
-  
+
     setTimeout(() => {
       expect(mockAxios.history.get.length).toBe(1); // We wait till the new request is done and confirmed
     }, 15);
-  
+
     // We expect to have the correct JOINED button
     setTimeout(() => {
       checkButtons('JOINED');
     }, 15);
 
-  });  
+  });
 
    it('should display and close the error snackbar when an error occurs', async () => {
     // It simulates a succesful group add request
@@ -284,4 +284,4 @@ describe('Groups component', () => {
     }, 15);
   });
 
-});  
+});

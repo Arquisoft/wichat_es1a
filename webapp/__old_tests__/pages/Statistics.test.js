@@ -15,7 +15,7 @@ jest.mock('react-router-dom', () => ({
     user: 'testuser'
   })
 }));
- 
+
 describe('Statistics component', () => {
   beforeAll(async () => {
     mockAxios.onGet('http://localhost:8000/statistics/testuser',{ params: { loggedUser: "testuser" } }).reply(200, {
@@ -38,7 +38,7 @@ describe('Statistics component', () => {
       online_total_time_played: 10,
       online_games_played: 12,
     });
-    
+
     mockAxios.onGet('http://localhost:8000/questionsRecord/testuser/TheChallenge').reply(200, [
       {
         createdAt: '2024-04-11T12:00:00Z',

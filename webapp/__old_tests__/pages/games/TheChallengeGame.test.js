@@ -13,7 +13,7 @@ describe('The Challenge component', () => {
   beforeEach(() => {
     mockAxios.reset();
     // Mockear respuestas de la API
-    mockAxios.onGet(`http://localhost:8000/questions/en/Geography`).reply(200, 
+    mockAxios.onGet(`http://localhost:8000/questions/en/Geography`).reply(200,
     [
         {
         question: 'Which is the capital of Spain?',
@@ -76,12 +76,12 @@ describe('The Challenge component', () => {
 
     //selects correct answer
     fireEvent.click(correctAnswer);
-    
+
     expect(screen.findByTestId("success0"));
 
   });
 
-  
+
   it('should choose incorrect answer', async () => {
     // Espera a que aparezca la ventana de configuración
     await waitFor(() => screen.getByText('GAME CONFIGURATION'));
@@ -96,7 +96,7 @@ describe('The Challenge component', () => {
     // waits for the question to appear
     await waitFor(() => screen.getByTestId('question'));
     const incorrectAnswer = screen.getByRole('button', { name: 'Barcelona' });
-    
+
     //selects correct answer
     fireEvent.click(incorrectAnswer);
     expect(screen.findByTestId("fail1"));

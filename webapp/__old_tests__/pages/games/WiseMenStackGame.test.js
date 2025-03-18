@@ -14,7 +14,7 @@ describe('Wise Men Stack Game component', () => {
   beforeEach(() => {
     mockAxios.reset();
     // Mock the axios.post request to simulate a successful response
-    mockAxios.onGet('http://localhost:8000/questions/en/Geography').reply(200, 
+    mockAxios.onGet('http://localhost:8000/questions/en/Geography').reply(200,
         [{
         question: 'Which is the capital of Spain?',
         options: ['Madrid', 'Barcelona', 'Paris', 'London'],
@@ -27,7 +27,7 @@ describe('Wise Men Stack Game component', () => {
     mockAxios.onPut('http://localhost:8000/statistics').reply(200, { success: true });
     mockAxios.onPut('http://localhost:8000/user/questionsRecord').reply(200, { success: true });
 
-    render( 
+    render(
       <SessionContext.Provider value={{ username: 'exampleUser' }}>
         <Router>
           <WiseMenStack />
@@ -38,22 +38,22 @@ describe('Wise Men Stack Game component', () => {
 
   it('should render configuration, question, answers and other ', async () => {
     await waitFor(() => screen.getByText('GAME CONFIGURATION'));
-    
+
     const button = screen.getByTestId('start-button');
     // clicks the start button to show the first question
-    fireEvent.click(button); 
+    fireEvent.click(button);
 
     // waits for the question to appear
     await waitFor(() => screen.getByText('Which is the capital of Spain?'.toUpperCase()));
 
     expect(screen.findByText('Which is the capital of Spain?'.toUpperCase()));
     expect(screen.findByText('Madrid'));
-    
+
   });
 
   it('should mark as correct right answer', async () => {
     await waitFor(() => screen.getByText('GAME CONFIGURATION'));
-    
+
     const button = screen.getByTestId('start-button');
     fireEvent.click(button);
 
@@ -70,7 +70,7 @@ describe('Wise Men Stack Game component', () => {
 
   it('should mark as incorrect another answer', async () => {
     await waitFor(() => screen.getByText('GAME CONFIGURATION'));
-    
+
     const button = screen.getByTestId('start-button');
     fireEvent.click(button);
 
@@ -89,7 +89,7 @@ describe('Wise Men Stack Game component', () => {
 
   });
 
-  
+
   it('should only show 2 answers', async () => {    await waitFor(() => screen.getByText('GAME CONFIGURATION'));
     const button = screen.getByTestId('start-button');
     fireEvent.click(button);
@@ -102,7 +102,7 @@ describe('Wise Men Stack Game component', () => {
 
   it('should not answer the question', async () => {
     await waitFor(() => screen.getByText('GAME CONFIGURATION'));
-    
+
     const button = screen.getByTestId('start-button');
     fireEvent.click(button);
 

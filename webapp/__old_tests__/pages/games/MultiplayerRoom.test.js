@@ -46,7 +46,7 @@ describe('MultiplayerRoom component', () => {
             <MultiplayerRoom/>
         </Router>
     </SessionContext.Provider>
-    
+
     render(room);
 
     // Click on Create Room button
@@ -62,7 +62,7 @@ describe('MultiplayerRoom component', () => {
           'join-room',
           expect.any(String),
           'exampleUser',
-          expect.any(String)  
+          expect.any(String)
         );
     });
 
@@ -79,13 +79,13 @@ describe('MultiplayerRoom component', () => {
             <MultiplayerRoom/>
         </Router>
     </SessionContext.Provider>
-    
+
     render(room);
 
     //Write room code AAAAA
     const input = screen.getByRole('textbox');
     fireEvent.change(input, { target: { value: 'AAAAA' } });
-   
+
     // Click on Create Room button
     fireEvent.click(await screen.getByTestId("btn-join-room"));
 

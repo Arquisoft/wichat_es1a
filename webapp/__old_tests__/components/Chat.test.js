@@ -25,19 +25,19 @@ jest.mock('socket.io-client', () => {
 
 describe('Chat component', () => {
     let socket;
-  
+
     beforeEach(() => {
       socket = io();
     });
-  
-  
+
+
     test('sends a message', async () => {
-  
+
       jest.mock('../../pages/games/MultiplayerRoom', () => ({
           ...jest.requireActual('../../pages/games/MultiplayerRoom'),
           generateRoomCode: jest.fn().mockReturnValue('AAAAA'),
       }));
-  
+
       // Render the component
       const chat =
       <SessionContext.Provider value={{ username: 'exampleUser' }}>
@@ -45,28 +45,28 @@ describe('Chat component', () => {
               <Chat roomCode="AAAA1" username="exampleUser"/>
           </Router>
       </SessionContext.Provider>
-      
+
       render(chat);
 
-      const inputElement = screen.getByLabelText('Type your message'); 
+      const inputElement = screen.getByLabelText('Type your message');
       const sendButton = screen.getByText('Send');
-  
+
       //write msg
       fireEvent.change(inputElement, { target: { value: sentMsg } });
-    
+
       //send msg
       fireEvent.click(sendButton);
-  
+
       //Sent to socket username and message
       await waitFor(() => {
           expect(socket.emit).toHaveBeenCalledWith(
             'send-message',
             sentMsg,
             "AAAA1",
-            'exampleUser', 
+            'exampleUser',
           );
       });
-  
+
     });
-  
+
   });

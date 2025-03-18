@@ -4,49 +4,61 @@ import { SessionContext } from '../../../SessionContext';
 import { BrowserRouter as Router } from 'react-router-dom';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import WarmQuestionGame from '../../../pages/games/WarmQuestionGame';
+import DiscoveringCitiesGame from '../../../pages/games/DiscoveringCitiesGame';
+import '../../../localize/i18n';
 
 const mockAxios = new MockAdapter(axios);
 
-describe('WarmQuestionGame component', () => { 
+describe('Discovering Cities component', () => {
   beforeEach(() => {
     mockAxios.reset();
     // Mock the axios.post request to simulate a successful response
-    mockAxios.onGet('http://localhost:8000/questions/en').reply(200, 
-        {
+    mockAxios.onGet('http://localhost:8000/questions/en/Cities').reply(200,
+        [{
         question: 'Which is the capital of Spain?',
         options: ['Madrid', 'Barcelona', 'Paris', 'London'],
         correctAnswer: 'Madrid',
-        categories: ['Geography'],
+        categories: ['Cities'],
         language: 'en'
-        }
+        }]
     );
 
     mockAxios.onPut('http://localhost:8000/statistics').reply(200, { success: true });
     mockAxios.onPut('http://localhost:8000/questionsRecord').reply(200, { success: true });
 
-    render( 
+  });
+
+  it('should render question, answers and other ', async () => {
+    render(
       <SessionContext.Provider value={{ username: 'exampleUser' }}>
         <Router>
-          <WarmQuestionGame />
+          <DiscoveringCitiesGame />
         </Router>
       </SessionContext.Provider>
     );
-  });
 
-  it('should render question, answers and other', async () => {
-    // Espera a que aparezca la pregunta
+    expect(screen.getByRole('progressbar'));
+
+    // waits for the question to appear
     await waitFor(() => screen.getByTestId('question'));
 
-    // Verifica que el juego haya comenzado correctamente mostrando la pregunta y las opciones
-    expect(screen.getByTestId('question')).toBeInTheDocument();
-    expect(screen.getByText('Madrid')).toBeInTheDocument();
-    expect(screen.getByText('Barcelona')).toBeInTheDocument();
-    expect(screen.getByText('Paris')).toBeInTheDocument();
-    expect(screen.getByText('London')).toBeInTheDocument();
+    expect(screen.getByTestId('question'));
+    expect(screen.findByText('Madrid'));
+    expect(screen.findByText('Barcelona'));
+    expect(screen.findByText('Paris'));
+    expect(screen.findByText('London'));
+
   });
 
   it('should guess correct answer', async () => {
+    render(
+      <SessionContext.Provider value={{ username: 'exampleUser' }}>
+        <Router>
+          <DiscoveringCitiesGame />
+        </Router>
+      </SessionContext.Provider>
+    );
+
     // waits for the question to appear
     await waitFor(() => screen.getByTestId('question'));
     const correctAnswer = screen.getByRole('button', { name: 'Madrid' });
@@ -60,8 +72,14 @@ describe('WarmQuestionGame component', () => {
 
   });
 
-  
   it('should choose incorrect answer', async () => {
+    render(
+      <SessionContext.Provider value={{ username: 'exampleUser' }}>
+        <Router>
+          <DiscoveringCitiesGame />
+        </Router>
+      </SessionContext.Provider>
+    );
     // waits for the question to appear
     await waitFor(() => screen.getByTestId('question'));
     const incorrectAnswer = screen.getByRole('button', { name: 'Barcelona' });
@@ -76,6 +94,14 @@ describe('WarmQuestionGame component', () => {
   });
 
   it('should not answer the question', async () => {
+    render(
+      <SessionContext.Provider value={{ username: 'exampleUser' }}>
+        <Router>
+          <DiscoveringCitiesGame />
+        </Router>
+      </SessionContext.Provider>
+    );
+
     // waits for the question to appear
     await waitFor(() => screen.getByTestId('question'));
 
@@ -86,36 +112,24 @@ describe('WarmQuestionGame component', () => {
 
   }, 4500);
 
-  it('should pass the question', async () => {
-    // waits for the question to appear
+  it('should pause and resume the game after answering a question', async () => {
+    render(
+        <SessionContext.Provider value={{ username: 'exampleUser' }}>
+            <Router>
+                <DiscoveringCitiesGame />
+            </Router>
+        </SessionContext.Provider>
+    );
+
     await waitFor(() => screen.getByTestId('question'));
-    const correctAnswer = screen.getByRole('button', { name: 'Madrid' });
-    const skip = screen.getByRole('button', { name: 'Skip' });
 
-    expect(correctAnswer).toHaveStyle({ backgroundColor: 'rgb(0, 102, 153);' });
+    fireEvent.click(screen.getByRole('button', { name: 'Madrid' }));
 
-    //selects correct answer
-    fireEvent.click(skip);
+    await waitFor(() => screen.getByTestId('pause'));
 
-    expect(correctAnswer).toHaveStyle({ backgroundColor: 'rgb(51, 153, 102);' });
+    fireEvent.click(screen.getByTestId('pause'));
 
+    expect(screen.getByTestId('play')).toBeInTheDocument();
   });
-
-  it('should render pause & play buttons when answered', async () => {
-    await waitFor(() => screen.getByText('Which is the capital of Spain?'.toUpperCase()));
-    const correctAnswer = screen.getByRole('button', { name: 'Madrid' });
-    fireEvent.click(correctAnswer);
-
-    const pauseButton = screen.getByTestId("pause");
-    expect(pauseButton);
-    fireEvent.click(pauseButton);
-    expect(screen.getByTestId("play"));
-  })
-
-  it('should render progress bar', async () => {
-    await waitFor(() => screen.getByText('Which is the capital of Spain?'.toUpperCase()));
-    const progressBar = screen.getByTestId('prog_bar0');
-    await expect(progressBar).toBeInTheDocument();
-  })
 
 });

@@ -100,11 +100,11 @@ describe('NavBar component', () => {
         </BrowserRouter>
       </SessionContext.Provider>
     );
-  
+
     // Find the logout button using data-testid
     const logoutButton = screen.getByTestId('logout-button');
     await expect(logoutButton).toBeInTheDocument();
-  
+
     // Simulate a click on the logout button and check final route
     //TODO - check call to destroysession
     fireEvent.click(logoutButton);
@@ -123,7 +123,7 @@ describe('NavBar component', () => {
     // Checks select menu is in the nav
     const selectLang = screen.getAllByText("English")[0];
     await expect(selectLang).toBeInTheDocument();
-  
+
     // Click on it and check both options are there
     // mouse down para elementos que no son botón: https://stackoverflow.com/questions/55184037/react-testing-library-on-change-for-material-ui-select-component
     // "uhh, es buena esa"
@@ -137,7 +137,7 @@ describe('NavBar component', () => {
 
     // Click on spanish element
     fireEvent.click(selectLangEs);
-    
+
     // Check lang has changed for the menu and the navigation
     const playOptionEs = screen.getAllByText("Jugar");
     await expect(playOptionEs[0]).toBeInTheDocument();

@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, fireEvent, screen, waitFor } from '@testing-library/react';
-import { SessionContext } from '../../../SessionContext'; 
-import { BrowserRouter, useLocation } from 'react-router-dom'; 
+import { SessionContext } from '../../../SessionContext';
+import { BrowserRouter, useLocation } from 'react-router-dom';
 import MultiplayerGame from '../../../pages/games/MultiplayerGame';
 import io from 'socket.io-client';
 import '../../../localize/i18n';
@@ -22,7 +22,7 @@ jest.mock('socket.io-client', () => {
 
 describe('Game component', () => {
     let socket;
-    
+
     beforeEach(() => {
       socket = io();
       useLocation.mockReturnValue({
@@ -47,7 +47,7 @@ describe('Game component', () => {
         correctAnswer: 'Madrid',
         categories: ['Geography'],
         language: 'en'
-    }; 
+    };
 
     const generateQuestionArray = (questionObject, count) => {
         const questionArray = [];
@@ -83,7 +83,7 @@ describe('Game component', () => {
     expect(correctAnswer).toHaveStyle({ backgroundColor: 'rgb(51, 153, 102);' });
   });
 
-  
+
   it('should choose incorrect answer', async () => {
     // waits for the question to appear
     await waitFor(() => screen.getByTestId('question'));
@@ -92,7 +92,7 @@ describe('Game component', () => {
     expect(incorrectAnswer).toHaveStyle({ backgroundColor: 'rgb(0, 102, 153);' });
 
     //selects correct answer
-    fireEvent.click(incorrectAnswer); 
+    fireEvent.click(incorrectAnswer);
 
     expect(incorrectAnswer).toHaveStyle({ backgroundColor: 'rgb(153, 0, 0);' });
   });

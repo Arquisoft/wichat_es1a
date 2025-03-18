@@ -64,5 +64,5 @@ describe('Ranking Component', () => {
       expect(screen.getByText('20')).toBeInTheDocument();
     }, 15);
   });
-  
+
 });

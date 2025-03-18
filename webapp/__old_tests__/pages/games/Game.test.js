@@ -13,7 +13,7 @@ describe('Game component', () => {
   beforeEach(() => {
     mockAxios.reset();
     // Mock the axios.post request to simulate a successful response
-    mockAxios.onGet('http://localhost:8000/questions/en').reply(200, 
+    mockAxios.onGet('http://localhost:8000/questions/en').reply(200,
         {
         question: 'Which is the capital of Spain?',
         options: ['Madrid', 'Barcelona', 'Paris', 'London'],
@@ -26,7 +26,7 @@ describe('Game component', () => {
     mockAxios.onPut('http://localhost:8000/statistics').reply(200, { success: true });
     mockAxios.onPut('http://localhost:8000/questionsRecord').reply(200, { success: true });
 
-    render( 
+    render(
       <SessionContext.Provider value={{ username: 'exampleUser' }}>
         <Router>
           <Game />
@@ -58,7 +58,7 @@ describe('Game component', () => {
     expect(screen.findByTestId("succes0"));
   });
 
-  
+
   it('should choose incorrect answer', async () => {
     // waits for the question to appear
     await waitFor(() => screen.getByText('Which is the capital of Spain?'.toUpperCase()));

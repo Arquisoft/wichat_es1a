@@ -72,8 +72,9 @@ app.post("/getHint", async (req, res) => {
 
     const apiKey = process.env.REACT_APP_GEMINI_API_KEY;
 
-    const { imageUrl } = req.body;
-    const hint = await sendImageToLLM(imageUrl, apiKey);
+    const { imageUrl, messages } = req.body;
+    const chatHistory = messages && messages.length > 0 ? messages : ["¡Hola! ¿Quieres una pista sobre el animal en la imagen?"];
+    const hint = await sendChatToLLM(imageUrl, chatHistory, apiKey);
     res.json({ hint });
   } catch (error) {
     res.status(400).json({ error: error.message });

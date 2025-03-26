@@ -105,7 +105,7 @@ app.post("/chat", async (req, res) => {
       );
     }
 
-    if (!imageUrlRef) {
+    if (imageUrlRef) {
       throw new Error(
         "No se ha configurado una imagen de referencia. Usa /set-image primero."
       );

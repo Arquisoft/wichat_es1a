@@ -12,14 +12,23 @@ app.use(cors());
 // Variable global para almacenar la URL de la imagen de referencia
 let imageUrlRef = null;
 
+// Objeto para almacenar el historial de conversaciones por sesión
+const chatSessions = {};
+
 const llmConfigs = {
     gemini: {
         url: (apiKey) =>
             `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
         transformRequest: (imageUrl, chatHistory) => {
+            // Extraer solo el texto de los mensajes para el historial
+            const formattedHistory = chatHistory.map(msg => {
+                if (typeof msg === 'string') return msg;
+                return msg.content || msg.text || JSON.stringify(msg);
+            });
+            
             let parts = [
                 { text: "Eres una IA en un juego de adivinanza de animales. Solo puedes responder con pistas relacionadas con el animal en la imagen." },
-                { text: `Historial de chat: ${chatHistory.join("\n")}` }
+                { text: `Historial de chat: ${formattedHistory.join("\n")}` }
             ];
 
             if (imageUrl) {
@@ -61,6 +70,12 @@ app.post("/set-image", (req, res) => {
         }
 
         imageUrlRef = req.body.imageUrl.trim();
+        
+        // Resetear todas las sesiones de chat cuando se cambia la imagen
+        Object.keys(chatSessions).forEach(sessionId => {
+            chatSessions[sessionId] = [];
+        });
+        
         console.log("✅ Imagen de referencia establecida:", imageUrlRef);
         res.json({ message: "Imagen de referencia actualizada correctamente." });
     } catch (error) {
@@ -69,7 +84,7 @@ app.post("/set-image", (req, res) => {
     }
 });
 
-// Endpoint para el chat, siempre usa la imagen de referencia
+// Endpoint para el chat con memoria de sesión
 app.post("/chat", async (req, res) => {
     try {
         console.log("🔹 Recibiendo solicitud a /chat con datos:", req.body);
@@ -82,17 +97,57 @@ app.post("/chat", async (req, res) => {
             throw new Error("No se ha configurado una imagen de referencia. Usa /set-image primero.");
         }
 
+        // Obtener o crear ID de sesión
+        const sessionId = req.body.sessionId || 'default';
+        
+        // Inicializar el historial de la sesión si no existe
+        if (!chatSessions[sessionId]) {
+            chatSessions[sessionId] = [];
+        }
+
         const apiKey = process.env.REACT_APP_GEMINI_API_KEY;
         const { messages } = req.body;
-
+        
+        // Agregar el nuevo mensaje al historial de la sesión
+        chatSessions[sessionId].push(messages[messages.length - 1]);
+        
         console.log("🔹 Enviando solicitud a LLM con imagen de referencia:", imageUrlRef);
-        const chatResponse = await sendChatToLLM(messages, apiKey);
+        const chatResponse = await sendChatToLLM(chatSessions[sessionId], apiKey);
+        
+        // Agregar la respuesta al historial
+        chatSessions[sessionId].push(chatResponse);
 
         console.log("🔹 Respuesta del LLM:", chatResponse);
-        res.json({ response: chatResponse });
+        res.json({ 
+            response: chatResponse,
+            sessionId: sessionId,
+            history: chatSessions[sessionId]
+        });
     } catch (error) {
         console.error("❌ Error en /chat:", error.message);
         res.status(400).json({ error: error.message });
+    }
+});
+
+// Endpoint para crear una nueva sesión
+app.post("/new-session", (req, res) => {
+    const sessionId = `session_${Date.now()}`;
+    chatSessions[sessionId] = [];
+    res.json({ sessionId, message: "Nueva sesión creada" });
+});
+
+// Endpoint para limpiar una sesión específica
+app.post("/clear-session", (req, res) => {
+    const { sessionId } = req.body;
+    if (!sessionId) {
+        return res.status(400).json({ error: "Se requiere el ID de sesión" });
+    }
+    
+    if (chatSessions[sessionId]) {
+        chatSessions[sessionId] = [];
+        res.json({ message: `Sesión ${sessionId} limpiada correctamente` });
+    } else {
+        res.status(404).json({ error: "Sesión no encontrada" });
     }
 });
 

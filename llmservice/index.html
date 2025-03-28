@@ -89,24 +89,106 @@
         button:hover {
             background-color: #0056b3;
         }
+ 
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 10px 0;
+            width: 100%;
+        }
+
+        .session-info {
+            font-size: 0.8rem;
+            color: #666;
+            text-align: center;
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 <body>
 
     <h1>Juego de Adivinanza con IA</h1>
 
+    <div class="actions">
+        <button onclick="nuevaSesion()">Nueva partida</button>
+        <button onclick="limpiarSesion()">Reiniciar chat</button>
+    </div>
+
+    <div class="session-info" id="sessionInfo">Sesión: default</div>
+
     <div class="chat-container">
         <div class="chat-box" id="chatBox"></div>
         <div class="chat-input">
-            <input type="text" id="mensaje" placeholder="Escribe tu mensaje">
+            <input type="text" id="mensaje" placeholder="Escribe tu mensaje" onkeypress="if(event.key === 'Enter') enviarMensaje()">
             <button onclick="enviarMensaje()">Enviar</button>
         </div>
     </div>
 
     <script>
-        let imageUrl = "https://www.wikidata.org/wiki/Q134015#/media/File:Meerkat_(Suricata_suricatta).jpg"; // URL de la imagen fija
+        // Almacenar información de sesión
+        let sessionData = {
+            id: 'default',
+            history: []
+        };
 
-        // 🔹 Enviar la URL de la imagen al backend al cargar la página
+        // URL de imagen de ejemplo (puedes cambiarla)
+        let imageUrl = "https://www.wikidata.org/wiki/Q134015#/media/File:Meerkat_(Suricata_suricatta).jpg"; 
+
+        // Inicializar la aplicación
+        async function inicializar() {
+            await setImageReference();
+            actualizarInfoSesion();
+        }
+
+        // Actualizar información de sesión en la UI
+        function actualizarInfoSesion() {
+            document.getElementById("sessionInfo").textContent = `Sesión: ${sessionData.id}`;
+        }
+
+        // Crear una nueva sesión
+        async function nuevaSesion() {
+            try {
+                const response = await fetch("http://localhost:8003/new-session", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" }
+                });
+
+                const data = await response.json();
+                sessionData.id = data.sessionId;
+                sessionData.history = [];
+                
+                document.getElementById("chatBox").innerHTML = '';
+                actualizarInfoSesion();
+                
+                // Establecer imagen de referencia para la nueva sesión
+                await setImageReference();
+                
+                agregarMensaje("Nueva partida iniciada. Haz preguntas para adivinar el animal.", "bot");
+            } catch (error) {
+                console.error("❌ Error al crear nueva sesión:", error);
+            }
+        }
+
+        // Limpiar el historial de la sesión actual
+        async function limpiarSesion() {
+            try {
+                const response = await fetch("http://localhost:8003/clear-session", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ sessionId: sessionData.id })
+                });
+
+                const data = await response.json();
+                sessionData.history = [];
+                document.getElementById("chatBox").innerHTML = '';
+                agregarMensaje("Chat reiniciado. Continúa haciendo preguntas.", "bot");
+            } catch (error) {
+                console.error("❌ Error al limpiar sesión:", error);
+            }
+        }
+
+        // Establecer la imagen de referencia en el backend
         async function setImageReference() {
             try {
                 const response = await fetch("http://localhost:8003/set-image", {
@@ -122,15 +204,18 @@
             }
         }
 
+        // Enviar mensaje al backend y recibir respuesta
         async function enviarMensaje() {
             const mensaje = document.getElementById("mensaje").value.trim();
             if (!mensaje) return;
 
             agregarMensaje(mensaje, "user");
-
             document.getElementById("mensaje").value = ""; 
 
-            const bodyData = { messages: [mensaje] }; // 🚀 Ya no se envía la imagen
+            const bodyData = { 
+                messages: [mensaje],
+                sessionId: sessionData.id
+            };
 
             try {
                 const respuesta = await fetch("http://localhost:8003/chat", {
@@ -140,6 +225,12 @@
                 });
 
                 const data = await respuesta.json();
+                
+                // Actualizar el historial de sesión si se proporciona
+                if (data.history) {
+                    sessionData.history = data.history;
+                }
+                
                 agregarMensaje(data.response, "bot");
             } catch (error) {
                 agregarMensaje("Error al conectar con la IA.", "bot");
@@ -147,6 +238,7 @@
             }
         }
 
+        // Agregar mensaje al chat
         function agregarMensaje(texto, tipo) {
             const chatBox = document.getElementById("chatBox");
             const mensajeDiv = document.createElement("div");
@@ -156,8 +248,8 @@
             chatBox.scrollTop = chatBox.scrollHeight; 
         }
 
-        // Llamar a setImageReference() al cargar la página
-        window.onload = setImageReference;
+        // Inicializar la aplicación
+        window.onload = inicializar;
     </script>
 
 </body>

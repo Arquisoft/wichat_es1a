@@ -1,6 +1,7 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
 
 interface IQuestion extends Document {
+    id: mongoose.Types.ObjectId;
     question: string;
     options: string[];
     correctAnswer: string;
@@ -20,6 +21,10 @@ const questionSchema: Schema<IQuestion> = new Schema({
     image_url: { type: String, required: false },
     common_name: { type: String, required: false },
     taxon_name: { type: String, required: false },
+    id: {
+        type: Schema.Types.ObjectId,
+        default: () => new mongoose.Types.ObjectId(),
+    },
 }, { timestamps: true });
 
 // Modelo de Mongoose

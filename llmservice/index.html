@@ -105,6 +105,9 @@
 
     <script>
         let imageUrl = "https://www.wikidata.org/wiki/Q134015#/media/File:Meerkat_(Suricata_suricatta).jpg"; // URL de la imagen fija
+        
+        // Almacenamos el historial completo de mensajes
+        let chatHistory = [];
 
         // 🔹 Enviar la URL de la imagen al backend al cargar la página
         async function setImageReference() {
@@ -126,11 +129,22 @@
             const mensaje = document.getElementById("mensaje").value.trim();
             if (!mensaje) return;
 
+            // Crear objeto de mensaje del usuario y añadirlo al historial
+            const userMessage = { sender: 'user', text: mensaje };
+            chatHistory.push(userMessage);
+            
+            // Mostrar mensaje en la interfaz
             agregarMensaje(mensaje, "user");
 
             document.getElementById("mensaje").value = ""; 
 
-            const bodyData = { messages: [mensaje] }; // 🚀 Ya no se envía la imagen
+            // Enviar todo el historial de chat al backend
+            const bodyData = { 
+                messages: chatHistory,
+                gameCategory: "Animals" // Añadimos categoría por defecto
+            }; 
+
+            console.log("Enviando historial completo:", bodyData);
 
             try {
                 const respuesta = await fetch("http://localhost:8003/chat", {
@@ -140,7 +154,15 @@
                 });
 
                 const data = await respuesta.json();
+                // Añadir respuesta del bot al historial
+                const botMessage = { sender: 'bot', text: data.response };
+                chatHistory.push(botMessage);
+                
+                // Mostrar en la interfaz
                 agregarMensaje(data.response, "bot");
+                
+                // Mostrar historial actual en consola para depuración
+                console.log("Historial actualizado:", chatHistory);
             } catch (error) {
                 agregarMensaje("Error al conectar con la IA.", "bot");
                 console.error("Error:", error);

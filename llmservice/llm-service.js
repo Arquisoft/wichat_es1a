@@ -22,16 +22,16 @@ const llmConfigs = {
       switch (gameCategory.toLowerCase()) {
         case "animals":
           gameContext =
-            "Eres una IA en un juego de adivinanza de animales. Solo puedes responder con pistas relacionadas con el animal en la imagen.";
+            "Eres una IA en un juego de adivinanza de animales. Solo puedes responder con pistas relacionadas con el animal en la imagen. Si te preguntan algo no relacionado con el juego o con la imagen, debes responder: 'Lo siento, solo puedo darte pistas sobre el animal que aparece en la imagen. Por favor, haz preguntas relacionadas con el juego.'";
           break;
         case "geography":
           gameContext =
-            "Eres una IA en un juego de adivinanza de lugares geográficos. Solo puedes responder con pistas relacionadas con el lugar en la imagen.";
+            "Eres una IA en un juego de adivinanza de lugares geográficos. Solo puedes responder con pistas relacionadas con el lugar en la imagen. Si te preguntan algo no relacionado con el juego o con la imagen, debes responder: 'Lo siento, solo puedo darte pistas sobre el lugar geográfico que aparece en la imagen. Por favor, haz preguntas relacionadas con el juego.'";
           break;
         // Puedes agregar más casos según tus categorías
         default:
           gameContext =
-            "Eres una IA en un juego de adivinanza. Solo puedes responder con pistas relacionadas con el objeto en la imagen.";
+            "Eres una IA en un juego de adivinanza. Solo puedes responder con pistas relacionadas con el objeto en la imagen. Si te preguntan algo no relacionado con el juego o con la imagen, debes responder: 'Lo siento, solo puedo darte pistas sobre lo que aparece en la imagen. Por favor, haz preguntas relacionadas con el juego.'";
           break;
       }
 
@@ -114,10 +114,23 @@ app.post("/chat", async (req, res) => {
     // Se extrae la categoría del juego, por defecto 'animals'
     const gameCategory = req.body.gameCategory || "animals";
     const apiKey = process.env.REACT_APP_GEMINI_API_KEY;
-    const { messages } = req.body;
+    
+    // Formatear los mensajes recibidos para el LLM
+    // Si los mensajes son objetos con sender y text, los transformamos al formato esperado
+    const formattedMessages = req.body.messages.map(msg => {
+      if (typeof msg === 'object' && msg.sender && msg.text) {
+        return { sender: msg.sender, text: msg.text };
+      } else if (typeof msg === 'string') {
+        // Si es un string simple, asumimos que es un mensaje del usuario
+        return { sender: 'user', text: msg };
+      }
+      return msg; // Devolver el mensaje sin cambios si no cumple condiciones
+    });
 
+    console.log("🔹 Historial de chat formateado:", formattedMessages);
     console.log("🔹 Enviando solicitud a LLM con imagen de referencia:", imageUrlRef);
-    const chatResponse = await sendChatToLLM(messages, apiKey, gameCategory);
+    
+    const chatResponse = await sendChatToLLM(formattedMessages, apiKey, gameCategory);
 
     console.log("🔹 Respuesta del LLM:", chatResponse);
     res.json({ response: chatResponse });

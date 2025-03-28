@@ -299,9 +299,9 @@ const PictureGame = () => {
     setChatMessages(prev => [...prev, userMessage]);
     setChatInput('');
     try {
-      console.log("Enviando mensaje al LLM:", userMessage.text, "Categoría:", category);
+      console.log("Enviando mensaje al LLM con historial completo:", [...chatMessages, userMessage]);
       const response = await axios.post(`${llmEndpoint}/chat`, {
-        messages: [...chatMessages, userMessage],
+        messages: [...chatMessages, userMessage],  // Enviamos todo el historial del chat
         gameCategory: category  // Envía la categoría del juego
       });
       const botReply = response.data.response || "No se recibió respuesta.";

@@ -66,8 +66,6 @@ const PictureGame = () => {
     const [passNewRound, setPassNewRound] = React.useState(false);
 
     const [hint, setHint] = React.useState(null);
-    const [chatSessionId, setChatSessionId] = React.useState(null);
-    const [chatHistory, setChatHistory] = React.useState([]);
 
     const [questionHistorial, setQuestionHistorial] = React.useState(Array(round).fill(null));
 
@@ -109,18 +107,15 @@ const PictureGame = () => {
 
     const startNewRound = async () => {
         setAnswered(false);
+
         setPassNewRound(false);
-        
-        // Resetear la sesión de chat para la nueva imagen
-        setChatSessionId(null);
-        setChatHistory([]);
-        setHint(null);
 
         // Updates current language
         setCurrentLanguage(i18n.language);
         axios.get(`${apiEndpoint}/questions/random/4`)
             .then(quest => {
                 // every new round it gets a new question from db
+                // quest.data[0].image = 'https://www.fundacionaquae.org/wp-content/uploads/2016/05/zorro-e1649086718471-1024x503.jpg';
                 setQuestionData(quest.data[0]);
                 setButtonStates(new Array(4).fill(null));
                 getPossibleOptions(quest.data[0]);
@@ -336,48 +331,17 @@ const PictureGame = () => {
 
     async function getHint() {
         try {
-            let currentSessionId = chatSessionId;
-            
-            // Si no hay una sesión de chat existente, crear una nueva
-            if (!currentSessionId) {
-                // Primero establecer la imagen de referencia
-                await fetch("http://localhost:8003/set-image", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ imageUrl: questionData.image_url })
-                });
-                
-                // Luego crear una nueva sesión
-                const sessionResponse = await fetch("http://localhost:8003/new-session", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" }
-                });
-                
-                const sessionData = await sessionResponse.json();
-                currentSessionId = sessionData.sessionId;
-                setChatSessionId(currentSessionId);
-            }
-            
-            // Enviar mensaje al chat
-            const chatResponse = await fetch("http://localhost:8003/chat", {
+            const response = await fetch("http://localhost:8003/getHint", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ 
-                    messages: ["¿Puedes darme una pista sobre este animal?"],
-                    sessionId: currentSessionId
-                })
+                body: JSON.stringify({ imageUrl: questionData.image_url })
             });
 
-            const data = await chatResponse.json();
-            
-            // Guardar historial de chat
-            setChatHistory(data.history || []);
-            
-            // Mostrar la respuesta como pista
-            setHint(data.response || "No se recibió una pista.");
+            const data = await response.json();
+            setHint(data.hint || "No se recibió una descripción.");
         } catch (error) {
-            setHint("Error al conectar con el servicio de pistas.");
-            console.error("Error al obtener pista:", error);
+            setHint("Error al conectar con el servidor.");
+            console.error(error);
         }
     }
 
@@ -485,34 +449,7 @@ const PictureGame = () => {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button 
-                        onClick={async () => {
-                            // Solo mostrar el botón si ya tenemos una sesión activa
-                            if (chatSessionId) {
-                                // Solicitar otra pista manteniendo el contexto actual
-                                try {
-                                    const chatResponse = await fetch("http://localhost:8003/chat", {
-                                        method: "POST",
-                                        headers: { "Content-Type": "application/json" },
-                                        body: JSON.stringify({ 
-                                            messages: ["Dame otra pista diferente, por favor"],
-                                            sessionId: chatSessionId
-                                        })
-                                    });
-                                    const data = await chatResponse.json();
-                                    setChatHistory(data.history || []);
-                                    setHint(data.response || "No se recibió una pista adicional.");
-                                } catch (error) {
-                                    setHint("Error al conectar con el servicio de pistas.");
-                                }
-                            }
-                        }}
-                        color="primary"
-                        disabled={!chatSessionId}
-                    >
-                        Otra pista
-                    </Button>
-                    <Button onClick={() => setHint(null)} color="primary" autoFocus>
+                    <Button onClick={() => setHint(null)} autoFocus>
                         Aceptar
                     </Button>
                 </DialogActions>

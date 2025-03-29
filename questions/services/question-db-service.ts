@@ -1,12 +1,12 @@
 import * as mongoose from 'mongoose';
-import { Question, IQuestion } from '../../questions/services/question-data-model.ts';
+import { Question, IQuestion, Tuple } from '../../questions/services/question-data-model.ts';
 import "../utils/array-chunks.ts"
 
 import { WikidataEntity, Q, P } from "./wikidata";
-import { WikidataQueryBuilder } from "./wikidata/query_builder.ts";
 
 import * as dotenv from "dotenv";
 import { PromiseStore } from '../utils/promises.ts';
+import { AnimalRecipe, WikidataRecipe } from './question-generation.ts';
 
 dotenv.config();
 
@@ -43,6 +43,16 @@ export class WikidataQuestion {
     }
 }
 
+export enum Category {
+    Animals
+}
+
+function category_into_recipe(cat: Category) : WikidataRecipe {
+    if (cat == Category.Animals)
+        return new AnimalRecipe();
+    return undefined;
+}
+
 export class QuestionDBService extends PromiseStore {
     private questionsCache: Set<Number> = new Set();
 
@@ -52,7 +62,7 @@ export class QuestionDBService extends PromiseStore {
             mongoose.connect(QuestionDBService._mongodbUri)
                     .then(async () => {
                         await Question.deleteMany().then(async () => {
-                            await this.generateQuestions(20)
+                            await this.generateQuestions(20, new AnimalRecipe())
                         })
                     })
         );
@@ -79,31 +89,29 @@ export class QuestionDBService extends PromiseStore {
         this._instance = null;
     }
 
-    async getRandomQuestions(n: number = 1) : Promise<WikidataQuestion[]> {
+    async getRandomQuestions(n: number = 1, category: Category = Category.Animals) : Promise<WikidataQuestion[]> {
         /* At this point, we need to sync previously postponed promises.
          * Like question deletion, or the initial question generation
          * from the constructor.
          */
         await this.syncPendingPromises();
 
-        return this.getRandomEntities(n * 4).then((entities) => {
+        let recipe: WikidataRecipe = category_into_recipe(category);
+
+        return this.getRandomEntities(n * 4, recipe).then((entities) => {
             return entities.chunks(4).map((chunk) => {
-                return new WikidataQuestion(chunk[0])
-                            .set_response(chunk[0].taxon_name)
-                            .set_distractor(chunk[1].taxon_name)
-                            .set_distractor(chunk[2].taxon_name)
-                            .set_distractor(chunk[3].taxon_name)
+                return recipe.generateQuestion(chunk)
             });
         })
     }
 
-    async getRandomEntities(n: number = 1) : Promise<WikidataEntity[]> {
+    async getRandomEntities(n: number = 1, recipe: WikidataRecipe) : Promise<WikidataEntity[]> {
 
         const MAX_ITERATIONS = 3;
         let n_iterations = 0;
 
         while (await this.getQuestionsCount() <= n) {
-            await this.generateQuestions(Math.max(n * 2, 20));
+            await this.generateQuestions(Math.max(n * 2, 20), recipe);
 
             n_iterations += 1;
             if (n_iterations >= MAX_ITERATIONS) {
@@ -124,23 +132,23 @@ export class QuestionDBService extends PromiseStore {
         })
         this.addPromise(Promise.all(deletions));
 
-        return q.map((q: IQuestion) => new WikidataEntity(q.image_url, q.common_name, q.taxon_name))
+        return q.map((q: IQuestion) => {
+            let entity = new WikidataEntity(q.image_url);
+            q.attrs.forEach((a: Tuple<String>) => {
+                entity.addAttribute(a.first, a.second);
+            })
+            return entity
+        })
     }
 
     async getQuestionsCount() : Promise<number> {
       return await Question.countDocuments()
     }
 
-    async generateQuestions(n: number) : Promise<IQuestion[]> {
+    async generateQuestions(n: number, recipe: WikidataRecipe) : Promise<IQuestion[]> {
         console.log("Generating a batch of " + n + " questions")
 
-        const query = new WikidataQueryBuilder()
-                .subclassOf(Q.ANIMAL)
-                .assocProperty(P.IMAGE, "imagen")
-                .assocProperty(P.COMMON_NAME, "common_name", true, "es")
-                .assocProperty(P.TAXON_NAME, "taxon_name", false)
-                .random()
-                .limit(n);
+        let query = recipe.buildQuery().random().limit(n);
 
         // For debugging
         // console.log("Executing query: " + query.build());
@@ -163,12 +171,12 @@ export class QuestionDBService extends PromiseStore {
 
         const genQuestions: Promise<IQuestion>[] =
             bindings.map((elem: any) => {
-            let common_name = elem.common_name ? elem.common_name.value : "UNKNOWN";
+
+            let attrs = recipe.getAttributes(elem);
             return new Question({
                 image_url: elem.imagen.value,
-                common_name,
                 wdUri: elem.item.value,
-                taxon_name: elem.taxon_name.value,
+                attrs,
             }).save()
         });
 

@@ -1,12 +1,25 @@
+
+export class ItemAttribute {
+    name: String;
+    value: String;
+}
+
 export class WikidataEntity {
     image_url: String;
-    common_name: String;
-    taxon_name: String;
+    attrs: Map<String,String>;
 
-    constructor(image_url: String, common_name: String, taxon_name: String = "") {
+    constructor(image_url: String) {
         this.image_url = image_url;
-        this.common_name = common_name;
-        this.taxon_name = taxon_name;
+        this.attrs = new Map();
+    }
+
+    public addAttribute(name: String, value: String) : WikidataEntity {
+        this.attrs.set(name, value);
+        return this;
+    }
+
+    public getAttribute(name: String) : String | undefined {
+        return this.attrs.get(name);
     }
 }
 

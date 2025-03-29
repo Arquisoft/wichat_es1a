@@ -40,53 +40,43 @@ This allowed us to build upon an existing foundation, facilitating development a
 
 === Implementation design
 
-==== Image generation strategy
+==== Question generation
 
-For the image generation process, we retrieve data from Wikidata using SPARQL queries based on a structured JSON format. This JSON structure defines categories and properties that guide the generation of image prompts.
+To generate questions, we use the questions service.
 
-The JSON structure allows us to select the desired categories for the images, and in the future, specify the style or format. Based on this, we construct a SPARQL query to fetch data from Wikidata and convert it into an image generation request. Here’s an example of a category element in the JSON:
+The QuestionDBService is the main orchestrator, responsible for querying
+wikidata and turning the API responses into questions.
+
+Every questions belongs to a specific category.
+For each category, we define a class that implements the interface
+'WikidataRecipe'.
+
+This interface is used by the QuestionDBService to
+1) Create a WikidataQueryBuilder, that asks for the specific entities for the
+   category
+2) Convert the API's response into WikidataEntities, and intern the questions in
+   the dababase
+3) Generate questions from those entities.
+
+After this process is completed, the service returns a JSON object with the
+following structure
 
 ```json
 [
     {
-        "name": "country",
-        "instance": "Q6256",
-        "properties": [
-            {
-                "property": "P18",
-                "query": "SELECT ?capital WHERE { ?country wdt:P18 ?capital . FILTER(?country = wd:{x}) }",
-                "image": "https://upload.wikimedia.org/wikipedia/commons/3/3a/Meerkat.jpg",
-                "category": ["Geography", "Cities"]
-            },
-            {
-                "property": "P18",
-                "query": "SELECT ?currency WHERE { ?country wdt:P38 ?currency . FILTER(?country = wd:{x}) }",
-                "image": "https://upload.wikimedia.org/wikipedia/commons/3/3a/Meerkat.jpg",
-                "category": ["Economy"]
-            },
-            ...
-        ],
-        ...
+      "image_url" : "http://commons.wikimedia.org/wiki/Special:FilePath/Erithacus%20rubecula%20with%20cocked%20head.jpg",
+      "response" : "Erithacus rubecula",
+      "distractors" : ["Invertebrata","Bilateria","Erithacus rubecula"],
+      "options" : ["Invertebrata","Bilateria","Erithacus rubecula","Erithacus rubecula"],
+      "attrs" : {
+          "common_name" : "Petirrojo europeo",
+          "taxon_name" : "Erithacus rubecula",
+          ...
+      }
     },
     ...
 ]
 ```
-
-his structure allows us to dynamically generate SPARQL queries to fetch data from Wikidata, which is then transformed into image generation prompts.
-
-The process consists of the following steps:
-
-Define categories and properties in JSON format.
-
-Generate a SPARQL query based on the selected properties.
-
-Retrieve data from Wikidata using the query.
-
-Convert the data into an image prompt.
-
-Generate the image using an external image generation API.
-
-This approach enables the dynamic creation of images based on specific categories and properties, ensuring a diverse set of visual representations across different topics and languages.
 
 === Decisions about the top-level decomposition of the system
 

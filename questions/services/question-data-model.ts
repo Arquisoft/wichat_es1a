@@ -1,10 +1,5 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
 
-export class Tuple<T> {
-    public first: T;
-    public second: T;
-}
-
 interface IQuestion extends Document {
     id: mongoose.Types.ObjectId;
     question: string;
@@ -13,7 +8,8 @@ interface IQuestion extends Document {
     categories: string[];
     wdUri: string;
     image_url: string;
-    attrs: Tuple<String>[],
+    category: Number;
+    attrs: [String,String][],
 }
 
 const questionSchema: Schema<IQuestion> = new Schema({
@@ -23,10 +19,10 @@ const questionSchema: Schema<IQuestion> = new Schema({
     categories: { type: [String], required: false },
     wdUri: { type: String, required: false },
     image_url: { type: String, required: false },
+    category: { type: Number, required: true },
     attrs: {
         type: Array<[String,String]>,
-        required: false,
-        default: () => []
+        required: true,
     },
     id: {
         type: Schema.Types.ObjectId,

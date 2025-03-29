@@ -2,7 +2,7 @@ import * as mongoose from 'mongoose';
 import { Question, IQuestion, Tuple } from '../../questions/services/question-data-model.ts';
 import "../utils/array-chunks.ts"
 
-import { WikidataEntity, Q, P } from "./wikidata";
+import { WikidataEntity, Q, P, Category, category_into_recipe, Categories } from "./wikidata";
 
 import * as dotenv from "dotenv";
 import { PromiseStore } from '../utils/promises.ts';
@@ -14,6 +14,7 @@ export class WikidataQuestion {
     image_url: String;
     response: String;
     distractors: String[];
+    attrs: Tuple<String>[];
 
     constructor(entity: WikidataEntity) {
         this.image_url = entity.image_url;
@@ -39,18 +40,9 @@ export class WikidataQuestion {
             response: this.response,
             distractors: this.distractors,
             options,
+            attrs: this.attrs
         }
     }
-}
-
-export enum Category {
-    Animals
-}
-
-function category_into_recipe(cat: Category) : WikidataRecipe {
-    if (cat == Category.Animals)
-        return new AnimalRecipe();
-    return undefined;
 }
 
 export class QuestionDBService extends PromiseStore {
@@ -89,7 +81,7 @@ export class QuestionDBService extends PromiseStore {
         this._instance = null;
     }
 
-    async getRandomQuestions(n: number = 1, category: Category = Category.Animals) : Promise<WikidataQuestion[]> {
+    async getRandomQuestions(n: number = 1, category: Number = Categories.Animals) : Promise<WikidataQuestion[]> {
         /* At this point, we need to sync previously postponed promises.
          * Like question deletion, or the initial question generation
          * from the constructor.
@@ -110,7 +102,7 @@ export class QuestionDBService extends PromiseStore {
         const MAX_ITERATIONS = 3;
         let n_iterations = 0;
 
-        while (await this.getQuestionsCount() <= n) {
+        while (await this.getQuestionsCount(recipe.getCategory()) <= n) {
             await this.generateQuestions(Math.max(n * 2, 20), recipe);
 
             n_iterations += 1;
@@ -120,7 +112,10 @@ export class QuestionDBService extends PromiseStore {
             }
         }
 
-        let q = await Question.aggregate([{ $sample: { size: n } }]);
+        let q = await Question.aggregate([
+            { $match: { category: recipe.getCategory() } },
+            { $sample: { size: n } },
+        ]);
 
         /* Store the promise of the deletion, instead of blocking.
          * The next time we call resolvePendingPromises, it'll be
@@ -141,8 +136,10 @@ export class QuestionDBService extends PromiseStore {
         })
     }
 
-    async getQuestionsCount() : Promise<number> {
-      return await Question.countDocuments()
+    async getQuestionsCount(cat: Number) : Promise<number> {
+      return await Question.countDocuments({
+          category: cat
+      })
     }
 
     async generateQuestions(n: number, recipe: WikidataRecipe) : Promise<IQuestion[]> {
@@ -177,6 +174,7 @@ export class QuestionDBService extends PromiseStore {
                 image_url: elem.imagen.value,
                 wdUri: elem.item.value,
                 attrs,
+                category: recipe.getCategory()
             }).save()
         });
 

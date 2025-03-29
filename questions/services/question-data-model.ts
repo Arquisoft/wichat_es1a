@@ -13,6 +13,7 @@ interface IQuestion extends Document {
     categories: string[];
     wdUri: string;
     image_url: string;
+    category: Number;
     attrs: Tuple<String>[],
 }
 
@@ -23,8 +24,9 @@ const questionSchema: Schema<IQuestion> = new Schema({
     categories: { type: [String], required: false },
     wdUri: { type: String, required: false },
     image_url: { type: String, required: false },
+    category: { type: Number, required: true },
     attrs: {
-        type: Array<[String,String]>,
+        type: Array<Tuple<String>>,
         required: false,
         default: () => []
     },

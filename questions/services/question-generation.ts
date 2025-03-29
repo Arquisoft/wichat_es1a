@@ -1,12 +1,14 @@
 import { IQuestion, Tuple } from "./question-data-model";
 import { WikidataQuestion } from "./question-db-service";
-import { P, Q, WikidataEntity } from "./wikidata";
+import { Categories, P, Q, WikidataEntity } from "./wikidata";
 import { WikidataQueryBuilder } from "./wikidata/query_builder";
 
 export interface WikidataRecipe {
     buildQuery() : WikidataQueryBuilder;
     getAttributes(binding: any) : Tuple<String>[];
     generateQuestion(chunk: WikidataEntity[]) : WikidataQuestion;
+
+    getCategory() : Number;
 }
 
 export class AnimalRecipe implements WikidataRecipe {
@@ -30,6 +32,36 @@ export class AnimalRecipe implements WikidataRecipe {
                     .set_distractor(chunk[1].getAttribute("taxon_name"))
                     .set_distractor(chunk[2].getAttribute("taxon_name"))
                     .set_distractor(chunk[3].getAttribute("taxon_name"))
+    }
+
+    getCategory(): Number {
+        return Categories.Animals
+    }
+
+}
+
+export class CitiesRecipe implements WikidataRecipe {
+    buildQuery(): WikidataQueryBuilder {
+        return new WikidataQueryBuilder()
+                .subclassOf(Q.CITY)
+                .assocProperty(P.IMAGE, "imagen")
+                .assocProperty(P.COUNTRY, "country")
+    }
+    getAttributes(binding: any): Tuple<String>[] {
+        return [
+            { first: "country", second: binding.countryLabel.value },
+        ]
+    }
+    generateQuestion(chunk: WikidataEntity[]): WikidataQuestion {
+        return new WikidataQuestion(chunk[0])
+                    .set_response(chunk[0].getAttribute("country"))
+                    .set_distractor(chunk[1].getAttribute("country"))
+                    .set_distractor(chunk[2].getAttribute("country"))
+                    .set_distractor(chunk[3].getAttribute("country"))
+    }
+
+    getCategory(): Number {
+        return Categories.Cities
     }
 
 }

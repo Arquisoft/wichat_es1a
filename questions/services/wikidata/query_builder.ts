@@ -104,8 +104,7 @@ export class WikidataQueryBuilder {
         let query = "";
         query += "SELECT DISTINCT ?item "
         this._assocProperties.forEach(prop => {
-            query += `(SAMPLE(?${prop.name}) AS ?${prop.name})`
-            query += `(SAMPLE(?${prop.name}Label) AS ?${prop.name}Label) `
+            query += ` ?${prop.name} ?${prop.name}Label `
         });
         if (this._random) {
             query += `(MD5(CONCAT(str(?item),str(RAND()),str(${Date.now()}))) as ?random) `;
@@ -126,9 +125,7 @@ export class WikidataQueryBuilder {
 
         query += `SERVICE wikibase:label { bd:serviceParam wikibase:language "${this._language}"}`;
 
-
         query += "}";
-        query += " GROUP BY ?item "
         if (this._random) {
             query += " ORDER BY ?random";
         }

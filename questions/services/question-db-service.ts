@@ -1,8 +1,8 @@
 import * as mongoose from 'mongoose';
-import { Question, IQuestion, Tuple } from '../../questions/services/question-data-model.ts';
+import { Question, IQuestion } from '../../questions/services/question-data-model.ts';
 import "../utils/array-chunks.ts"
 
-import { WikidataEntity, Q, P, Category, category_into_recipe, Categories } from "./wikidata";
+import { WikidataEntity, category_into_recipe, Categories } from "./wikidata";
 
 import * as dotenv from "dotenv";
 import { PromiseStore } from '../utils/promises.ts';
@@ -138,13 +138,13 @@ export class QuestionDBService extends PromiseStore {
         })
     }
 
-    async getQuestionsCount(cat: Number) : Promise<number> {
+    async getQuestionsCount(cat: Number = Categories.Animals) : Promise<number> {
       return await Question.countDocuments({
           category: cat
       })
     }
 
-    async generateQuestions(n: number, recipe: WikidataRecipe) : Promise<IQuestion[]> {
+    async generateQuestions(n: number, recipe: WikidataRecipe = new AnimalRecipe()) : Promise<IQuestion[]> {
         console.log("Generating a batch of " + n + " questions")
 
         let query = recipe.buildQuery().random().limit(n);

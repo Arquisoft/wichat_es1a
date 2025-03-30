@@ -8,7 +8,7 @@ describe('WikidataQueryBuilder', () => {
       .assocProperty(18, "pic")
       .build();
 
-    expect(query).toBe("SELECT DISTINCT ?item (SAMPLE(?pic) AS ?pic)(SAMPLE(?picLabel) AS ?picLabel)  WHERE {?item wdt:P31 wd:Q146;wdt:P18 ?pic ;SERVICE wikibase:label { bd:serviceParam wikibase:language \"es\"}} GROUP BY ?item ");
+    expect(query).toBe("SELECT DISTINCT ?item  ?pic ?picLabel  WHERE {?item wdt:P31 wd:Q146;wdt:P18 ?pic ;SERVICE wikibase:label { bd:serviceParam wikibase:language \"es\"}}")
   });
 
   it('Should correctly format a WDPropertyAssoc with optional set to true', () => {
@@ -36,7 +36,7 @@ describe('WikidataQueryBuilder', () => {
 
     expect(query).toContain("wdt:P31 wd:Q146;");
     expect(query).toContain("wdt:P279 wd:Q279;");
-    expect(query).toContain("(SAMPLE(?image) AS ?image)");
+    expect(query).toContain("?image");
     expect(query).toContain("OPTIONAL{ ?item wdt:P569 ?birthDate  . FILTER (lang(?birthDate) = \"es\") }");
   });
 

@@ -21,7 +21,7 @@ const questionSchema: Schema<IQuestion> = new Schema({
     image_url: { type: String, required: false },
     category: { type: Number, required: true },
     attrs: {
-        type: Array<[String,String]>,
+        type: [[String,String]],
         required: true,
     },
     id: {

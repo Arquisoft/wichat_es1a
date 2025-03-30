@@ -1,4 +1,3 @@
-import { IQuestion, Tuple } from "./question-data-model";
 import { WikidataQuestion } from "./question-db-service";
 import { Categories, P, Q, WikidataEntity } from "./wikidata";
 import { WikidataQueryBuilder } from "./wikidata/query_builder";
@@ -47,7 +46,7 @@ export class CitiesRecipe implements WikidataRecipe {
                 .assocProperty(P.IMAGE, "imagen")
                 .assocProperty(P.COUNTRY, "country")
     }
-    getAttributes(binding: any): Tuple<String>[] {
+    getAttributes(binding: any): [String,String][] {
         return [
             ["country", binding.countryLabel.value],
         ]

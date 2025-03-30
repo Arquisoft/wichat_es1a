@@ -26,14 +26,14 @@ describe('QuestionDBService', () => {
         it('should fetch random questions and return them as WikidataQuestion instances', async () => {
             // Mock de la función que obtiene las entidades
             const mockEntities = [
-                new WikidataEntity('https://example.com/image1', 'Common Name 1', "taxon"),
-                new WikidataEntity('https://example.com/image2', 'Common Name 2', "taxon"),
-                new WikidataEntity('https://example.com/image1', 'Common Name 1', "taxon"),
-                new WikidataEntity('https://example.com/image1', 'Common Name 1', "taxon"),
-                new WikidataEntity('https://example.com/image2', 'Common Name 2', "taxon"),
-                new WikidataEntity('https://example.com/image2', 'Common Name 2', "taxon"),
-                new WikidataEntity('https://example.com/image2', 'Common Name 2', "taxon"),
-                new WikidataEntity('https://example.com/image2', 'Common Name 2', "taxon"),
+                new WikidataEntity('https://example.com/image1').addAttribute("common_name", 'Common Name 1').addAttribute("taxon_name", "taxon"),
+                new WikidataEntity('https://example.com/image2').addAttribute("common_name", 'Common Name 2').addAttribute("taxon_name", "taxon"),
+                new WikidataEntity('https://example.com/image1').addAttribute("common_name", 'Common Name 1').addAttribute("taxon_name", "taxon"),
+                new WikidataEntity('https://example.com/image1').addAttribute("common_name", 'Common Name 1').addAttribute("taxon_name", "taxon"),
+                new WikidataEntity('https://example.com/image2').addAttribute("common_name", 'Common Name 2').addAttribute("taxon_name", "taxon"),
+                new WikidataEntity('https://example.com/image2').addAttribute("common_name", 'Common Name 2').addAttribute("taxon_name", "taxon"),
+                new WikidataEntity('https://example.com/image2').addAttribute("common_name", 'Common Name 2').addAttribute("taxon_name", "taxon"),
+                new WikidataEntity('https://example.com/image2').addAttribute("common_name", 'Common Name 2').addAttribute("taxon_name", "taxon"),
             ];
 
             service.getRandomEntities = jest.fn().mockResolvedValue(mockEntities);

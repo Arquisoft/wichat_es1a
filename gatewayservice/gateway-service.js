@@ -152,15 +152,16 @@ app.get('/questions/random/:n', async (req, res) => {
   }
 });
 
-app.get('/questions/:lang/:category', async (req, res) => {
+app.get('/questions/random/:category/:n', async (req, res) => {
   try {
     const category = encodeURIComponent(req.params.category);
-    const language = encodeURIComponent(req.params.lang);
-    const questionsUrl = new URL(`/questions/getQuestionsFromDb/1/${category}/${language}`, questionGenerationServiceUrl);
+    const n = encodeURIComponent(req.params.n);
+    const questionsUrl = new URL(`/questions/random/${category}/${n}`, questionGenerationServiceUrl);
     const questionsResponse = await axios.get(questionsUrl.href);
-    res.json(questionsResponse.data);
+    res.send(questionsResponse.data);
   } catch (error) {
-    res.status(error.response).json({ error: error.response });
+    console.log("GS: ERROR: " + error)
+    res.status(error.response).send({ error: error.response });
   }
 });
 

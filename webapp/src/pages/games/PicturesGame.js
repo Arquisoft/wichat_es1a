@@ -72,6 +72,7 @@ const PictureGame = () => {
   // Estados para el chat persistente
   const [chatMessages, setChatMessages] = React.useState([]);
   const [chatInput, setChatInput] = React.useState('');
+  const [isChatVisible, setIsChatVisible] = React.useState(false);
 
   // Iniciar nueva ronda cuando el round cambie
   React.useEffect(() => {
@@ -491,6 +492,14 @@ const PictureGame = () => {
           <Button variant="outlined" onClick={toggleDrawer(false)} sx={{ mt: 2 }}>Cerrar</Button>
         </Box>
       </Drawer>
+      
+      <Button 
+        variant="contained" 
+        onClick={() => setIsChatVisible(!isChatVisible)} 
+        sx={{ position: 'fixed', bottom: '1em', right: '1em', zIndex: 1400 }}
+      >
+        {isChatVisible ? "Cerrar Chat" : "Abrir Chat"}
+      </Button>
 
       {/* Ventana de chat persistente en la esquina inferior derecha */}
       <Box

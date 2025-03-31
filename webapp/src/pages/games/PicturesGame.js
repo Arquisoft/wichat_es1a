@@ -166,29 +166,10 @@ const PictureGame = () => {
     try {
       await axios.put(`${apiEndpoint}/statistics`, {
         username: username,
-        the_callenge_earned_money: 0,
-        the_callenge_correctly_answered_questions: 0,
-        the_callenge_incorrectly_answered_questions: 0,
-        the_callenge_total_time_played: 0,
-        the_callenge_games_played: 0,
         wise_men_stack_earned_money: totalScore,
         wise_men_stack_correctly_answered_questions: correctlyAnsweredQuestions,
         wise_men_stack_incorrectly_answered_questions: incorrectlyAnsweredQuestions,
-        wise_men_stack_games_played: 1,
-        warm_question_earned_money: 0,
-        warm_question_correctly_answered_questions: 0,
-        warm_question_incorrectly_answered_questions: 0,
-        warm_question_passed_questions: 0,
-        warm_question_games_played: 0,
-        discovering_cities_earned_money: 0,
-        discovering_cities_correctly_answered_questions: 0,
-        discovering_cities_incorrectly_answered_questions: 0,
-        discovering_cities_games_played: 0,
-        online_earned_money: 0,
-        online_correctly_answered_questions: 0,
-        online_incorrectly_answered_questions: 0,
-        online_total_time_played: 0,
-        online_games_played: 0,
+        wise_men_stack_games_played: 1
       });
     } catch (error) {
       console.error("Error:", error);
@@ -354,7 +335,7 @@ const PictureGame = () => {
               </Typography>
               <Select value={category} onChange={(event) => setCategory(event.target.value)} style={{ minWidth: '120px' }}>
                 <MenuItem value="Animales">{t("Game.categories.animals")}</MenuItem>
-                <MenuItem value="Geografía">Geography</MenuItem>
+                {/* <MenuItem value="Geografía">Geography</MenuItem> */}
                 {/* Agrega más categorías si lo deseas */}
               </Select>
             </Box>

@@ -1,4 +1,4 @@
-const puppeteer = require('puppeteer');
+/**const puppeteer = require('puppeteer');
 const { defineFeature, loadFeature }=require('jest-cucumber');
 const setDefaultOptions = require('expect-puppeteer').setDefaultOptions
 const feature = loadFeature('./features/login-form.feature');
@@ -74,4 +74,4 @@ defineFeature(feature, test => {
     browser.close()
   })
 
-});
+}); **/

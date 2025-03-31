@@ -72,7 +72,9 @@ export class QuestionDBService extends PromiseStore {
     }
 
     public static async destroy() {
-        await this._instance.syncPendingPromises();
+        if (this._instance) {
+            await this._instance.syncPendingPromises();
+        }
         await mongoose.disconnect();
         this._instance = null;
     }

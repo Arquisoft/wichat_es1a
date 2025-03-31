@@ -3,10 +3,10 @@ import { describe, it, expect } from '@jest/globals';
 
 describe('WikidataEntity', () => {
   it('should create an entity with the given image_url and common_name', () => {
-    const entity = new WikidataEntity("https://example.com/image.jpg", "Lion");
+    const entity = new WikidataEntity("https://example.com/image.jpg").addAttribute("common_name", "Lion");
 
     expect(entity.image_url).toBe("https://example.com/image.jpg");
-    expect(entity.common_name).toBe("Lion");
+    expect(entity.getAttribute("common_name")).toBe("Lion");
   });
 });
 

@@ -21,6 +21,7 @@ jobs:
     - run: npm --prefix users ci && npm --prefix users test -- --coverage
     - run: npm --prefix questions ci && npm --prefix questions test -- --coverage
     - run: npm --prefix gatewayservice ci && npm --prefix gatewayservice test -- --coverage
+    - run: npm --prefix llmservice ci && npm --prefix llmservice test -- --coverage
     - run: npm --prefix webapp ci && npm --prefix webapp test -- --coverage
 
     - name: Analyze with SonarCloud

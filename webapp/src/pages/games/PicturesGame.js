@@ -15,11 +15,12 @@ import {
   Paper,
   Drawer,
   Divider,
-  TextField
+  TextField,
+  Popover
 } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
-import { PlayArrow, Pause } from '@mui/icons-material';
+import { PlayArrow, Pause, ChatBubble, Close } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { SessionContext } from '../../SessionContext';
 import { useContext } from 'react';
@@ -27,6 +28,8 @@ import Confetti from 'react-confetti';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import { useTranslation } from 'react-i18next';
 import i18n from '../../localize/i18n';
+// Icono para el redimensionado
+import DragHandleIcon from '@mui/icons-material/DragHandle';
 
 const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
 const llmEndpoint = 'http://localhost:8003';
@@ -72,6 +75,12 @@ const PictureGame = () => {
   // Estados para el chat persistente
   const [chatMessages, setChatMessages] = React.useState([]);
   const [chatInput, setChatInput] = React.useState('');
+  // Estados para el chat redimensionable
+  const [chatSize, setChatSize] = React.useState({ width: 300, height: 300 });
+  const [isResizing, setIsResizing] = React.useState(false);
+  const [resizeStartPos, setResizeStartPos] = React.useState({ x: 0, y: 0 });
+  const [resizeStartSize, setResizeStartSize] = React.useState({ width: 0, height: 0 });
+  const [chatOpen, setChatOpen] = React.useState(true);
 
   // Iniciar nueva ronda cuando el round cambie
   React.useEffect(() => {
@@ -405,166 +414,211 @@ const PictureGame = () => {
   }
 
   return (
-    <Container sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around', alignItems: 'center', textAlign: 'center', flex: '1', gap: '2em', margin: '0 auto', padding: '1em 0' }}>
+    <Container maxWidth="xl" sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around', alignItems: 'center', textAlign: 'center', flex: '1', gap: '2em', margin: '0 auto', padding: '1em 0' }}>
       <CssBaseline />
-      <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        {false ?
-          // Pausa (no activa en este ejemplo)
-          <IconButton
-            variant="contained"
-            size="large"
-            color="primary"
-            aria-label={paused ? t("Game.play") : t("Game.pause")}
-            onClick={() => togglePause()}
-            sx={{ height: 100, width: 100, border: `2px solid ${theme.palette.primary.main}` }}
-            data-testid={paused ? "play" : "pause"}
-          >
-            {paused ? <PlayArrow sx={{ fontSize: 75 }} /> : <Pause sx={{ fontSize: 75 }} />}
-          </IconButton>
-          :
-          // Cronómetro
-          <CountdownCircleTimer
-            data-testid="circleTimer"
-            key={questionCountdownKey}
-            isPlaying={questionCountdownRunning}
-            duration={targetTime}
-            colorsTime={[10, 6, 3, 0]}
-            colors={[theme.palette.success.main, "#F7B801", "#f50707", theme.palette.error.main]}
-            size={100}
-            onComplete={() => endGame()}
-          >
-            {({ remainingTime }) => (
-              <Box style={{ display: 'flex', alignItems: 'center' }}>
-                <Typography fontSize="1.2em" fontWeight="bold">{remainingTime}</Typography>
-              </Box>
-            )}
-          </CountdownCircleTimer>
-        }
-      </Container>
-
-      <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1em', position: 'relative' }}>
-        <Box sx={{ position: 'relative', display: 'inline-block' }}>
-          <Typography variant="h5" gutterBottom>¿Qué animal es este?</Typography>
-          <img style={{ maxHeight: '30em', maxWidth: '30em' }} src={questionData.image_url} alt="Imagen pregunta" />
-        </Box>
-        <Grid container spacing={2} justifyContent="center">
-          {possibleAnswers.map((option, index) => (
-            <Grid item xs={6} key={index} display="flex" justifyContent="center">
-              <Button
-                data-testid={buttonStates[index] === "success" ? `success${index}` : buttonStates[index] === "failure" ? `fail${index}` : `answer${index}`}
+      
+      {/* Contenedor principal usando Grid para mejor organización del espacio */}
+      <Grid container spacing={2}>
+        {/* Columna izquierda (juego) - ocupa 8/12 en pantallas grandes, 12/12 en pequeñas */}
+        <Grid item xs={12} md={8}>
+          <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            {false ?
+              // Pausa (no activa en este ejemplo)
+              <IconButton
                 variant="contained"
-                onClick={() => selectResponse(index, option)}
-                disabled={buttonStates[index] !== null || answered}
-                sx={{
-                  height: "3.3em",
-                  width: "90%",
-                  borderRadius: "10px",
-                  "&:disabled": {
-                    backgroundColor: buttonStates[index] === "success"
-                      ? theme.palette.success.main
-                      : buttonStates[index] === "failure"
-                        ? theme.palette.error.main
-                        : "gray",
-                    color: "white"
+                size="large"
+                color="primary"
+                aria-label={paused ? t("Game.play") : t("Game.pause")}
+                onClick={() => togglePause()}
+                sx={{ height: 100, width: 100, border: `2px solid ${theme.palette.primary.main}` }}
+                data-testid={paused ? "play" : "pause"}
+              >
+                {paused ? <PlayArrow sx={{ fontSize: 75 }} /> : <Pause sx={{ fontSize: 75 }} />}
+              </IconButton>
+              :
+              // Cronómetro
+              <CountdownCircleTimer
+                data-testid="circleTimer"
+                key={questionCountdownKey}
+                isPlaying={questionCountdownRunning}
+                duration={targetTime}
+                colorsTime={[10, 6, 3, 0]}
+                colors={[theme.palette.success.main, "#F7B801", "#f50707", theme.palette.error.main]}
+                size={100}
+                onComplete={() => endGame()}
+              >
+                {({ remainingTime }) => (
+                  <Box style={{ display: 'flex', alignItems: 'center' }}>
+                    <Typography fontSize="1.2em" fontWeight="bold">{remainingTime}</Typography>
+                  </Box>
+                )}
+              </CountdownCircleTimer>
+            }
+            
+            <Box sx={{ position: 'relative', display: 'inline-block', mt: 2 }}>
+              <Typography variant="h5" gutterBottom>¿Qué animal es este?</Typography>
+              <img style={{ maxHeight: '30em', maxWidth: '100%' }} src={questionData?.image_url} alt="Imagen pregunta" />
+            </Box>
+            
+            <Grid container spacing={2} justifyContent="center" mt={2}>
+              {possibleAnswers.map((option, index) => (
+                <Grid item xs={6} key={index} display="flex" justifyContent="center">
+                  <Button
+                    data-testid={buttonStates[index] === "success" ? `success${index}` : buttonStates[index] === "failure" ? `fail${index}` : `answer${index}`}
+                    variant="contained"
+                    onClick={() => selectResponse(index, option)}
+                    disabled={buttonStates[index] !== null || answered}
+                    sx={{
+                      height: "3.3em",
+                      width: "90%",
+                      borderRadius: "10px",
+                      "&:disabled": {
+                        backgroundColor: buttonStates[index] === "success"
+                          ? theme.palette.success.main
+                          : buttonStates[index] === "failure"
+                            ? theme.palette.error.main
+                            : "gray",
+                        color: "white"
+                      }
+                    }}
+                  >
+                    {buttonStates[index] === "success" ? <CheckIcon /> : buttonStates[index] === "failure" ? <ClearIcon /> : null}
+                    {option}
+                  </Button>
+                </Grid>
+              ))}
+            </Grid>
+            
+            <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', width: '100%', mt: 2 }}>
+              {questionHistorialBar()}
+              {answered || round === 1 ? <Box></Box> : <Card data-testid="prog_bar_final" sx={{ width: `${100 / round}%`, padding: '0.2em', margin: '0 0.1em', backgroundColor: 'gray' }} />}
+            </Box>
+          </Container>
+        </Grid>
+        
+        {/* Columna derecha (chat) - ocupa 4/12 en pantallas grandes, 12/12 en pequeñas */}
+        <Grid item xs={12} md={4}>
+          {/* Contenedor de chat integrado */}
+          <Paper
+            elevation={3}
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              height: '100%',
+              minHeight: '400px',
+              borderRadius: '8px',
+              overflow: 'hidden'
+            }}
+          >
+            {/* Cabecera del chat */}
+            <Box
+              sx={{
+                backgroundColor: theme.palette.primary.main,
+                padding: '0.5em 1em',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+              }}
+            >
+              <Typography variant="subtitle1" sx={{ color: 'white' }}>
+                Chat de Pistas
+              </Typography>
+              <Button
+                variant="outlined"
+                size="small"
+                onClick={getHint}
+                sx={{ 
+                  color: 'white',
+                  borderColor: 'white',
+                  '&:hover': {
+                    borderColor: 'white',
+                    backgroundColor: 'rgba(255,255,255,0.1)'
                   }
                 }}
               >
-                {buttonStates[index] === "success" ? <CheckIcon /> : buttonStates[index] === "failure" ? <ClearIcon /> : null}
-                {option}
+                Pista
               </Button>
-            </Grid>
-          ))}
-        </Grid>
-      </Container>
-
-      <Container sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginTop: '2em' }}>
-        {questionHistorialBar()}
-        {answered || round === 1 ? <Box></Box> : <Card data-testid="prog_bar_final" sx={{ width: `${100 / round}%`, padding: '0.2em', margin: '0 0.1em', backgroundColor: 'gray' }} />}
-      </Container>
-
-      <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer(false)}>
-        <Box sx={{ width: 300, p: 2 }}>
-          <Typography variant="h6">Pista</Typography>
-          <Divider sx={{ mb: 2 }} />
-          {hint ? <Typography>{hint}</Typography> : <Typography>Cargando pista...</Typography>}
-          <Button variant="contained" onClick={getHint} sx={{ mt: 2 }}>Obtener pista</Button>
-          <Button variant="outlined" onClick={toggleDrawer(false)} sx={{ mt: 2 }}>Cerrar</Button>
-        </Box>
-      </Drawer>
-
-      {/* Ventana de chat persistente en la esquina inferior derecha */}
-      <Box
-        sx={{
-          position: 'fixed',
-          bottom: '1em',
-          right: '1em',
-          width: 300,
-          height: 350,
-          backgroundColor: theme.palette.background.paper,
-          borderRadius: '8px',
-          boxShadow: theme.shadows[5],
-          display: 'flex',
-          flexDirection: 'column',
-          zIndex: 1300,
-          overflow: 'hidden'
-        }}
-      >
-        {/* Cabecera del chat */}
-        <Box
-          sx={{
-            backgroundColor: theme.palette.primary.main,
-            padding: '0.5em',
-            borderTopLeftRadius: '8px',
-            borderTopRightRadius: '8px'
-          }}
-        >
-          <Typography variant="h6" sx={{ color: 'white' }}>Chatbot</Typography>
-        </Box>
-        {/* Área de mensajes */}
-        <Box sx={{ flex: 1, padding: '0.5em', overflowY: 'auto' }}>
-          {chatMessages.map((msg, index) => (
-            <Box
-              key={index}
-              sx={{
-                marginBottom: '0.5em',
+            </Box>
+            
+            {/* Área de mensajes */}
+            <Box 
+              sx={{ 
+                flex: 1, 
+                padding: '1em', 
+                overflowY: 'auto',
                 display: 'flex',
-                justifyContent: msg.sender === 'user' ? 'flex-end' : 'flex-start'
+                flexDirection: 'column',
+                bgcolor: theme.palette.background.default
               }}
             >
-              <Box
-                sx={{
-                  backgroundColor: msg.sender === 'user' ? theme.palette.primary.light : theme.palette.grey[300],
-                  color: msg.sender === 'user' ? 'white' : 'black',
-                  padding: '0.5em',
-                  borderRadius: '8px',
-                  maxWidth: '80%'
-                }}
-              >
-                <Typography variant="body2">{msg.text}</Typography>
-              </Box>
+              {chatMessages.length === 0 && (
+                <Box sx={{ 
+                  display: 'flex', 
+                  justifyContent: 'center', 
+                  alignItems: 'center', 
+                  height: '100%',
+                  color: theme.palette.text.secondary,
+                  flexDirection: 'column'
+                }}>
+                  <ChatBubble sx={{ fontSize: 40, mb: 1, opacity: 0.5 }} />
+                  <Typography variant="body2">
+                    Envía un mensaje para pedir ayuda o pistas sobre la imagen
+                  </Typography>
+                </Box>
+              )}
+              {chatMessages.map((msg, index) => (
+                <Box
+                  key={index}
+                  sx={{
+                    marginBottom: '0.8em',
+                    display: 'flex',
+                    justifyContent: msg.sender === 'user' ? 'flex-end' : 'flex-start'
+                  }}
+                >
+                  <Box
+                    sx={{
+                      backgroundColor: msg.sender === 'user' ? theme.palette.primary.light : theme.palette.grey[300],
+                      color: msg.sender === 'user' ? 'white' : 'black',
+                      padding: '0.8em',
+                      borderRadius: '12px',
+                      maxWidth: '80%',
+                      wordBreak: 'break-word',
+                      boxShadow: 1
+                    }}
+                  >
+                    <Typography variant="body2">{msg.text}</Typography>
+                  </Box>
+                </Box>
+              ))}
             </Box>
-          ))}
-        </Box>
-        {/* Input para enviar mensajes */}
-        <Box sx={{ display: 'flex', padding: '0.5em', borderTop: '1px solid #ddd' }}>
-          <TextField
-            fullWidth
-            variant="outlined"
-            size="small"
-            placeholder="Escribe tu mensaje..."
-            value={chatInput}
-            onChange={(e) => setChatInput(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                sendChatMessage();
-              }
-            }}
-          />
-          <Button onClick={sendChatMessage} variant="contained" sx={{ marginLeft: '0.5em' }}>
-            Enviar
-          </Button>
-        </Box>
-      </Box>
+            
+            {/* Input para enviar mensajes */}
+            <Box sx={{ display: 'flex', padding: '0.8em', borderTop: `1px solid ${theme.palette.divider}` }}>
+              <TextField
+                fullWidth
+                variant="outlined"
+                size="small"
+                placeholder="Escribe tu mensaje..."
+                value={chatInput}
+                onChange={(e) => setChatInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendChatMessage();
+                  }
+                }}
+              />
+              <Button 
+                onClick={sendChatMessage} 
+                variant="contained" 
+                sx={{ marginLeft: '0.5em' }}
+              >
+                Enviar
+              </Button>
+            </Box>
+          </Paper>
+        </Grid>
+      </Grid>
     </Container>
   );
 };

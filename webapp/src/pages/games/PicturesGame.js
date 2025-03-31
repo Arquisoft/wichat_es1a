@@ -29,8 +29,10 @@ import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import { useTranslation } from 'react-i18next';
 import i18n from '../../localize/i18n';
 
-const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
-const llmEndpoint = 'http://localhost:8003';
+const IP = "20.68.199.233";
+// const IP = "localhost";
+const apiEndpoint = `http://${IP}:8000`;
+const llmEndpoint = `http://${IP}:8003`;
 
 const PictureGame = () => {
   const navigate = useNavigate();
@@ -116,12 +118,12 @@ const PictureGame = () => {
   const startNewRound = async () => {
     // 1. Limpiamos el chat
     setChatMessages([]);
-  
+
     // 2. Reseteamos otros estados
     setAnswered(false);
     setPassNewRound(false);
     setCurrentLanguage(i18n.language);
-  
+
     // 3. Obtenemos la nueva pregunta
     axios.get(`${apiEndpoint}/questions/random/4`)
       .then(async (quest) => {
@@ -129,7 +131,7 @@ const PictureGame = () => {
         setQuestionData(question);
         setButtonStates(new Array(4).fill(null));
         getPossibleOptions(question);
-  
+
         // 4. Configuramos la imagen en el LLM
         if (question.image_url) {
           try {
@@ -144,7 +146,7 @@ const PictureGame = () => {
       .catch(error => {
         console.error("Could not get questions", error);
       });
-  };  
+  };
 
   // Preparar opciones de respuesta
   const getPossibleOptions = async (question) => {

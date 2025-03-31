@@ -12,13 +12,15 @@ const Login = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const theme = useTheme();
-  
+
   const navigate = useNavigate();
 
   const { createSession, updateAvatar } = useContext(SessionContext);
   const { t } = useTranslation();
 
-  const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
+    // const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
+    const IP = "20.68.199.233";
+    const apiEndpoint = `http://${IP}:8000`;
 
   const loginUser = async () => {
     try {

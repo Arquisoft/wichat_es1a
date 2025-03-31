@@ -6,7 +6,8 @@ import { SessionContext } from '../SessionContext';
 import { useTranslation } from 'react-i18next';
 
 //const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
-const apiEndpoint = 'http://localhost:8000'
+const IP = "20.68.199.233";
+const apiEndpoint = `http://${IP}:8000`;
 
 const AddUser = () => {
   const { t } = useTranslation();
@@ -14,7 +15,7 @@ const AddUser = () => {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [name, setName] = useState(''); 
+  const [name, setName] = useState('');
   const [surname, setSurname] = useState('');
   const [error, setError] = useState('');
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -28,10 +29,10 @@ const AddUser = () => {
       await axios.post(`${apiEndpoint}/user`, {
         username,
         password,
-        name, 
+        name,
         surname
       });
-      
+
       let response = await axios.post(`${apiEndpoint}/login`, { username, password });
       updateAvatar(response.data.avatar);
       setOpenSnackbar(true);

@@ -1,17 +1,17 @@
-# Use an official Node.js runtime as a parent image
+# Usa la imagen oficial de Node.js
 FROM node:20
 
-# Set the working directory in the container
+# Directorio de trabajo general para tu aplicación (sin incluir 'src' aquí)
 WORKDIR /usr/src/llmservice
 
-# Copy package.json and package-lock.json to the working directory
+# Copia package.json y package-lock.json primero para optimizar caché de dependencias
 COPY package*.json ./
 
-# Install app dependencies
+# Instala las dependencias
 RUN npm install
 
-# Copy the app source code to the working directory
+# Copia todos los archivos del proyecto al directorio de trabajo
 COPY . .
 
-# Define the command to run your app
-CMD ["node", "llm-service.js"]
+# Comando de arranque ajustado para reflejar la carpeta 'src'
+CMD ["node", "src/llm-service.js"]

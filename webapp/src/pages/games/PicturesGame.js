@@ -28,8 +28,6 @@ import Confetti from 'react-confetti';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import { useTranslation } from 'react-i18next';
 import i18n from '../../localize/i18n';
-// Icono para el redimensionado
-import DragHandleIcon from '@mui/icons-material/DragHandle';
 
 const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
 const llmEndpoint = 'http://localhost:8003';

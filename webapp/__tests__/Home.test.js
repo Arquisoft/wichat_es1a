@@ -4,7 +4,7 @@ import Home from "../Home";
 import { SessionContext } from "../SessionContext";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { I18nextProvider } from "react-i18next";
-import i18n from "../i18n"; // Asegúrate de que este es el archivo correcto de configuración de i18next
+import i18n from 'i18next';
 
 const customRender = (ui, { providerProps, theme, ...renderOptions }) => {
   return render(

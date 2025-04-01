@@ -47,7 +47,7 @@ export class WikidataQuestion {
 }
 
 export class QuestionDBService extends PromiseStore {
-    private questionsCache: Set<Number> = new Set();
+    private questionsCache: Map<Number,Set<Number>> = new Map();
 
     private constructor() {
         super();
@@ -104,11 +104,13 @@ export class QuestionDBService extends PromiseStore {
         let n_iterations = 0;
 
         while (await this.getQuestionsCount(recipe.getCategory()) <= n) {
-            await this.generateQuestions(Math.max(n * 2, 20), recipe);
+            await this.generateQuestions(Math.max(n * 2, 20), recipe)
 
             n_iterations += 1;
             if (n_iterations >= MAX_ITERATIONS) {
                 console.log("ERROR: Too many requests, giving up");
+                console.log("WARNING: Clearing the cache");
+                this.questionsCache.get(recipe.getCategory()).clear();
                 break;
             }
         }
@@ -145,6 +147,11 @@ export class QuestionDBService extends PromiseStore {
     }
 
     async generateQuestions(n: number, recipe: WikidataRecipe = new AnimalRecipe()) : Promise<IQuestion[]> {
+        if (!this.questionsCache.has(recipe.getCategory())) {
+            this.questionsCache.set(recipe.getCategory(), new Set());
+        }
+        let cache = this.questionsCache.get(recipe.getCategory());
+
         console.log("Generating a batch of " + n + " questions")
 
         let query = recipe.buildQuery().random().limit(n);
@@ -157,13 +164,13 @@ export class QuestionDBService extends PromiseStore {
             /* TODO: We need to enable this, but for now wikidata returns only a few items */
             // return true;
 
-            const pattern = /.*Q/;
+            const pattern = "http://www.wikidata.org/entity/Q"
             let n = Number(e.item.value.replace(pattern, ""));
-            if (this.questionsCache.has(n)) {
-                console.log("Repeated " + n)
+            if (cache.has(n)) {
+                // console.log("Repeated " + n)
                 return false;
             } else {
-                this.questionsCache.add(n);
+                cache.add(n);
                 return true;
             }
         })

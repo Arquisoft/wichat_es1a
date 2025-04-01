@@ -114,15 +114,12 @@ const PictureGame = () => {
   }, [paused, passNewRound]);
 
   const startNewRound = async () => {
-    // 1. Limpiamos el chat
-    setChatMessages([]);
-  
-    // 2. Reseteamos otros estados
+    // Reseteamos los estados
     setAnswered(false);
     setPassNewRound(false);
     setCurrentLanguage(i18n.language);
   
-    // 3. Obtenemos la nueva pregunta
+    // Obtenemos la nueva pregunta
     axios.get(`${apiEndpoint}/questions/random/4`)
       .then(async (quest) => {
         const question = quest.data[0];
@@ -130,19 +127,32 @@ const PictureGame = () => {
         setButtonStates(new Array(4).fill(null));
         getPossibleOptions(question);
   
-        // 4. Configuramos la imagen en el LLM
+        // Configuramos la imagen en el LLM y obtenemos el mensaje de bienvenida
         if (question.image_url) {
           try {
-            await axios.post(`${llmEndpoint}/set-image`, {
-              imageUrl: question.image_url
+            const response = await axios.post(`${llmEndpoint}/set-image`, {
+              imageUrl: question.image_url,
+              gameCategory: category
             });
+            
+            // Inicializamos el chat con el mensaje de bienvenida
+            if (response.data.welcomeMessage) {
+              setChatMessages([
+                { sender: 'system', text: response.data.welcomeMessage }
+              ]);
+            } else {
+              // Si no hay mensaje de bienvenida, inicializamos chat vacío
+              setChatMessages([]);
+            }
           } catch (error) {
             console.error("Error al configurar la imagen en el LLM:", error);
+            setChatMessages([]); // En caso de error, chat vacío
           }
         }
       })
       .catch(error => {
         console.error("Could not get questions", error);
+        setChatMessages([]); // En caso de error, chat vacío
       });
   };  
 

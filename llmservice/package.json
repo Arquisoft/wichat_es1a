@@ -16,7 +16,7 @@
   },
   "scripts": {
     "start": "node src/llm-service.js",
-    "test": "react-scripts test"
+    "test": "npx jest"
   },
   "jest": {
     "transformIgnorePatterns": [

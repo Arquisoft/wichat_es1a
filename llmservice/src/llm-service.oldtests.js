@@ -9,18 +9,18 @@ jest.mock("axios", () => ({
 
 // Antes de cada prueba iniciamos un nuevo servidor para evitar conflictos
 beforeEach(() => {
-  jest.resetModules(); 
+  jest.resetModules();
   server = require("./llm-service");
-  
+
   axios.post.mockImplementation((url, data) => {
     if (url.includes("generativelanguage")) {
       return Promise.resolve({
-        data: { 
-          candidates: [{ 
-            content: { 
-              parts: [{ text: "llmanswer" }] 
-            } 
-          }] 
+        data: {
+          candidates: [{
+            content: {
+              parts: [{ text: "llmanswer" }]
+            }
+          }]
         },
       });
     }
@@ -42,7 +42,7 @@ describe("LLM Service", () => {
     const response = await request(server)
       .post("/set-image")
       .send({ imageUrl: "https://www.wikidata.org/wiki/Q134015#/media/File:Meerkat_(Suricata_suricatta).jpg" });
-    
+
     expect(response.statusCode).toBe(200);
     expect(response.body).toHaveProperty("message");
     expect(response.body.message).toBe("Imagen de referencia actualizada correctamente.");
@@ -52,7 +52,7 @@ describe("LLM Service", () => {
     await request(server)
       .post("/set-image")
       .send({ imageUrl: "https://www.wikidata.org/wiki/Q134015#/media/File:Meerkat_(Suricata_suricatta).jpg" });
-    
+
     const response = await request(server)
       .post("/chat")
       .send({

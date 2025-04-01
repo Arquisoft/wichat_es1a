@@ -28,6 +28,13 @@ const llmConfigs = {
           gameContext =
             "Eres una IA en un juego de adivinanza de lugares geográficos. Solo puedes responder con pistas relacionadas con el lugar en la imagen.";
           break;
+
+
+          case "flags":
+              gameContext =
+                  "Eres una IA en un juego de adivinanza de lugares geográficos. Solo puedes responder con pistas relacionadas con el país al que representa la imagen."
+              break;
+
         // Puedes agregar más casos según tus categorías
         default:
           gameContext =

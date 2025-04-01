@@ -155,17 +155,17 @@ export class QuestionDBService extends PromiseStore {
 
         const bindings = response.data.results.bindings.filter((e: any) => {
             /* TODO: We need to enable this, but for now wikidata returns only a few items */
-            return true;
+            // return true;
 
-            // const pattern = /.*Q/;
-            // let n = Number(e.item.value.replace(pattern, ""));
-            // if (this.questionsCache.has(n)) {
-            //     console.log("Repeated " + n)
-            //     return false;
-            // } else {
-            //     this.questionsCache.add(n);
-            //     return true;
-            // }
+            const pattern = /.*Q/;
+            let n = Number(e.item.value.replace(pattern, ""));
+            if (this.questionsCache.has(n)) {
+                console.log("Repeated " + n)
+                return false;
+            } else {
+                this.questionsCache.add(n);
+                return true;
+            }
         })
 
         const genQuestions: Promise<IQuestion>[] =

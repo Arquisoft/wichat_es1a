@@ -116,20 +116,20 @@ const PictureGame = () => {
   const startNewRound = async () => {
     // 1. Limpiamos el chat
     setChatMessages([]);
-  
+
     // 2. Reseteamos otros estados
     setAnswered(false);
     setPassNewRound(false);
     setCurrentLanguage(i18n.language);
-  
+
     // 3. Obtenemos la nueva pregunta
-    axios.get(`${apiEndpoint}/questions/random/4`)
+    axios.get(`${apiEndpoint}/questions/random/4`, { username })
       .then(async (quest) => {
         const question = quest.data[0];
         setQuestionData(question);
         setButtonStates(new Array(4).fill(null));
         getPossibleOptions(question);
-  
+
         // 4. Configuramos la imagen en el LLM
         if (question.image_url) {
           try {
@@ -144,7 +144,7 @@ const PictureGame = () => {
       .catch(error => {
         console.error("Could not get questions", error);
       });
-  };  
+  };
 
   // Preparar opciones de respuesta
   const getPossibleOptions = async (question) => {
@@ -414,7 +414,7 @@ const PictureGame = () => {
   return (
     <Container maxWidth="xl" sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around', alignItems: 'center', textAlign: 'center', flex: '1', gap: '2em', margin: '0 auto', padding: '1em 0' }}>
       <CssBaseline />
-      
+
       {/* Contenedor principal usando Grid para mejor organización del espacio */}
       <Grid container spacing={2}>
         {/* Columna izquierda (juego) - ocupa 8/12 en pantallas grandes, 12/12 en pequeñas */}
@@ -452,12 +452,12 @@ const PictureGame = () => {
                 )}
               </CountdownCircleTimer>
             }
-            
+
             <Box sx={{ position: 'relative', display: 'inline-block', mt: 2 }}>
               <Typography variant="h5" gutterBottom>¿Qué animal es este?</Typography>
               <img style={{ maxHeight: '30em', maxWidth: '100%' }} src={questionData?.image_url} alt="Imagen pregunta" />
             </Box>
-            
+
             <Grid container spacing={2} justifyContent="center" mt={2}>
               {possibleAnswers.map((option, index) => (
                 <Grid item xs={6} key={index} display="flex" justifyContent="center">
@@ -486,14 +486,14 @@ const PictureGame = () => {
                 </Grid>
               ))}
             </Grid>
-            
+
             <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', width: '100%', mt: 2 }}>
               {questionHistorialBar()}
               {answered || round === 1 ? <Box></Box> : <Card data-testid="prog_bar_final" sx={{ width: `${100 / round}%`, padding: '0.2em', margin: '0 0.1em', backgroundColor: 'gray' }} />}
             </Box>
           </Container>
         </Grid>
-        
+
         {/* Columna derecha (chat) - ocupa 4/12 en pantallas grandes, 12/12 en pequeñas */}
         <Grid item xs={12} md={4}>
           {/* Contenedor de chat integrado */}
@@ -525,7 +525,7 @@ const PictureGame = () => {
                 variant="outlined"
                 size="small"
                 onClick={getHint}
-                sx={{ 
+                sx={{
                   color: 'white',
                   borderColor: 'white',
                   '&:hover': {
@@ -537,12 +537,12 @@ const PictureGame = () => {
                 Pista
               </Button>
             </Box>
-            
+
             {/* Área de mensajes */}
-            <Box 
-              sx={{ 
-                flex: 1, 
-                padding: '1em', 
+            <Box
+              sx={{
+                flex: 1,
+                padding: '1em',
                 overflowY: 'auto',
                 display: 'flex',
                 flexDirection: 'column',
@@ -550,10 +550,10 @@ const PictureGame = () => {
               }}
             >
               {chatMessages.length === 0 && (
-                <Box sx={{ 
-                  display: 'flex', 
-                  justifyContent: 'center', 
-                  alignItems: 'center', 
+                <Box sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                   height: '100%',
                   color: theme.palette.text.secondary,
                   flexDirection: 'column'
@@ -589,7 +589,7 @@ const PictureGame = () => {
                 </Box>
               ))}
             </Box>
-            
+
             {/* Input para enviar mensajes */}
             <Box sx={{ display: 'flex', padding: '0.8em', borderTop: `1px solid ${theme.palette.divider}` }}>
               <TextField
@@ -606,9 +606,9 @@ const PictureGame = () => {
                   }
                 }}
               />
-              <Button 
-                onClick={sendChatMessage} 
-                variant="contained" 
+              <Button
+                onClick={sendChatMessage}
+                variant="contained"
                 sx={{ marginLeft: '0.5em' }}
               >
                 Enviar

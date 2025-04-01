@@ -82,7 +82,7 @@ export class QuestionDBService extends PromiseStore {
         this._instance = null;
     }
 
-    async getRandomQuestions(n: number = 1, category: Number = Categories.Animals) : Promise<WikidataQuestion[]> {
+    async getRandomQuestions(n: number = 1, username: String = "", category: Number = Categories.Animals) : Promise<WikidataQuestion[]> {
         /* At this point, we need to sync previously postponed promises.
          * Like question deletion, or the initial question generation
          * from the constructor.
@@ -91,32 +91,35 @@ export class QuestionDBService extends PromiseStore {
 
         let recipe: WikidataRecipe = category_into_recipe(category);
 
-        return this.getRandomEntities(n * 4, recipe).then((entities) => {
+        return this.getRandomEntities(n * 4, username, recipe).then((entities) => {
             return entities.chunks(4).map((chunk) => {
                 return recipe.generateQuestion(chunk)
             });
         })
     }
 
-    async getRandomEntities(n: number = 1, recipe: WikidataRecipe) : Promise<WikidataEntity[]> {
+    async getRandomEntities(n: number = 1, username: String, recipe: WikidataRecipe) : Promise<WikidataEntity[]> {
 
         const MAX_ITERATIONS = 3;
         let n_iterations = 0;
 
-        while (await this.getQuestionsCount(recipe.getCategory()) <= n) {
+        while (await this.getQuestionsCount(recipe.getCategory(), username) <= n) {
             await this.generateQuestions(Math.max(n * 2, 20), recipe)
 
             n_iterations += 1;
             if (n_iterations >= MAX_ITERATIONS) {
                 console.log("ERROR: Too many requests, giving up");
-                console.log("WARNING: Clearing the cache");
-                this.questionsCache.get(recipe.getCategory()).clear();
+                // console.log("WARNING: Clearing the cache");
+                // this.questionsCache.get(username).clear();
                 break;
             }
         }
 
         let q = await Question.aggregate([
-            { $match: { category: recipe.getCategory() } },
+            { $match: {
+                category: recipe.getCategory(),
+                usedBy: { $not: { $in: [username] } },
+            } },
             { $sample: { size: n } },
         ]);
 
@@ -125,8 +128,10 @@ export class QuestionDBService extends PromiseStore {
          * awaited. But, for now, it's faster to not block.
          */
         let deletions = q.map((e: IQuestion) => {
-            return Question.deleteOne({_id: e._id})
-                           .then(() => { /*console.log("Deleted " + e.wdUri) */ })
+            return Question.updateOne({_id: e._id}, {
+                $push : { usedBy: [username] }
+            })
+            .then(() => { /*console.log("Deleted " + e.wdUri) */ })
         })
         this.addPromise(Promise.all(deletions));
 
@@ -140,9 +145,10 @@ export class QuestionDBService extends PromiseStore {
         })
     }
 
-    async getQuestionsCount(cat: Number = Categories.Animals) : Promise<number> {
+    async getQuestionsCount(cat: Number = Categories.Animals, username: String = "") : Promise<number> {
       return await Question.countDocuments({
-          category: cat
+          category: cat,
+          usedBy: { $not: { $in: [username] } },
       })
     }
 
@@ -179,9 +185,11 @@ export class QuestionDBService extends PromiseStore {
             bindings.map((elem: any) => {
 
             let attrs = recipe.getAttributes(elem);
+            const pattern = "http://www.wikidata.org/entity/Q"
+            let wdId = Number(elem.item.value.replace(pattern, ""));
             return new Question({
                 image_url: elem.imagen.value,
-                wdUri: elem.item.value,
+                wdId,
                 attrs,
                 category: recipe.getCategory()
             }).save()

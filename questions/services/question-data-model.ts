@@ -6,10 +6,11 @@ interface IQuestion extends Document {
     options: string[];
     correctAnswer: string;
     categories: string[];
-    wdUri: string;
+    wdId: Number;
     image_url: string;
     category: Number;
     attrs: [String,String][],
+    usedBy: string[],
 }
 
 const questionSchema: Schema<IQuestion> = new Schema({
@@ -17,9 +18,13 @@ const questionSchema: Schema<IQuestion> = new Schema({
     options: { type: [String], required: false },
     correctAnswer: { type: String, required: false },
     categories: { type: [String], required: false },
-    wdUri: { type: String, required: false },
+    wdId: { type: Number, required: false },
     image_url: { type: String, required: false },
     category: { type: Number, required: true },
+    usedBy: {
+        type: [String],
+        default: () => [],
+    },
     attrs: {
         type: [[String,String]],
         required: true,

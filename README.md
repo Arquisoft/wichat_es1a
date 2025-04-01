@@ -92,7 +92,7 @@ After all the components are launched, the app should be available in localhost 
 
 The users and question APIs documentation is available at
 - Users: https://app.swaggerhub.com/apis/asw-98d/users-service_api/
-- Questions: https://app.swaggerhub.com/apis/asw-98d/questionservice-api/1.0.0
+- Questions: https://app.swaggerhub.com/apis/asw-98d/questionservice-api/
 
 ### Continuous delivery (GitHub Actions)
 Once we have our machine ready, we could deploy by hand the application, taking our docker-compose file and executing it in the remote machine. In this repository, this process is done automatically using **GitHub Actions**. The idea is to trigger a series of actions when some condition is met in the repository. The precondition to trigger a deployment is going to be: "create a new release". The actions to execute are the following:

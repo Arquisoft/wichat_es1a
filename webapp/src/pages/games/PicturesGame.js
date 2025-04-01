@@ -56,8 +56,8 @@ const PictureGame = () => {
   const [totalTimePlayed, setTotalTimePlayed] = React.useState(0);
   const [timerRunning, setTimerRunning] = React.useState(true);
   const [showConfetti, setShowConfetti] = React.useState(false);
-  const [questionCountdownKey] = React.useState(60);
-  const [targetTime] = React.useState(60);
+  const [questionCountdownKey, setQuestionCountdownKey] = React.useState(0);
+  const [timerPerQuestion] = React.useState(45); //Tiempo por pregunta en segundos
   const [questionCountdownRunning, setQuestionCountdownRunning] = React.useState(false);
   const [userResponses, setUserResponses] = React.useState([]);
   const [language, setCurrentLanguage] = React.useState(i18n.language);
@@ -68,7 +68,9 @@ const PictureGame = () => {
   const [paused, setPaused] = React.useState(false);
   const [passNewRound, setPassNewRound] = React.useState(false);
   const [hint, setHint] = React.useState(null);
-  const [questionHistorial, setQuestionHistorial] = React.useState(Array(round).fill(null));
+  const [questionHistorial, setQuestionHistorial] = React.useState(Array(5).fill(null)); // Siempre 5 preguntas
+  // Añadimos una animación de transición entre preguntas
+  const [fadeTransition, setFadeTransition] = React.useState(false);
 
   // Estados para el chat persistente
   const [chatMessages, setChatMessages] = React.useState([]);
@@ -82,9 +84,13 @@ const PictureGame = () => {
 
   // Iniciar nueva ronda cuando el round cambie
   React.useEffect(() => {
-    if (totalTimePlayed <= targetTime) {
+    if (round <= 5) { // Límite de 5 rondas
       startNewRound();
       setQuestionCountdownRunning(true);
+      // Reiniciamos el temporizador para cada pregunta
+      setQuestionCountdownKey(prev => prev + 1);
+    } else {
+      endGame();
     }
     // eslint-disable-next-line
   }, [round]);
@@ -229,6 +235,9 @@ const PictureGame = () => {
     setAnswered(true);
     const newButtonStates = [...buttonStates];
 
+    // Activar efecto de transición
+    setFadeTransition(true);
+
     if (response === questionData.response) {
       let options = new Array(questionData.distractors);
       options.push(questionData.response);
@@ -280,9 +289,10 @@ const PictureGame = () => {
     setButtonStates(newButtonStates);
 
     setTimeout(() => {
+      setFadeTransition(false); // Desactivar efecto de transición
       setPassNewRound(true);
       setCurrentLanguage(i18n.language);
-    }, 4000);
+    }, 3000);
   };
 
   const questionHistorialBar = () => {
@@ -422,23 +432,51 @@ const PictureGame = () => {
   }
 
   return (
-    <Container maxWidth="xl" sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around', alignItems: 'center', textAlign: 'center', flex: '1', gap: '2em', margin: '0 auto', padding: '1em 0' }}>
+    <Container maxWidth="xl" sx={{ 
+      display: 'flex', 
+      flexDirection: 'column', 
+      justifyContent: 'space-around', 
+      alignItems: 'center', 
+      textAlign: 'center', 
+      flex: '1', 
+      gap: '2em', 
+      margin: '0 auto', 
+      padding: '1em 0',
+      // Añadimos fondo con degradado para mejorar apariencia
+      background: 'linear-gradient(to bottom, #f5f7fa, #e4e8f0)'
+    }}>
       <CssBaseline />
       
       {/* Contenedor principal usando Grid para mejor organización del espacio */}
-      <Grid container spacing={2}>
+      <Grid container spacing={3}>
         {/* Columna izquierda (juego) - ocupa 8/12 en pantallas grandes, 12/12 en pequeñas */}
         <Grid item xs={12} md={8}>
-          <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            {false ?
-              // Pausa (no activa en este ejemplo)
+          <Container sx={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            alignItems: 'center',
+            // Transición suave entre preguntas
+            opacity: fadeTransition ? 0.7 : 1,
+            transition: 'opacity 0.5s ease-in-out'
+          }}>
+            {answered ?
+              // Botón de pausa/continuar
               <IconButton
                 variant="contained"
                 size="large"
                 color="primary"
                 aria-label={paused ? t("Game.play") : t("Game.pause")}
                 onClick={() => togglePause()}
-                sx={{ height: 100, width: 100, border: `2px solid ${theme.palette.primary.main}` }}
+                sx={{ 
+                  height: 100, 
+                  width: 100, 
+                  border: `2px solid ${theme.palette.primary.main}`,
+                  boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
+                  transition: 'transform 0.2s ease',
+                  '&:hover': {
+                    transform: 'scale(1.05)'
+                  }
+                }}
                 data-testid={paused ? "play" : "pause"}
               >
                 {paused ? <PlayArrow sx={{ fontSize: 75 }} /> : <Pause sx={{ fontSize: 75 }} />}
@@ -449,15 +487,23 @@ const PictureGame = () => {
                 data-testid="circleTimer"
                 key={questionCountdownKey}
                 isPlaying={questionCountdownRunning}
-                duration={targetTime}
-                colorsTime={[10, 6, 3, 0]}
+                duration={timerPerQuestion}
+                colorsTime={[30, 15, 7, 0]}
                 colors={[theme.palette.success.main, "#F7B801", "#f50707", theme.palette.error.main]}
-                size={100}
-                onComplete={() => endGame()}
+                size={120}
+                strokeWidth={12}
+                trailColor="#eee"
+                onComplete={() => selectResponse(-1, "FAILED")}
               >
                 {({ remainingTime }) => (
-                  <Box style={{ display: 'flex', alignItems: 'center' }}>
-                    <Typography fontSize="1.2em" fontWeight="bold">{remainingTime}</Typography>
+                  <Box style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    flexDirection: 'column',
+                    animation: remainingTime <= 5 ? 'pulse 1s infinite' : 'none'
+                  }}>
+                    <Typography fontSize="1.8em" fontWeight="bold">{remainingTime}</Typography>
+                    <Typography variant="caption" fontSize="0.8em">segundos</Typography>
                   </Box>
                 )}
               </CountdownCircleTimer>

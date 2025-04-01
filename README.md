@@ -88,27 +88,11 @@ Lastly, go to the webapp directory and launch this component with `npm install` 
 
 After all the components are launched, the app should be available in localhost in port 3000.
 
-## Deployment
-For the deployment, we have several options. The first and more flexible is to deploy to a virtual machine using SSH. This will work with any cloud service (or with our own server). Other options include using the container services that all the cloud services provide. This means, deploying our Docker containers directly. Here I am going to use the first approach. I am going to create a virtual machine in a cloud service and after installing docker and docker-compose, deploy our containers there using GitHub Actions and SSH.
+### Public APIS
 
-### Machine requirements for deployment
-The machine for deployment can be created in services like Microsoft Azure or Amazon AWS. These are in general the settings that it must have:
-
-- Linux machine with Ubuntu > 20.04 (the recommended is 24.04).
-- Docker installed.
-- Open ports for the applications installed (in this case, ports 3000 for the webapp and 8000 for the gateway service).
-
-Once you have the virtual machine created, you can install **docker** using the following instructions:
-
-```ssh
-sudo apt update
-sudo apt install apt-transport-https ca-certificates curl software-properties-common
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
-sudo apt update
-sudo apt install docker-ce
-sudo usermod -aG docker ${USER}
-```
+The users and question APIs documentation is available at
+- Users: https://app.swaggerhub.com/apis/asw-98d/users-service_api/
+- Questions: https://app.swaggerhub.com/apis/asw-98d/questionservice-api/1.0.0
 
 ### Continuous delivery (GitHub Actions)
 Once we have our machine ready, we could deploy by hand the application, taking our docker-compose file and executing it in the remote machine. In this repository, this process is done automatically using **GitHub Actions**. The idea is to trigger a series of actions when some condition is met in the repository. The precondition to trigger a deployment is going to be: "create a new release". The actions to execute are the following:

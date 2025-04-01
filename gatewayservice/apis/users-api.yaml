@@ -1,16 +1,15 @@
----
 openapi: 3.0.0
 info:
   title: UsersService API
   description: User OpenAPI specification
   version: 1.0.0
-servers:
-- url: https://virtserver.swaggerhub.com/UO289689_1/users-api/1.0.0
-  description: SwaggerHub API Auto Mocking
-- url: http://localhost:8000
-  description: Development server
-- url: http://20.19.89.97:8000
-  description: Production server
+# servers:
+# - url: https://virtserver.swaggerhub.com/UO289689_1/users-api/1.0.0
+#   description: SwaggerHub API Auto Mocking
+# - url: http://localhost:8000
+#   description: Development server
+# - url: http://20.19.89.97:8000
+#   description: Production server
 paths:
   /user:
     get:
@@ -62,18 +61,18 @@ paths:
                 $ref: '#/components/schemas/inline_response_200_2'
         "400":
           description: Bad request
-  /ranking:
-    get:
-      summary: Get users sorted by correct answers
-      responses:
-        "200":
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_200'
-        "400":
-          description: Bad request
+  # /ranking:
+  #   get:
+  #     summary: Get users sorted by correct answers
+  #     responses:
+  #       "200":
+  #         description: Successful operation
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/inline_response_200'
+  #       "400":
+  #         description: Bad request
   /statistics/{username}:
     get:
       summary: Get user statistics by username
@@ -113,105 +112,105 @@ paths:
                 $ref: '#/components/schemas/inline_response_200_4'
         "500":
           description: Internal Server Error
-  /questionsRecord/{username}/{gameMode}:
-    get:
-      summary: Get users questions record by username and game mode
-      parameters:
-      - name: username
-        in: path
-        description: Username
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
-      - name: gameMode
-        in: path
-        description: Game mode
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
-      responses:
-        "200":
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_200_5'
-        "500":
-          description: Internal Server Error
-  /questionsRecord:
-    put:
-      summary: Update users questions record
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/questionsRecord_body'
-        required: true
-      responses:
-        "200":
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/questionsRecord_body'
-        "500":
-          description: Internal Server Error
-  /group:
-    get:
-      summary: Get all users groups
-      responses:
-        "200":
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_200_6'
-        "500":
-          description: Internal Server Error
-    post:
-      summary: Add a new group
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/group_body'
-        required: true
-      responses:
-        "200":
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_200_7'
-        "400":
-          description: Bad request
-  /group/{name}:
-    get:
-      summary: Get group by name
-      parameters:
-      - name: name
-        in: path
-        description: Group name
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
-      responses:
-        "200":
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_200_7'
-        "404":
-          description: Group not found
-        "400":
-          description: Bad request
+  # /questionsRecord/{username}/{gameMode}:
+  #   get:
+  #     summary: Get users questions record by username and game mode
+  #     parameters:
+  #     - name: username
+  #       in: path
+  #       description: Username
+  #       required: true
+  #       style: simple
+  #       explode: false
+  #       schema:
+  #         type: string
+  #     - name: gameMode
+  #       in: path
+  #       description: Game mode
+  #       required: true
+  #       style: simple
+  #       explode: false
+  #       schema:
+  #         type: string
+  #     responses:
+  #       "200":
+  #         description: Successful operation
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/inline_response_200_5'
+  #       "500":
+  #         description: Internal Server Error
+  # /questionsRecord:
+  #   put:
+  #     summary: Update users questions record
+  #     requestBody:
+  #       content:
+  #         application/json:
+  #           schema:
+  #             $ref: '#/components/schemas/questionsRecord_body'
+  #       required: true
+  #     responses:
+  #       "200":
+  #         description: Successful operation
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/questionsRecord_body'
+  #       "500":
+  #         description: Internal Server Error
+  # /group:
+  #   get:
+  #     summary: Get all users groups
+  #     responses:
+  #       "200":
+  #         description: Successful operation
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/inline_response_200_6'
+  #       "500":
+  #         description: Internal Server Error
+  #   post:
+  #     summary: Add a new group
+  #     requestBody:
+  #       content:
+  #         application/json:
+  #           schema:
+  #             $ref: '#/components/schemas/group_body'
+  #       required: true
+  #     responses:
+  #       "200":
+  #         description: Successful operation
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/inline_response_200_7'
+  #       "400":
+  #         description: Bad request
+  # /group/{name}:
+  #   get:
+  #     summary: Get group by name
+  #     parameters:
+  #     - name: name
+  #       in: path
+  #       description: Group name
+  #       required: true
+  #       style: simple
+  #       explode: false
+  #       schema:
+  #         type: string
+  #     responses:
+  #       "200":
+  #         description: Successful operation
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/inline_response_200_7'
+  #       "404":
+  #         description: Group not found
+  #       "400":
+  #         description: Bad request
 components:
   schemas:
     inline_response_200:
@@ -224,8 +223,8 @@ components:
             properties:
               username:
                 type: string
-              password:
-                type: string
+              # password:
+              #   type: string
               name:
                 type: string
               surname:
@@ -239,8 +238,8 @@ components:
       properties:
         username:
           type: string
-        password:
-          type: string
+        # password:
+        #   type: string
         name:
           type: string
         surname:
@@ -250,8 +249,8 @@ components:
       properties:
         username:
           type: string
-        password:
-          type: string
+        # password:
+        #   type: string
         name:
           type: string
         surname:
@@ -263,8 +262,8 @@ components:
       properties:
         username:
           type: string
-        password:
-          type: string
+        # password:
+        #   type: string
         name:
           type: string
         surname:

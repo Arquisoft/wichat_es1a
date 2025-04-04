@@ -2,11 +2,13 @@ import * as mongoose from 'mongoose';
 import { Question, IQuestion } from '../../questions/services/question-data-model.ts';
 import "../utils/array-chunks.ts"
 
-import { WikidataEntity, category_into_recipe, Categories } from "./wikidata";
+import { WikidataEntity, category_into_recipe, Categories, P } from "./wikidata";
 
 import * as dotenv from "dotenv";
 import { PromiseStore } from '../utils/promises.ts';
 import { AnimalRecipe, WikidataRecipe } from './question-generation.ts';
+import { WikidataQueryBuilder } from './wikidata/query_builder.ts';
+import { chunks } from '../utils/array-chunks.ts';
 
 dotenv.config();
 
@@ -93,7 +95,12 @@ export class QuestionDBService extends PromiseStore {
 
         return this.getRandomEntities(n * 4, recipe).then((entities) => {
             return entities.chunks(4).map((chunk) => {
-                return recipe.generateQuestion(chunk)
+                let g = recipe.generateQuestion();
+                return new WikidataQuestion(chunk[0], chunk[0].attrs)
+                            .set_response(g(chunk[0]))
+                            .set_distractor(g(chunk[1]))
+                            .set_distractor(g(chunk[2]))
+                            .set_distractor(g(chunk[3]))
             });
         })
     }
@@ -154,7 +161,12 @@ export class QuestionDBService extends PromiseStore {
 
         console.log("Generating a batch of " + n + " questions")
 
-        let query = recipe.buildQuery().random().limit(n);
+        let query = new WikidataQueryBuilder()
+                     .assocProperty(P.IMAGE, "imagen");
+
+        recipe.buildQuery(query);
+
+        query.random().limit(n);
 
         // For debugging
         // console.log("Executing query: " + query.build());

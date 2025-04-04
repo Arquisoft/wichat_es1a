@@ -1,36 +1,31 @@
+import { Console } from "console";
 import { WikidataQuestion } from "./question-db-service";
 import { Categories, P, Q, WikidataEntity } from "./wikidata";
 import { WikidataQueryBuilder } from "./wikidata/query_builder";
 
+export type GenFunction = (we: WikidataEntity) => String;
+
 export interface WikidataRecipe {
-    buildQuery() : WikidataQueryBuilder;
+    buildQuery(qb: WikidataQueryBuilder);
     getAttributes(binding: any) : Array<[String,String]>;
-    generateQuestion(chunk: WikidataEntity[]) : WikidataQuestion;
+    generateQuestion(): GenFunction;
 
     getCategory() : Number;
 }
 
 export class AnimalRecipe implements WikidataRecipe {
-    buildQuery(): WikidataQueryBuilder {
-        return new WikidataQueryBuilder()
-                .subclassOf(Q.ANIMAL)
-                .assocProperty(P.IMAGE, "imagen")
-                .assocProperty(P.COMMON_NAME, "common_name", true, "es")
-                .assocProperty(P.TAXON_NAME, "taxon_name", false)
+    buildQuery(qb: WikidataQueryBuilder) {
+        qb
+        .subclassOf(Q.ANIMAL)
+        .assocProperty(1843, "common_name", true, "es")
     }
     getAttributes(binding: any): Array<[String,String]> {
-        let common_name = binding.common_name ? binding.common_name.value : "UNKNOWN";
         return [
-            ["common_name", common_name],
-            ["taxon_name", binding.taxon_name.value],
+            ["item_label", binding.itemLabel.value],
         ]
     }
-    generateQuestion(chunk: WikidataEntity[]): WikidataQuestion {
-        return new WikidataQuestion(chunk[0], chunk[0].attrs)
-                    .set_response(chunk[0].getAttribute("taxon_name"))
-                    .set_distractor(chunk[1].getAttribute("taxon_name"))
-                    .set_distractor(chunk[2].getAttribute("taxon_name"))
-                    .set_distractor(chunk[3].getAttribute("taxon_name"))
+    generateQuestion(): GenFunction {
+        return (we: WikidataEntity) => we.getAttribute("item_label")
     }
 
     getCategory(): Number {
@@ -39,28 +34,41 @@ export class AnimalRecipe implements WikidataRecipe {
 
 }
 
-export class CitiesRecipe implements WikidataRecipe {
-    buildQuery(): WikidataQueryBuilder {
-        return new WikidataQueryBuilder()
-                .subclassOf(Q.CITY)
-                .assocProperty(P.IMAGE, "imagen")
-                .assocProperty(P.COUNTRY, "country")
+export class GeographyRecipe implements WikidataRecipe {
+    buildQuery(qb: WikidataQueryBuilder) {
+        qb.subclassOf(Q.CITY)
     }
     getAttributes(binding: any): [String,String][] {
+        return [
+            ["item_label", binding.itemLabel.value],
+        ]
+    }
+    generateQuestion(): GenFunction {
+        return (we: WikidataEntity) => we.getAttribute("item_label")
+    }
+
+    getCategory(): Number {
+        return Categories.Geography
+    }
+
+}
+
+export class FlagsRecipe implements WikidataRecipe {
+    buildQuery(qb: WikidataQueryBuilder) {
+        qb
+        .instanceOf(186516)
+        .assocProperty(1001, "country")
+    }
+    getAttributes(binding: any): Array<[String, String]> {
         return [
             ["country", binding.countryLabel.value],
         ]
     }
-    generateQuestion(chunk: WikidataEntity[]): WikidataQuestion {
-        return new WikidataQuestion(chunk[0], chunk[0].attrs)
-                    .set_response(chunk[0].getAttribute("country"))
-                    .set_distractor(chunk[1].getAttribute("country"))
-                    .set_distractor(chunk[2].getAttribute("country"))
-                    .set_distractor(chunk[3].getAttribute("country"))
+    generateQuestion(): GenFunction {
+        return (we: WikidataEntity) => we.getAttribute("country")
     }
-
     getCategory(): Number {
-        return Categories.Cities
+        return Categories.Flags
     }
 
 }

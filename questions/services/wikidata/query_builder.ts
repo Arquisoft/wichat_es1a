@@ -102,7 +102,7 @@ export class WikidataQueryBuilder {
 
     build() : String {
         let query = "";
-        query += "SELECT DISTINCT ?item "
+        query += "SELECT DISTINCT ?item ?itemLabel"
         this._assocProperties.forEach(prop => {
             query += ` ?${prop.name} ?${prop.name}Label `
         });

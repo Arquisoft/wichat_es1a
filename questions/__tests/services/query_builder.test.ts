@@ -8,7 +8,7 @@ describe('WikidataQueryBuilder', () => {
       .assocProperty(18, "pic")
       .build();
 
-    expect(query).toBe("SELECT DISTINCT ?item  ?pic ?picLabel  WHERE {?item wdt:P31 wd:Q146;wdt:P18 ?pic ;SERVICE wikibase:label { bd:serviceParam wikibase:language \"es\"}}")
+    expect(query).toBe("SELECT DISTINCT ?item ?itemLabel ?pic ?picLabel  WHERE {?item wdt:P31 wd:Q146;wdt:P18 ?pic ;SERVICE wikibase:label { bd:serviceParam wikibase:language \"es\"}}")
   });
 
   it('Should correctly format a WDPropertyAssoc with optional set to true', () => {

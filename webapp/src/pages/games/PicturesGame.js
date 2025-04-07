@@ -23,7 +23,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import { PlayArrow, Pause, ChatBubble, Close } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { SessionContext } from '../../SessionContext';
-import { useContext } from 'react';
+import {useContext, useMemo} from 'react';
 import Confetti from 'react-confetti';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import { useTranslation } from 'react-i18next';
@@ -89,6 +89,13 @@ const PictureGame = () => {
     // eslint-disable-next-line
   }, [round]);
 
+  const questionText = useMemo(() => {
+    switch (category) {
+      case 'animals': return '¿Que animal es este?';
+      case 'cities': return '¿Que país es este?';
+    }
+  }, [category]);
+
   const endGame = () => {
     setTimerRunning(false);
     setShouldRedirect(true);
@@ -123,7 +130,7 @@ const PictureGame = () => {
     setCurrentLanguage(i18n.language);
   
     // 3. Obtenemos la nueva pregunta
-    axios.get(`${apiEndpoint}/questions/random/4`)
+    axios.get(`${apiEndpoint}/questions/random/${category}/4`)
       .then(async (quest) => {
         const question = quest.data[0];
         setQuestionData(question);
@@ -358,9 +365,9 @@ const PictureGame = () => {
               <Typography data-testid="categories-label" variant="h5" htmlFor="category">
                 {t("Game.config.category")}:
               </Typography>
-              <Select value={category} onChange={(event) => setCategory(event.target.value)} style={{ minWidth: '120px' }}>
-                <MenuItem value="Animals">{t("Game.categories.animals")}</MenuItem>
-                <MenuItem value="Geography">Geography</MenuItem>
+              <Select value={category} style={{ minWidth: '120px' }}>
+                <MenuItem value="animals" onClick={() => setCategory(('animals'))}>{t("Game.categories.animals")}</MenuItem>
+                <MenuItem value="cities" onClick={() => setCategory(('cities'))}>{t("Game.categories.cities")}</MenuItem>
                 {/* Agrega más categorías si lo deseas */}
               </Select>
             </Box>
@@ -454,7 +461,9 @@ const PictureGame = () => {
             }
             
             <Box sx={{ position: 'relative', display: 'inline-block', mt: 2 }}>
-              <Typography variant="h5" gutterBottom>¿Qué animal es este?</Typography>
+              <Typography variant="h5" gutterBottom>
+                {questionText}
+              </Typography>
               <img style={{ maxHeight: '30em', maxWidth: '100%' }} src={questionData?.image_url} alt="Imagen pregunta" />
             </Box>
             

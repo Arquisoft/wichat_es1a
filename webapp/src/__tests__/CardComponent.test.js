@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import CardComponent from './CardComponent';
+import CardComponent from '../components/CardComponent';
 
 describe('CardComponent', () => {
     const mockProps = {

@@ -359,8 +359,8 @@ const PictureGame = () => {
                 {t("Game.config.category")}:
               </Typography>
               <Select value={category} onChange={(event) => setCategory(event.target.value)} style={{ minWidth: '120px' }}>
-                <MenuItem value="Animals">{t("Game.categories.animals")}</MenuItem>
-                <MenuItem value="Geography">Geography</MenuItem>
+                <MenuItem value="Animales">{t("Game.categories.animals")}</MenuItem>
+                <MenuItem value="Geografía">Geography</MenuItem>
                 {/* Agrega más categorías si lo deseas */}
               </Select>
             </Box>

@@ -28,12 +28,11 @@ All development after that is made by us (wichat_es1a)
 
 ▪️ Participants👥:
 
-- Andrea Fuertes Carral (**UO276299**). 💟
-- Sara Inés Bolado (**UO277494**). 🥰
-- Pablo Pérez Saavedra (**UO288816**). 🧐
-- Sara Lamuño García (**UO283706**). 🦊
-- Saúl Valdelvira Iglesias (**UO283685**). 👾
-- Alejandro Aldea Viana (**UO293873**). 🍉
+- Andrea Fuertes Carral (**UO276299**). 
+- Sara Inés Bolado (**UO277494**). 
+- Pablo Pérez Saavedra (**UO288816**). 
+- Saúl Valdelvira Iglesias (**UO283685**). 
+- Alejandro Aldea Viana (**UO293873**). 
 
 This is a base project for the Software Architecture course in 2024/2025.
 It is a basic application composed of several components.

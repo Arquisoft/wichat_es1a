@@ -45,6 +45,9 @@ current architecture.
 
 | Code cleanup and adaptation from last year’s project
 | The project inherits code from last year’s implementation, which may not meet current requirements or best practices. To address this, we will dedicate time to learning how to properly transfer and adapt the previous project to align with the updated requirements. This includes improving code quality, removing redundant code, and ensuring compatibility with the new project scope.
+
+| Departure of a team member
+| The departure of a team member in the middle of the project creates a gap in the team's capacity and can lead to reorganization of work and issues. This also impacts knowledge continuity, requiring time for other members to onboard and understand the previous work. To mitigate this, we will equally redistribute tasks and maintain a good team atmosphere.
 |===
 
 By systematically addressing these risks and technical debts, we aim to enhance project stability, maintainability, and long-term viability.

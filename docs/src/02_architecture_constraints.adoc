@@ -63,4 +63,5 @@ There are various architectural constraints that affect this application. They h
 | Constraint | Description
 | Technical and theoretical knowledge | We are not professional developers and have limited experience. Therefore, we will use tools and languages minimally known by some team members.
 | Budget | We will use free tools or services for which the University has a license.
+| Termination of a team member | Because of the decision to dismiss Sara Lamuño, we are a smaller team who needs to dedicate more time to solve all issues and to understand the code.
 |===

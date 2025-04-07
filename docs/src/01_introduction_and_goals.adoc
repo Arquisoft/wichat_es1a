@@ -8,7 +8,6 @@ WIChat is a project forked from the University of Oviedo latest base repository 
 * Andrea Fuertes, UO276299@uniovi.es
 * Sara Inés, UO277494@uniovi.es
 * Pablo Pérez, UO288816@uniovi.es
-* Sara Lamuño, UO283706@uniovi.es
 * Saúl Valdelvira, UO283685@uniovi.es
 * Alejandro Aldea, UO293873@uniovi.es
 
@@ -76,7 +75,6 @@ a|
 * Andrea Fuertes
 * Sara Inés
 * Pablo Pérez
-* Sara Lamuño
 * Saúl Valdelvira
 * Alejandro Aldea
 | The engineering students are expected to improve communication, teamwork and coding skills adopting a developer role in this project.

@@ -9,12 +9,12 @@ Scenario: User starts the quiz successfully
 Scenario: User answers question correctly
   Given the user is in the quiz
   When the user selects the first correct answer question
-  Then moves to the next question
+  Then turns the button green and moves to the next question
 
 Scenario: User answers the second question correctly
   Given the user is in the quiz with one question answered
   When the user selects correct answer
-  Then moves to the next question
+  Then turns the button green and moves to the next question
    
 Scenario: User runs out of time on a question
   Given the user is in the quiz
@@ -24,15 +24,15 @@ Scenario: User runs out of time on a question
 Scenario: User submits an incorrect answer
   Given the user is in the quiz
   When the user selects an incorrect answer
-  Then moves to the next question
+  Then turns the button red and moves to the next question
 
 Scenario: User answers the second question correctly
   Given the user is in the quiz with one question answered
   When the user selects correct answer
-  Then moves to the next question
+  Then turns the button green and moves to the next question
 
 Scenario: User answers the third question correctly
   Given the user is in the quiz with one question answered
   When the user selects correct answer
-  Then finish the game
+  Then turns the button green and finish the game
    

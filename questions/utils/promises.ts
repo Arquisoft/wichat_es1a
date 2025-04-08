@@ -1,7 +1,7 @@
 
 export interface IPromiseStore {
     addPromise(p: Promise<any>) : void;
-    syncPendingPromises() : void;
+    syncPendingPromises() : Promise<void>;
 }
 
 export class PromiseStore implements IPromiseStore {

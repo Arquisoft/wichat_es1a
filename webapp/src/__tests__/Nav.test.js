@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { MemoryRouter } from 'react-router-dom';
-import NavBar from '../NavBar';
+import NavBar from '../components/NavBar';
 import { SessionContext } from '../SessionContext';
 import i18n from 'i18next';
 

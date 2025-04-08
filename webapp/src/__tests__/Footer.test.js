@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
-import Footer from '../Footer';
+import Footer from '../components/Footer';
 
 describe('Footer Component', () => {
   test('renders the footer with correct text', () => {

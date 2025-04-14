@@ -6,7 +6,7 @@ import { WikidataEntity, category_into_recipe, Categories, P } from "./wikidata"
 
 import * as dotenv from "dotenv";
 import { PromiseStore } from '../utils/promises.ts';
-import { AnimalRecipe, WikidataRecipe } from './question-generation.ts';
+import { AnimalRecipe, FlagsRecipe, WikidataRecipe } from './question-generation.ts';
 import { WikidataQueryBuilder } from './wikidata/query_builder.ts';
 import { chunks } from '../utils/array-chunks.ts';
 
@@ -56,22 +56,27 @@ export class QuestionDBService extends PromiseStore {
         this.addPromise(
             mongoose.connect(QuestionDBService._mongodbUri)
                     .then(async () => {
-                        await Question.deleteMany().then(async () => {
-                            await this.generateQuestions(20, new AnimalRecipe())
-                        })
+                        console.log(`Connected to mongodb at "${QuestionDBService._mongodbUri}"`);
+                        this.addPromise(
+                            Question.deleteMany().then(() => {
+                                this.addPromise(
+                                    this.generateQuestions(40, new FlagsRecipe())
+                                )
+                            })
+                        )
                     })
         );
     }
 
     private static _instance: QuestionDBService = null;
-    private static _mongodbUri: string = process.env.DATABASE_URI || 'mongodb://localhost:27017/questionDB';
+    private static _mongodbUri: string = process.env.DATABASE_URI || 'mongodb://127.0.0.1:27017/questionDB';
 
     public static setMongodbUri(uri: string) {
         this._mongodbUri = uri;
     }
 
     public static getInstance() : QuestionDBService {
-        if (this._instance == null)
+        if (!this._instance)
             this._instance = new QuestionDBService();
         return this._instance
     }

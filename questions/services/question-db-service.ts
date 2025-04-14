@@ -2,11 +2,13 @@ import * as mongoose from 'mongoose';
 import { Question, IQuestion } from '../../questions/services/question-data-model.ts';
 import "../utils/array-chunks.ts"
 
-import { WikidataEntity, category_into_recipe, Categories } from "./wikidata";
+import { WikidataEntity, category_into_recipe, Categories, P } from "./wikidata";
 
 import * as dotenv from "dotenv";
 import { PromiseStore } from '../utils/promises.ts';
 import { AnimalRecipe, WikidataRecipe } from './question-generation.ts';
+import { WikidataQueryBuilder } from './wikidata/query_builder.ts';
+import { chunks } from '../utils/array-chunks.ts';
 
 dotenv.config();
 
@@ -47,7 +49,7 @@ export class WikidataQuestion {
 }
 
 export class QuestionDBService extends PromiseStore {
-    private questionsCache: Set<Number> = new Set();
+    private questionsCache: Map<Number,Set<Number>> = new Map();
 
     private constructor() {
         super();
@@ -93,7 +95,12 @@ export class QuestionDBService extends PromiseStore {
 
         return this.getRandomEntities(n * 4, recipe).then((entities) => {
             return entities.chunks(4).map((chunk) => {
-                return recipe.generateQuestion(chunk)
+                let g = recipe.generateQuestion();
+                return new WikidataQuestion(chunk[0], chunk[0].attrs)
+                            .set_response(g(chunk[0]))
+                            .set_distractor(g(chunk[1]))
+                            .set_distractor(g(chunk[2]))
+                            .set_distractor(g(chunk[3]))
             });
         })
     }
@@ -104,11 +111,13 @@ export class QuestionDBService extends PromiseStore {
         let n_iterations = 0;
 
         while (await this.getQuestionsCount(recipe.getCategory()) <= n) {
-            await this.generateQuestions(Math.max(n * 2, 20), recipe);
+            await this.generateQuestions(Math.max(n * 2, 20), recipe)
 
             n_iterations += 1;
             if (n_iterations >= MAX_ITERATIONS) {
                 console.log("ERROR: Too many requests, giving up");
+                console.log("WARNING: Clearing the cache");
+                this.questionsCache.get(recipe.getCategory()).clear();
                 break;
             }
         }
@@ -145,9 +154,19 @@ export class QuestionDBService extends PromiseStore {
     }
 
     async generateQuestions(n: number, recipe: WikidataRecipe = new AnimalRecipe()) : Promise<IQuestion[]> {
+        if (!this.questionsCache.has(recipe.getCategory())) {
+            this.questionsCache.set(recipe.getCategory(), new Set());
+        }
+        let cache = this.questionsCache.get(recipe.getCategory());
+
         console.log("Generating a batch of " + n + " questions")
 
-        let query = recipe.buildQuery().random().limit(n);
+        let query = new WikidataQueryBuilder()
+                     .assocProperty(P.IMAGE, "imagen");
+
+        recipe.buildQuery(query);
+
+        query.random().limit(n);
 
         // For debugging
         // console.log("Executing query: " + query.build());
@@ -155,17 +174,17 @@ export class QuestionDBService extends PromiseStore {
 
         const bindings = response.data.results.bindings.filter((e: any) => {
             /* TODO: We need to enable this, but for now wikidata returns only a few items */
-            return true;
+            // return true;
 
-            // const pattern = /.*Q/;
-            // let n = Number(e.item.value.replace(pattern, ""));
-            // if (this.questionsCache.has(n)) {
-            //     console.log("Repeated " + n)
-            //     return false;
-            // } else {
-            //     this.questionsCache.add(n);
-            //     return true;
-            // }
+            const pattern = "http://www.wikidata.org/entity/Q"
+            let n = Number(e.item.value.replace(pattern, ""));
+            if (cache.has(n)) {
+                // console.log("Repeated " + n)
+                return false;
+            } else {
+                cache.add(n);
+                return true;
+            }
         })
 
         const genQuestions: Promise<IQuestion>[] =

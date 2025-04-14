@@ -3,6 +3,10 @@
 [![Actions Status](https://github.com/arquisoft/wichat_es1a/workflows/Build/badge.svg)](https://github.com/arquisoft/wichat_es1a/actions)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Arquisoft_wichat_es1a&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Arquisoft_wichat_es1a)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Arquisoft_wichat_es1a&metric=coverage)](https://sonarcloud.io/summary/new_code?id=Arquisoft_wichat_es1a)
+[![CodeScene Average Code Health](https://codescene.io/projects/65366/status-badges/average-code-health)](https://codescene.io/projects/65366)
+[![CodeScene Hotspot Code Health](https://codescene.io/projects/65366/status-badges/hotspot-code-health)](https://codescene.io/projects/65366)
+[![CodeScene System Mastery](https://codescene.io/projects/65366/status-badges/system-mastery)](https://codescene.io/projects/65366)
+[![CodeScene general](https://codescene.io/images/analyzed-by-codescene-badge.svg)](https://codescene.io/projects/65366)
 
 <p float="left">
 <img src="https://blog.wildix.com/wp-content/uploads/2020/06/react-logo.jpg" height="100">
@@ -28,12 +32,11 @@ All development after that is made by us (wichat_es1a)
 
 ▪️ Participants👥:
 
-- Andrea Fuertes Carral (**UO276299**). 💟
-- Sara Inés Bolado (**UO277494**). 🥰
-- Pablo Pérez Saavedra (**UO288816**). 🧐
-- Sara Lamuño García (**UO283706**). 🦊
-- Saúl Valdelvira Iglesias (**UO283685**). 👾
-- Alejandro Aldea Viana (**UO293873**). 🍉
+- Andrea Fuertes Carral (**UO276299**). 
+- Sara Inés Bolado (**UO277494**). 
+- Pablo Pérez Saavedra (**UO288816**). 
+- Saúl Valdelvira Iglesias (**UO283685**). 
+- Alejandro Aldea Viana (**UO293873**). 
 
 This is a base project for the Software Architecture course in 2024/2025.
 It is a basic application composed of several components.

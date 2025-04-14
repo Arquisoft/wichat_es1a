@@ -33,7 +33,7 @@ To develop the app we will use the following technologies:
 * Docker Compose to deploy all the microservices.
 * GitHub: Platform offering remote repository services for project development, task management, and version control.
 * WikiData API to obtain question and answer information.
-* ExpressJS to build the backend.
+* ExpressJS and TypeScript to build the backend.
 
 We chose these technologies because they were already being used in the project we based our work on.
 This allowed us to build upon an existing foundation, facilitating development and ensuring compatibility while leveraging JavaScript’s agility and ReactJS’s efficiency in building user interfaces.

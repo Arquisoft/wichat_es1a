@@ -25,12 +25,6 @@ image:06_login.png["Login Sequence"]
 image:06_user_statistics.png["See User Statistics Sequence"]
 
 
-
-=== See Users and Groups Ranking
-
-image:06_groups_ranking.png["See Ranking Sequence"]
-
-
 === Play Games
 
 image:06_play_llm.png["Play Games Sequence"]

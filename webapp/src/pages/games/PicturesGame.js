@@ -56,8 +56,8 @@ const PictureGame = () => {
   const [totalTimePlayed, setTotalTimePlayed] = React.useState(0);
   const [timerRunning, setTimerRunning] = React.useState(true);
   const [showConfetti, setShowConfetti] = React.useState(false);
-  const [questionCountdownKey] = React.useState(60);
-  const [targetTime] = React.useState(60);
+  const [questionCountdownKey, setQuestionCountdownKey] = React.useState(0);
+  const [timerPerQuestion] = React.useState(45); //Tiempo por pregunta en segundos
   const [questionCountdownRunning, setQuestionCountdownRunning] = React.useState(false);
   const [userResponses, setUserResponses] = React.useState([]);
   const [language, setCurrentLanguage] = React.useState(i18n.language);
@@ -68,7 +68,9 @@ const PictureGame = () => {
   const [paused, setPaused] = React.useState(false);
   const [passNewRound, setPassNewRound] = React.useState(false);
   const [hint, setHint] = React.useState(null);
-  const [questionHistorial, setQuestionHistorial] = React.useState(Array(round).fill(null));
+  const [questionHistorial, setQuestionHistorial] = React.useState(Array(5).fill(null)); // Siempre 5 preguntas
+  // Añadimos una animación de transición entre preguntas
+  const [fadeTransition, setFadeTransition] = React.useState(false);
 
   // Estados para el chat persistente
   const [chatMessages, setChatMessages] = React.useState([]);
@@ -82,9 +84,13 @@ const PictureGame = () => {
 
   // Iniciar nueva ronda cuando el round cambie
   React.useEffect(() => {
-    if (totalTimePlayed <= targetTime) {
+    if (round <= 5) { // Límite de 5 rondas
       startNewRound();
       setQuestionCountdownRunning(true);
+      // Reiniciamos el temporizador para cada pregunta
+      setQuestionCountdownKey(prev => prev + 1);
+    } else {
+      endGame();
     }
     // eslint-disable-next-line
   }, [round]);
@@ -121,14 +127,11 @@ const PictureGame = () => {
   }, [paused, passNewRound]);
 
   const startNewRound = async () => {
-    // 1. Limpiamos el chat
-    setChatMessages([]);
-  
-    // 2. Reseteamos otros estados
+    // Reseteamos los estados
     setAnswered(false);
     setPassNewRound(false);
     setCurrentLanguage(i18n.language);
-  
+
     // 3. Obtenemos la nueva pregunta
     axios.get(`${apiEndpoint}/questions/random/${category}/4`)
       .then(async (quest) => {
@@ -136,22 +139,35 @@ const PictureGame = () => {
         setQuestionData(question);
         setButtonStates(new Array(4).fill(null));
         getPossibleOptions(question);
-  
-        // 4. Configuramos la imagen en el LLM
+
+        // Configuramos la imagen en el LLM y obtenemos el mensaje de bienvenida
         if (question.image_url) {
           try {
-            await axios.post(`${llmEndpoint}/set-image`, {
-              imageUrl: question.image_url
+            const response = await axios.post(`${llmEndpoint}/set-image`, {
+              imageUrl: question.image_url,
+              gameCategory: category
             });
+
+            // Inicializamos el chat con el mensaje de bienvenida
+            if (response.data.welcomeMessage) {
+              setChatMessages([
+                { sender: 'system', text: response.data.welcomeMessage }
+              ]);
+            } else {
+              // Si no hay mensaje de bienvenida, inicializamos chat vacío
+              setChatMessages([]);
+            }
           } catch (error) {
             console.error("Error al configurar la imagen en el LLM:", error);
+            setChatMessages([]); // En caso de error, chat vacío
           }
         }
       })
       .catch(error => {
         console.error("Could not get questions", error);
+        setChatMessages([]); // En caso de error, chat vacío
       });
-  };  
+  };
 
   // Preparar opciones de respuesta
   const getPossibleOptions = async (question) => {
@@ -226,6 +242,9 @@ const PictureGame = () => {
     setAnswered(true);
     const newButtonStates = [...buttonStates];
 
+    // Activar efecto de transición
+    setFadeTransition(true);
+
     if (response === questionData.response) {
       let options = new Array(questionData.distractors);
       options.push(questionData.response);
@@ -277,9 +296,10 @@ const PictureGame = () => {
     setButtonStates(newButtonStates);
 
     setTimeout(() => {
+      setFadeTransition(false); // Desactivar efecto de transición
       setPassNewRound(true);
       setCurrentLanguage(i18n.language);
-    }, 4000);
+    }, 3000);
   };
 
   const questionHistorialBar = () => {
@@ -419,23 +439,51 @@ const PictureGame = () => {
   }
 
   return (
-    <Container maxWidth="xl" sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around', alignItems: 'center', textAlign: 'center', flex: '1', gap: '2em', margin: '0 auto', padding: '1em 0' }}>
+    <Container maxWidth="xl" sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-around',
+      alignItems: 'center',
+      textAlign: 'center',
+      flex: '1',
+      gap: '2em',
+      margin: '0 auto',
+      padding: '1em 0',
+      // Añadimos fondo con degradado para mejorar apariencia
+      background: 'linear-gradient(to bottom, #f5f7fa, #e4e8f0)'
+    }}>
       <CssBaseline />
-      
+
       {/* Contenedor principal usando Grid para mejor organización del espacio */}
-      <Grid container spacing={2}>
+      <Grid container spacing={3}>
         {/* Columna izquierda (juego) - ocupa 8/12 en pantallas grandes, 12/12 en pequeñas */}
         <Grid item xs={12} md={8}>
-          <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            {false ?
-              // Pausa (no activa en este ejemplo)
+          <Container sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            // Transición suave entre preguntas
+            opacity: fadeTransition ? 0.7 : 1,
+            transition: 'opacity 0.5s ease-in-out'
+          }}>
+            {answered ?
+              // Botón de pausa/continuar
               <IconButton
                 variant="contained"
                 size="large"
                 color="primary"
                 aria-label={paused ? t("Game.play") : t("Game.pause")}
                 onClick={() => togglePause()}
-                sx={{ height: 100, width: 100, border: `2px solid ${theme.palette.primary.main}` }}
+                sx={{
+                  height: 100,
+                  width: 100,
+                  border: `2px solid ${theme.palette.primary.main}`,
+                  boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
+                  transition: 'transform 0.2s ease',
+                  '&:hover': {
+                    transform: 'scale(1.05)'
+                  }
+                }}
                 data-testid={paused ? "play" : "pause"}
               >
                 {paused ? <PlayArrow sx={{ fontSize: 75 }} /> : <Pause sx={{ fontSize: 75 }} />}
@@ -446,27 +494,35 @@ const PictureGame = () => {
                 data-testid="circleTimer"
                 key={questionCountdownKey}
                 isPlaying={questionCountdownRunning}
-                duration={targetTime}
-                colorsTime={[10, 6, 3, 0]}
+                duration={timerPerQuestion}
+                colorsTime={[30, 15, 7, 0]}
                 colors={[theme.palette.success.main, "#F7B801", "#f50707", theme.palette.error.main]}
-                size={100}
-                onComplete={() => endGame()}
+                size={120}
+                strokeWidth={12}
+                trailColor="#eee"
+                onComplete={() => selectResponse(-1, "FAILED")}
               >
                 {({ remainingTime }) => (
-                  <Box style={{ display: 'flex', alignItems: 'center' }}>
-                    <Typography fontSize="1.2em" fontWeight="bold">{remainingTime}</Typography>
+                  <Box style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    flexDirection: 'column',
+                    animation: remainingTime <= 5 ? 'pulse 1s infinite' : 'none'
+                  }}>
+                    <Typography fontSize="1.8em" fontWeight="bold">{remainingTime}</Typography>
+                    <Typography variant="caption" fontSize="0.8em">segundos</Typography>
                   </Box>
                 )}
               </CountdownCircleTimer>
             }
-            
+
             <Box sx={{ position: 'relative', display: 'inline-block', mt: 2 }}>
               <Typography variant="h5" gutterBottom>
                 {questionText}
               </Typography>
               <img style={{ maxHeight: '30em', maxWidth: '100%' }} src={questionData?.image_url} alt="Imagen pregunta" />
             </Box>
-            
+
             <Grid container spacing={2} justifyContent="center" mt={2}>
               {possibleAnswers.map((option, index) => (
                 <Grid item xs={6} key={index} display="flex" justifyContent="center">
@@ -495,14 +551,14 @@ const PictureGame = () => {
                 </Grid>
               ))}
             </Grid>
-            
+
             <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', width: '100%', mt: 2 }}>
               {questionHistorialBar()}
               {answered || round === 1 ? <Box></Box> : <Card data-testid="prog_bar_final" sx={{ width: `${100 / round}%`, padding: '0.2em', margin: '0 0.1em', backgroundColor: 'gray' }} />}
             </Box>
           </Container>
         </Grid>
-        
+
         {/* Columna derecha (chat) - ocupa 4/12 en pantallas grandes, 12/12 en pequeñas */}
         <Grid item xs={12} md={4}>
           {/* Contenedor de chat integrado */}
@@ -534,7 +590,7 @@ const PictureGame = () => {
                 variant="outlined"
                 size="small"
                 onClick={getHint}
-                sx={{ 
+                sx={{
                   color: 'white',
                   borderColor: 'white',
                   '&:hover': {
@@ -546,12 +602,12 @@ const PictureGame = () => {
                 Pista
               </Button>
             </Box>
-            
+
             {/* Área de mensajes */}
-            <Box 
-              sx={{ 
-                flex: 1, 
-                padding: '1em', 
+            <Box
+              sx={{
+                flex: 1,
+                padding: '1em',
                 overflowY: 'auto',
                 display: 'flex',
                 flexDirection: 'column',
@@ -559,10 +615,10 @@ const PictureGame = () => {
               }}
             >
               {chatMessages.length === 0 && (
-                <Box sx={{ 
-                  display: 'flex', 
-                  justifyContent: 'center', 
-                  alignItems: 'center', 
+                <Box sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                   height: '100%',
                   color: theme.palette.text.secondary,
                   flexDirection: 'column'
@@ -598,7 +654,7 @@ const PictureGame = () => {
                 </Box>
               ))}
             </Box>
-            
+
             {/* Input para enviar mensajes */}
             <Box sx={{ display: 'flex', padding: '0.8em', borderTop: `1px solid ${theme.palette.divider}` }}>
               <TextField
@@ -615,9 +671,9 @@ const PictureGame = () => {
                   }
                 }}
               />
-              <Button 
-                onClick={sendChatMessage} 
-                variant="contained" 
+              <Button
+                onClick={sendChatMessage}
+                variant="contained"
                 sx={{ marginLeft: '0.5em' }}
               >
                 Enviar

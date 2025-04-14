@@ -8,9 +8,11 @@ export class ItemAttribute {
 export class WikidataEntity {
     image_url: String;
     attrs: Map<String,String>;
+    wdId: Number;
 
-    constructor(image_url: String) {
+    constructor(image_url: String, wdID: Number) {
         this.image_url = image_url;
+        this.wdId = wdID;
         this.attrs = new Map();
     }
 

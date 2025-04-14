@@ -129,6 +129,10 @@ const PictureGame = () => {
 
   const startNewRound = async () => {
     // Reseteamos los estados
+    // 1. Limpiamos el chat
+    setChatMessages([]);
+
+    // 2. Reseteamos otros estados
     setAnswered(false);
     setPassNewRound(false);
     setCurrentLanguage(i18n.language);
@@ -137,7 +141,8 @@ const PictureGame = () => {
     setQuestionData(null);
 
     // 3. Obtenemos la nueva pregunta
-    axios.get(`${apiEndpoint}/questions/random/${category}/4`)
+    // 3. Obtenemos la nueva pregunta
+    axios.get(`${apiEndpoint}/questions/random/${category}/4`, { username })
       .then(async (quest) => {
         const question = quest.data[0];
         setQuestionData(question);
@@ -145,6 +150,7 @@ const PictureGame = () => {
         getPossibleOptions(question);
 
         // Configuramos la imagen en el LLM y obtenemos el mensaje de bienvenida
+        // 4. Configuramos la imagen en el LLM
         if (question.image_url) {
           try {
             const response = await axios.post(`${llmEndpoint}/set-image`, {

@@ -102,7 +102,7 @@ export class WikidataQueryBuilder {
 
     build() : String {
         let query = "";
-        query += "SELECT DISTINCT ?item ?itemLabel"
+        query += "SELECT DISTINCT ?item ?itemLabel ?qid "
         this._assocProperties.forEach(prop => {
             query += ` ?${prop.name} ?${prop.name}Label `
         });
@@ -123,6 +123,7 @@ export class WikidataQueryBuilder {
             query += prop.toString()
         });
 
+        query += `BIND(STRAFTER(STR(?item), STR(wd:)) AS ?qid) .`
         query += `SERVICE wikibase:label { bd:serviceParam wikibase:language "${this._language}"}`;
 
         query += "}";

@@ -52,6 +52,8 @@ export class QuestionDBService extends PromiseStore {
     private questionsCache: Map<String,Set<Number>> = new Map();
 
     private get_cache(user: String) : Set<Number> {
+        if (user == "")
+            return new Set()
         if (!this.questionsCache.has(user)) {
             this.questionsCache.set(user, new Set());
         }
@@ -60,19 +62,14 @@ export class QuestionDBService extends PromiseStore {
 
     private constructor() {
         super();
-        this.addPromise(
-            mongoose.connect(QuestionDBService._mongodbUri)
-                    .then(async () => {
-                        console.log(`Connected to mongodb at "${QuestionDBService._mongodbUri}"`);
-                        this.addPromise(
-                            Question.deleteMany().then(() => {
-                                this.addPromise(
-                                    this.generateQuestions(40, "", new FlagsRecipe())
-                                )
-                            })
-                        )
-                    })
-        );
+    }
+
+    private async build() {
+        await mongoose.connect(QuestionDBService._mongodbUri)
+        console.log(`Connected to mongodb at "${QuestionDBService._mongodbUri}"`);
+        await Question.deleteMany();
+        await this.generateQuestions(40, "", new FlagsRecipe())
+
     }
 
     private static _instance: QuestionDBService = null;
@@ -83,8 +80,10 @@ export class QuestionDBService extends PromiseStore {
     }
 
     public static getInstance() : QuestionDBService {
-        if (!this._instance)
+        if (!this._instance) {
             this._instance = new QuestionDBService();
+            this._instance.addPromise(this._instance.build())
+        }
         return this._instance
     }
 
@@ -96,19 +95,25 @@ export class QuestionDBService extends PromiseStore {
         this._instance = null;
     }
 
-    async getRandomQuestions(n: number = 1, username: String = "", category: Number = Categories.Animals) : Promise<WikidataQuestion[]> {
+    async getRandomQuestions(n: number = 1, username: String = "", category: Number = Categories.Flags) : Promise<WikidataQuestion[]> {
         /* At this point, we need to sync previously postponed promises.
          * Like question deletion, or the initial question generation
          * from the constructor.
          */
         await this.syncPendingPromises();
 
-        console.log(`getRandomQuestions(${n}, ${username}, ${category})`);
+        console.log(`getRandomQuestions(${n}, ${username}, ${category})`)
+
+        if (!username) {
+            console.log("Fixing undefined username")
+            username = ""
+        }
 
         let recipe: WikidataRecipe = category_into_recipe(category);
 
         let set = this.get_cache(username)
         return this.getRandomEntities(n * 4, username, recipe).then((entities) => {
+            console.log(`Got ${entities.length} entities`)
             return entities.chunks(4).map((chunk) => {
                 set.add(chunk[0].wdId)
                 let g = recipe.generateQuestion();
@@ -122,26 +127,25 @@ export class QuestionDBService extends PromiseStore {
     }
 
     async get_questions(n: number, username: String, category: Number) : Promise<AsyncGenerator<IQuestion>> {
-        const set = this.get_cache(username);
-
         // NO AGGREGATE; FINCDDDDD
         const stream = Question.aggregate([
             { $match: { category } },
         ]).cursor();
 
+        let set = this.get_cache(username);
+
         async function * filter_question(cursor: mongoose.Cursor<IQuestion>) : AsyncGenerator<IQuestion> {
             let count = 0;
             for await (const doc of cursor) {
-                if (!set.has(doc.wdId)) {
-                    count += 1;
-                    if (count == n) {
-                        console.log(`get_questions: Asked for ${n}, gen ${count}`)
-                        return doc
-                    }
-                    else yield doc
-                } else {
-                    console.log(`Question ${doc.wdId} already used for ${username}`)
+                if (username != "" && set.has(doc.wdId)) {
+                    console.log(`${username} has ${doc.wdId}`)
+                    continue
                 }
+                if (count == n) {
+                    return doc
+                }
+                else yield doc
+                count += 1;
             }
         }
 
@@ -195,28 +199,24 @@ export class QuestionDBService extends PromiseStore {
         return questions
     }
 
-    async getQuestionsCount(category: Number = Categories.Animals, username: String = "") : Promise<number> {
-        const set = this.get_cache(username);
-
+    async getQuestionsCount(category: Number = Categories.Flags, username: String = "") : Promise<number> {
         const stream = Question.aggregate([
             { $match: { category } },
         ]).cursor();
 
         let count = 0;
+        let set = this.get_cache(username);
         for await (const doc of stream) {
-            if (!set.has(doc.wdId)) {
-                count += 1;
+            if (username != "" && set.has(doc.wdId)) {
+                continue
             }
+            count += 1;
         }
-
-        console.log(`There's ${count} questions not used yet by ${username}`)
 
         return count
     }
 
-    async generateQuestions(n: number, username: String = "", recipe: WikidataRecipe = new AnimalRecipe()) : Promise<IQuestion[]> {
-        let cache = this.get_cache(username);
-
+    async generateQuestions(n: number, username: String = "", recipe: WikidataRecipe = new FlagsRecipe()) : Promise<IQuestion[]> {
         console.log("Generating a batch of " + n + " questions")
 
         let query = new WikidataQueryBuilder()
@@ -230,18 +230,16 @@ export class QuestionDBService extends PromiseStore {
         // console.log("Executing query: " + query.build());
         const response = await query.send();
 
-        const bindings = response.data.results.bindings.filter((e: any) => {
-            /* TODO: We need to enable this, but for now wikidata returns only a few items */
-            // return true;
+        let set = this.get_cache(username)
 
+        const bindings = response.data.results.bindings.filter((e: any) => {
             let qid = e.qid.value
             qid = qid.replace("Q", "");
-            e.wdID = Number(qid)
-            if (username != "" && cache.has(e.wdID)) {
+            e.wdId = Number(qid)
+            if (username != "" && set.has(e.wdId)) {
                 // console.log("Repeated " + n)
                 return false;
             } else {
-                cache.add(n);
                 return true;
             }
         })
@@ -252,7 +250,7 @@ export class QuestionDBService extends PromiseStore {
             let attrs = recipe.getAttributes(elem);
             return new Question({
                 image_url: elem.imagen.value,
-                wdId: elem.wdID,
+                wdId: elem.wdId,
                 attrs,
                 category: recipe.getCategory()
             }).save()

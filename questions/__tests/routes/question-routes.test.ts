@@ -13,11 +13,13 @@ beforeAll(async () => {
     // Crea un servidor de MongoDB en memoria
     mongoServer = await MongoMemoryServer.create();
     QuestionDBService.setMongodbUri(mongoServer.getUri());
+    let dbService = QuestionDBService.getInstance();
+    dbService.syncPendingPromises()
 
     // Configurar Express
     app.use(bodyParser.json());
-    app.use('/questions', generate_router(QuestionDBService.getInstance())); // Usamos el router de las rutas de la API
-});
+    app.use('/questions', generate_router(dbService)); // Usamos el router de las rutas de la API
+}, 10000);
 
 afterAll(async () => {
     // Desconectar la base de datos y parar el servidor de memoria
@@ -27,18 +29,18 @@ afterAll(async () => {
 
 describe('Question Routes', () => {
     test('GET /questions/random - should return a random question', async () => {
-        const response = await request(app).get('/questions/random');
+        const response = await request(app).get('/questions/random/flags/1');
         expect(response.status).toBe(200);
-        expect(response.body).toHaveProperty('image_url');
+        expect(response.body[0]).toHaveProperty('image_url');
         const urlPattern = /^https?:\/\/commons\.wikimedia\.org\/wiki\/Special:FilePath\/.+/;
-        expect(urlPattern.test(response.body.image_url)).toBe(true);
+        expect(urlPattern.test(response.body[0].image_url)).toBe(true);
         //expect(response.body.image_url).toBe('http://commons.wikimedia.org/wiki/Special:FilePath/Stenopus%20hispidus.jpg');
-    });
+    }, 10000);
 
     test('GET /questions/random/:n - should return n random questions', async () => {
         const n = 3;
 
-        const response = await request(app).get(`/questions/random/${n}`);
+        const response = await request(app).get(`/questions/random/flags/${n}`);
         expect(response.status).toBe(200);
         expect(Array.isArray(response.body)).toBe(true);
         expect(response.body.length).toBe(n);
@@ -50,5 +52,5 @@ describe('Question Routes', () => {
         expect(urlPattern.test(response.body[0].image_url)).toBe(true);
         expect(urlPattern.test(response.body[1].image_url)).toBe(true);
         expect(urlPattern.test(response.body[2].image_url)).toBe(true);
-    });
+    }, 10000);
 });

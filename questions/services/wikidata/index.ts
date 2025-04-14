@@ -10,7 +10,7 @@ export class WikidataEntity {
     attrs: Map<String,String>;
     wdId: Number;
 
-    constructor(image_url: String, wdID: Number) {
+    constructor(image_url: String, wdID: Number = 0) {
         this.image_url = image_url;
         this.wdId = wdID;
         this.attrs = new Map();

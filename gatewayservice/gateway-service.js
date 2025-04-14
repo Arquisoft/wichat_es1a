@@ -158,7 +158,7 @@ app.get('/questions/random/:category/:n', async (req, res) => {
     const n = encodeURIComponent(req.params.n);
     const username = req.query.username;
     const questionsUrl = new URL(`/questions/random/${category}/${n}`, questionGenerationServiceUrl);
-    const questionsResponse = await axios.get(questionsUrl.href, { username });
+    const questionsResponse = await axios.get(questionsUrl.href + `?username=${username}`);
     res.send(questionsResponse.data);
   } catch (error) {
     console.log("GS: ERROR: " + error)

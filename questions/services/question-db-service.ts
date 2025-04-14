@@ -104,11 +104,6 @@ export class QuestionDBService extends PromiseStore {
 
         console.log(`getRandomQuestions(${n}, ${username}, ${category})`)
 
-        if (!username) {
-            console.log("Fixing undefined username")
-            username = ""
-        }
-
         let recipe: WikidataRecipe = category_into_recipe(category);
 
         let set = this.get_cache(username)
@@ -138,7 +133,6 @@ export class QuestionDBService extends PromiseStore {
             let count = 0;
             for await (const doc of cursor) {
                 if (username != "" && set.has(doc.wdId)) {
-                    console.log(`${username} has ${doc.wdId}`)
                     continue
                 }
                 if (count == n) {

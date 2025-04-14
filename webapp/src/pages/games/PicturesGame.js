@@ -141,8 +141,7 @@ const PictureGame = () => {
     setQuestionData(null);
 
     // 3. Obtenemos la nueva pregunta
-    // 3. Obtenemos la nueva pregunta
-    axios.get(`${apiEndpoint}/questions/random/${category}/4`, { username })
+    axios.get(`${apiEndpoint}/questions/random/${category}/4?username=${username}`)
       .then(async (quest) => {
         const question = quest.data[0];
         setQuestionData(question);

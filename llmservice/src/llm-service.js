@@ -25,7 +25,6 @@ const getCategoryPrompt = (category) => {
     "No des respuestas de sí/no solamente.",
     "Si preguntan algo fuera del juego responde: 'Lo siento, solo puedo darte pistas sobre"
   ];
-
   // Configuración específica por categoría
   const categoryConfig = {
     animals: {
@@ -38,6 +37,12 @@ const getCategoryPrompt = (category) => {
       subject: "el lugar geográfico",
       specificInstructions: [
         "Menciona características del clima, cultura, ubicación o datos históricos del lugar."
+      ]
+    },    flags: {
+      subject: "el país o región cuya bandera",
+      specificInstructions: [
+        "Menciona características del país como geografía, cultura, historia, economía o datos curiosos.",
+        "No menciones directamente el nombre del país o región, ni describas visualmente la bandera."
       ]
     },
     default: {
@@ -65,6 +70,8 @@ const getWelcomeMessage = (gameCategory) => {
     return "¡Bienvenido al juego de adivinanzas de animales! Hazme preguntas y te daré pistas para que adivines qué animal aparece en la imagen.";
   } else if (gameCategory?.toLowerCase() === "geography") {
     return "¡Bienvenido al juego de adivinanzas de lugares geográficos! Hazme preguntas y te daré pistas para que adivines qué lugar aparece en la imagen.";
+  } else if (gameCategory?.toLowerCase() === "flags") {
+    return "¡Bienvenido al juego de adivinanzas de banderas! Hazme preguntas y te daré pistas para que adivines a qué país o región pertenece la bandera que aparece en la imagen.";
   } else {
     return "¡Bienvenido al juego de adivinanzas! Hazme preguntas y te daré pistas para que adivines lo que aparece en la imagen.";
   }
@@ -94,7 +101,7 @@ const llmConfigs = {
   },
 };
 
-async function sendChatToLLM(chatHistory, apiKey, gameCategory = "animals", model = "gemini") {
+async function sendChatToLLM(chatHistory, apiKey, gameCategory = "flags", model = "gemini") {
   try {
     const config = llmConfigs[model];
     if (!config) throw new Error(`Modelo ${model} no soportado.`);

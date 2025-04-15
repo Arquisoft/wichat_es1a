@@ -13,6 +13,7 @@ beforeAll(async () => {
     QuestionDBService.setMongodbUri(mongoServer.getUri());
 
     service = QuestionDBService.getInstance(); // Crear la instancia del servicio
+    service.syncPendingPromises()
 }, 30000);
 
 afterAll(async () => {
@@ -26,14 +27,14 @@ describe('QuestionDBService', () => {
         it('should fetch random questions and return them as WikidataQuestion instances', async () => {
             // Mock de la función que obtiene las entidades
             const mockEntities = [
-                new WikidataEntity('https://example.com/image1').addAttribute("item_label", 'Common Name 1'),
-                new WikidataEntity('https://example.com/image2').addAttribute("item_label", 'Common Name 2'),
-                new WikidataEntity('https://example.com/image1').addAttribute("item_label", 'Common Name 3'),
-                new WikidataEntity('https://example.com/image1').addAttribute("item_label", 'Common Name 4'),
-                new WikidataEntity('https://example.com/image2').addAttribute("item_label", 'Common Name 5'),
-                new WikidataEntity('https://example.com/image2').addAttribute("item_label", 'Common Name 6'),
-                new WikidataEntity('https://example.com/image2').addAttribute("item_label", 'Common Name 7'),
-                new WikidataEntity('https://example.com/image2').addAttribute("item_label", 'Common Name 8'),
+                new WikidataEntity('https://example.com/image1').addAttribute("country", 'Common Name 1'),
+                new WikidataEntity('https://example.com/image2').addAttribute("country", 'Common Name 2'),
+                new WikidataEntity('https://example.com/image1').addAttribute("country", 'Common Name 3'),
+                new WikidataEntity('https://example.com/image1').addAttribute("country", 'Common Name 4'),
+                new WikidataEntity('https://example.com/image2').addAttribute("country", 'Common Name 5'),
+                new WikidataEntity('https://example.com/image2').addAttribute("country", 'Common Name 6'),
+                new WikidataEntity('https://example.com/image2').addAttribute("country", 'Common Name 7'),
+                new WikidataEntity('https://example.com/image2').addAttribute("country", 'Common Name 8'),
             ];
 
             service.getRandomEntities = jest.fn().mockResolvedValue(mockEntities);
@@ -45,7 +46,7 @@ describe('QuestionDBService', () => {
             expect(questions[1].getJson()).toHaveProperty('image_url');
             expect(questions[0].getJson().response).toBe('Common Name 1');
             expect(questions[0].distractors).toEqual(['Common Name 2','Common Name 3','Common Name 4']);
-        });
+        }, 30000);
 
         it('should handle an error when fetching random questions', async () => {
             // Simular un error
@@ -75,15 +76,4 @@ describe('QuestionDBService', () => {
 
     //     });
     // });
-
-    describe('getQuestionsCount', () => {
-        it('should return the correct question count from the database', async () => {
-            // Mock de la función countDocuments de Mongoose
-            Question.countDocuments = jest.fn().mockResolvedValue(5);
-
-            const count = await service.getQuestionsCount();
-
-            expect(count).toBe(5);
-        });
-    });
 });

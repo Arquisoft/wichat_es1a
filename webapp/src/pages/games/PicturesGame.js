@@ -23,7 +23,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import { PlayArrow, Pause, ChatBubble, Close } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { SessionContext } from '../../SessionContext';
-import { useContext } from 'react';
+import {useContext, useMemo} from 'react';
 import Confetti from 'react-confetti';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import { useTranslation } from 'react-i18next';
@@ -45,7 +45,7 @@ const PictureGame = () => {
   const { t } = useTranslation();
 
   // Estados del juego
-  const [round, setRound] = React.useState(1);
+  const [round, setRound] = React.useState(-1);
   const [questionData, setQuestionData] = React.useState(null);
   const [buttonStates, setButtonStates] = React.useState([]);
   const [answered, setAnswered] = React.useState(false);
@@ -62,7 +62,7 @@ const PictureGame = () => {
   const [userResponses, setUserResponses] = React.useState([]);
   const [language, setCurrentLanguage] = React.useState(i18n.language);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
-  const [category, setCategory] = React.useState('Animals');
+  const [category, setCategory] = React.useState('flags');
   const [possibleAnswers, setPossibleAnswers] = React.useState([]);
   const [isConfigured, setConfiguration] = React.useState(false);
   const [paused, setPaused] = React.useState(false);
@@ -84,16 +84,24 @@ const PictureGame = () => {
 
   // Iniciar nueva ronda cuando el round cambie
   React.useEffect(() => {
-    if (round <= 5) { // Límite de 5 rondas
+    if (round > 0 && round <= 5) { // Límite de 5 rondas
       startNewRound();
       setQuestionCountdownRunning(true);
       // Reiniciamos el temporizador para cada pregunta
       setQuestionCountdownKey(prev => prev + 1);
-    } else {
+    } else if(round > 5) {
       endGame();
     }
     // eslint-disable-next-line
   }, [round]);
+
+  const questionText = useMemo(() => {
+    switch (category) {
+      case 'animals': return '¿Que animal es este?';
+      case 'cities': return '¿Que país es este?';
+      case 'flags': return '¿De dónde es esta bandera?';
+    }
+  }, [category]);
 
   const endGame = () => {
     setTimerRunning(false);
@@ -121,12 +129,19 @@ const PictureGame = () => {
 
   const startNewRound = async () => {
     // Reseteamos los estados
+    // 1. Limpiamos el chat
+    setChatMessages([]);
+
+    // 2. Reseteamos otros estados
     setAnswered(false);
     setPassNewRound(false);
     setCurrentLanguage(i18n.language);
 
-    // Obtenemos la nueva pregunta
-    axios.get(`${apiEndpoint}/questions/random/4`)
+    console.log('Cargando categoria', category, round);
+    setQuestionData(null);
+
+    // 3. Obtenemos la nueva pregunta
+    axios.get(`${apiEndpoint}/questions/random/${category}/4?username=${username}`)
       .then(async (quest) => {
         const question = quest.data[0];
         setQuestionData(question);
@@ -134,6 +149,7 @@ const PictureGame = () => {
         getPossibleOptions(question);
 
         // Configuramos la imagen en el LLM y obtenemos el mensaje de bienvenida
+        // 4. Configuramos la imagen en el LLM
         if (question.image_url) {
           try {
             const response = await axios.post(`${llmEndpoint}/set-image`, {
@@ -378,9 +394,10 @@ const PictureGame = () => {
               <Typography data-testid="categories-label" variant="h5" htmlFor="category">
                 {t("Game.config.category")}:
               </Typography>
-              <Select value={category} onChange={(event) => setCategory(event.target.value)} style={{ minWidth: '120px' }}>
-                <MenuItem value="Animales">{t("Game.categories.animals")}</MenuItem>
-                <MenuItem value="Geografía">Geography</MenuItem>
+              <Select value={category} style={{ minWidth: '120px' }}>
+                <MenuItem value="animals" onClick={() => setCategory(('animals'))}>Animales</MenuItem>
+                <MenuItem value="cities" onClick={() => setCategory(('cities'))}>Ciudades</MenuItem>
+                <MenuItem value="flags" onClick={() => setCategory(('flags'))}>Banderas</MenuItem>
                 {/* Agrega más categorías si lo deseas */}
               </Select>
             </Box>
@@ -389,8 +406,8 @@ const PictureGame = () => {
             data-testid="start-button"
             onClick={() => {
               setConfiguration(true);
-              setQuestionHistorial(Array(round).fill(null));
-              startNewRound();
+              setQuestionHistorial(Array(1).fill(null));
+              setRound(1);
             }}
             variant="contained"
             size="large"
@@ -510,8 +527,11 @@ const PictureGame = () => {
             }
 
             <Box sx={{ position: 'relative', display: 'inline-block', mt: 2 }}>
-              <Typography variant="h5" gutterBottom>¿Qué animal es este?</Typography>
-              <img style={{ maxHeight: '30em', maxWidth: '100%' }} src={questionData?.image_url} alt="Imagen pregunta" />
+              <Typography variant="h5" gutterBottom>
+                {questionText}
+              </Typography>
+              <img style={{ maxHeight: '30em', maxWidth: '100%' }}
+                   src={questionData?.image_url ?? '/loading.gif'} alt="Imagen pregunta" />
             </Box>
 
             <Grid container spacing={2} justifyContent="center" mt={2}>

@@ -19,13 +19,14 @@ export const generate_router = function(dbService: QuestionDBService) {
 
     router.get("/random/:category/:n", async (req,res) => {
         const n = Number(req.params.n);
+        let username = req.query.username + ""
         const category = category_from_str(req.params.category);
         if (category == null) {
             res.status(400).json({
                 error: `Unknown category: '${req.params.category}'`
             })
         } else {
-            const questions = await dbService.getRandomQuestions(n, category)
+            const questions = await dbService.getRandomQuestions(n, username, category)
             res.json(questions.map((q) => q.getJson()))
         }
 

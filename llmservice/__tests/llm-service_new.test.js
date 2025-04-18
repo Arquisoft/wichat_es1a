@@ -40,11 +40,10 @@ describe("LLM Service API Tests", () => {
         });
 
       expect(res.statusCode).toBe(200);
-      expect(res.body).toHaveProperty("message", "Imagen de referencia actualizada correctamente.");
-      expect(res.body).toHaveProperty("welcomeMessage");
+      expect(res.body).toHaveProperty("message", "Imagen de referencia actualizada correctamente.");      expect(res.body).toHaveProperty("welcomeMessage");
       expect(res.body.welcomeMessage).toContain("¡Bienvenido al juego de adivinanzas de animales!");
     });
-
+    
     test("debería devolver mensaje de bienvenida específico para geografía", async () => {
       const res = await request(server)
         .post("/set-image")
@@ -56,6 +55,20 @@ describe("LLM Service API Tests", () => {
       expect(res.statusCode).toBe(200);
       expect(res.body).toHaveProperty("welcomeMessage");
       expect(res.body.welcomeMessage).toContain("lugares geográficos");
+    });
+    
+    test("debería devolver mensaje de bienvenida específico para banderas", async () => {
+      const res = await request(server)
+        .post("/set-image")
+        .send({
+          imageUrl: "https://example.com/image.jpg",
+          gameCategory: "flags"
+        });
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toHaveProperty("welcomeMessage");
+      expect(res.body.welcomeMessage).toContain("banderas");
+      expect(res.body.welcomeMessage).toContain("país o región");
     });
 
     test("debería devolver mensaje de bienvenida genérico si no hay categoría", async () => {
@@ -185,10 +198,9 @@ describe("LLM Service API Tests", () => {
 
       // Verificar que se pasó el contexto correcto para animales
       const requestData = axiosCallArgs[1];
-      expect(requestData.contents[0].parts[0].text).toContain("el animal");
-      expect(requestData.contents[0].parts[0].text).toContain("características físicas");
+      expect(requestData.contents[0].parts[0].text).toContain("el animal");      expect(requestData.contents[0].parts[0].text).toContain("características físicas");
     });
-
+    
     test("debería procesar correctamente una solicitud de chat para geografía", async () => {
       // Configurar el mock de axios para devolver una respuesta exitosa
       axios.post.mockResolvedValueOnce({
@@ -219,6 +231,37 @@ describe("LLM Service API Tests", () => {
       const requestData = axios.post.mock.calls[0][1];
       expect(requestData.contents[0].parts[0].text).toContain("el lugar geográfico");
       expect(requestData.contents[0].parts[0].text).toContain("clima, cultura");
+    });
+    
+    test("debería procesar correctamente una solicitud de chat para banderas", async () => {
+      // Configurar el mock de axios para devolver una respuesta exitosa
+      axios.post.mockResolvedValueOnce({
+        data: {
+          candidates: [
+            {
+              content: {
+                parts: [{ text: "Soy una respuesta del LLM sobre banderas" }]
+              }
+            }
+          ]
+        }
+      });
+
+      // Ya tenemos una imagen configurada de pruebas anteriores
+
+      const res = await request(server)
+        .post("/chat")
+        .send({
+          messages: [{ sender: "user", text: "Dame una pista" }],
+          gameCategory: "flags"
+        });
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toHaveProperty("response", "Soy una respuesta del LLM sobre banderas");      // Verificar contexto de banderas
+      const requestData = axios.post.mock.calls[0][1];
+      expect(requestData.contents[0].parts[0].text).toContain("el país o región cuya bandera");
+      expect(requestData.contents[0].parts[0].text).toContain("geografía, cultura, historia");
+      expect(requestData.contents[0].parts[0].text).toContain("No menciones directamente el nombre del país");
     });
 
     test("debería verificar que el prompt incluye instrucciones para respuestas concisas", async () => {
@@ -285,10 +328,9 @@ describe("LLM Service API Tests", () => {
           gameCategory: "animals"
         });
 
-      expect(res.statusCode).toBe(200);
-      expect(res.body).toHaveProperty("response", "Error en la solicitud al LLM.");
+      expect(res.statusCode).toBe(200);      expect(res.body).toHaveProperty("response", "Error en la solicitud al LLM.");
     });
-
+    
     test("debería usar la categoría por defecto si se envía una categoría no válida", async () => {
       // Configurar el mock de axios para devolver una respuesta exitosa
       axios.post.mockResolvedValueOnce({
@@ -318,6 +360,34 @@ describe("LLM Service API Tests", () => {
       expect(requestData.contents[0].parts[0].text).not.toContain("el animal");
       expect(requestData.contents[0].parts[0].text).not.toContain("el lugar geográfico");
       expect(requestData.contents[0].parts[0].text).toContain("lo que aparece en la imagen");
+    });
+    
+    test("debería usar 'flags' como categoría predeterminada cuando no se especifica ninguna", async () => {
+      // Configurar el mock de axios para devolver una respuesta exitosa
+      axios.post.mockResolvedValueOnce({
+        data: {
+          candidates: [
+            {
+              content: {
+                parts: [{ text: "Respuesta usando la categoría flags por defecto" }]
+              }
+            }
+          ]
+        }
+      });
+
+      const res = await request(server)
+        .post("/chat")
+        .send({
+          messages: [{ sender: "user", text: "Dame una pista" }]
+          // No enviamos gameCategory, debería usar 'flags' por defecto
+        });
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toHaveProperty("response", "Respuesta usando la categoría flags por defecto");      // Verificar que se usó el contexto de banderas
+      const requestData = axios.post.mock.calls[0][1];
+      expect(requestData.contents[0].parts[0].text).toContain("el país o región cuya bandera");
+      expect(requestData.contents[0].parts[0].text).toContain("geografía, cultura, historia");
     });
   });
 
@@ -449,9 +519,7 @@ describe("LLM Service API Tests", () => {
       // Verificar que el historial del chat incluye un mensaje de bienvenida del sistema
       expect(chatHistory).toContain("system: ¡Bienvenido al juego de adivinanzas de animales!");
       expect(chatHistory).toContain("Hazme preguntas y te daré pistas");
-    });
-
-    test("debería añadir un mensaje de bienvenida específico para la categoría geografía", async () => {
+    });    test("debería añadir un mensaje de bienvenida específico para la categoría geografía", async () => {
       // Configurar el mock de axios para devolver una respuesta exitosa
       axios.post.mockResolvedValueOnce({
         data: {
@@ -486,6 +554,43 @@ describe("LLM Service API Tests", () => {
       // Verificar que el historial del chat incluye un mensaje de bienvenida específico para geografía
       expect(chatHistory).toContain("system: ¡Bienvenido al juego de adivinanzas de lugares geográficos!");
       expect(chatHistory).toContain("adivines qué lugar aparece en la imagen");
+    });
+    
+    test("debería añadir un mensaje de bienvenida específico para la categoría banderas", async () => {
+      // Configurar el mock de axios para devolver una respuesta exitosa
+      axios.post.mockResolvedValueOnce({
+        data: {
+          candidates: [
+            {
+              content: {
+                parts: [{ text: "Respuesta de banderas" }]
+              }
+            }
+          ]
+        }
+      });
+
+      await request(server)
+        .post("/set-image")
+        .send({ imageUrl: "https://example.com/image.jpg" })
+        .expect(200);
+
+      const res = await request(server)
+        .post("/chat")
+        .send({
+          messages: [{ sender: "user", text: "Dame una pista" }],
+          gameCategory: "flags"
+        });
+
+      expect(res.statusCode).toBe(200);
+
+      // Verificar que se envió el mensaje de bienvenida al LLM
+      const requestData = axios.post.mock.calls[0][1];
+      const chatHistory = requestData.contents[0].parts[1].text;
+
+      // Verificar que el historial del chat incluye un mensaje de bienvenida específico para banderas
+      expect(chatHistory).toContain("system: ¡Bienvenido al juego de adivinanzas de banderas!");
+      expect(chatHistory).toContain("adivines a qué país o región pertenece la bandera");
     });
 
     test("debería no duplicar el mensaje de bienvenida si ya existe uno", async () => {

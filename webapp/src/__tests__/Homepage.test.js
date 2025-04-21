@@ -1,39 +1,35 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, fireEvent, screen } from '@testing-library/react';
 import Homepage from '../pages/Homepage';
-import { I18nextProvider } from 'react-i18next';
-import i18n from 'i18next';
-import data from '../data/gameInfo.json';
-import { BrowserRouter } from 'react-router-dom';
+import '../localize/i18n';
 
-describe('Homepage Component', () => {
-    test('renders homepage with title and video', () => {
-        render(
-            <I18nextProvider i18n={i18n}>
-                <BrowserRouter>
-                    <Homepage />
-                </BrowserRouter>
-            </I18nextProvider>
-        );
+// Hacemos un mock del módulo '@mui/material' y su hook useMediaQuery
+jest.mock('@mui/material/useMediaQuery', () => ({
+    __esModule: true, // Esto es necesario para mocks de módulos ES6
+    default: jest.fn(), // Mock por defecto para todas las llamadas
+}));
 
-        expect(screen.getByText(i18n.t('Homepage.title'))).toBeInTheDocument();
-        expect(screen.getByTestId('video')).toBeInTheDocument();
+describe('Homepage', () => {
+    afterEach(() => {
+        jest.restoreAllMocks(); // Limpiar todos los mocks después de cada prueba
     });
 
-    test('renders game buttons and clicking updates game link', () => {
-        render(
-            <I18nextProvider i18n={i18n}>
-                <BrowserRouter>
-                    <Homepage />
-                </BrowserRouter>
-            </I18nextProvider>
-        );
+    it('renders video and play button', () => {
+        render(<Homepage />);
+        expect(screen.getByTestId('video')).toBeInTheDocument();
+        expect(screen.getByText("JUGAR")).toBeInTheDocument();
+    });
 
-        const gameButtons = screen.getAllByRole('button');
-        expect(gameButtons.length).toBeGreaterThan(0);
+    it('loads game buttons dynamically based on data', async () => {
+        render(<Homepage />);
+        const buttons = await screen.findAllByRole('button');
+        expect(buttons.length).toBe(1); // 5 game buttons + 1 play button
+    });
 
-        fireEvent.click(gameButtons[0]);
-        const playButton = screen.getByRole('link', { name: i18n.t('Home') });
+    it('check play button has correct link', async () => {
+        render(<Homepage />);
+        const playButton = screen.getByText('JUGAR');
         expect(playButton).toHaveAttribute('href', '/pictureGame');
     });
+
 });

@@ -521,9 +521,20 @@ const PictureGame = () => {
               <Typography variant="h5" gutterBottom>
                 {questionText}
               </Typography>
-              <img style={{ maxHeight: '30em', maxWidth: '100%' }}
-                   src={questionData?.image_url ?? '/loading.gif'} alt="Imagen pregunta" />
+              <Box
+                  component="img"
+                  src={questionData?.image_url ?? '/loading.gif'}
+                  alt={`Imagen de la pregunta`}
+                  sx={{
+                    maxHeight: '15em',
+                    maxWidth: '100%',
+                    height: 'auto',
+                    borderRadius: 2,
+                    objectFit: 'contain'
+                  }}
+              />
             </Box>
+
 
             <Grid container spacing={2} justifyContent="center" mt={2}>
               {possibleAnswers.map((option, index) => (

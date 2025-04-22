@@ -74,6 +74,7 @@ const Login = () => {
                   color: 'white',
               }
           }}
+            data-testid="login"
           >
           { t("Login.button") }
           </Button>

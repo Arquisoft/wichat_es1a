@@ -180,16 +180,7 @@ const PictureGame = () => {
 
   // Preparar opciones de respuesta
   const getPossibleOptions = async (question) => {
-    let options = [];
-    options.push(question.response);
-    for (let i = 0; i < 3; i++) {
-      let randomNumber;
-      do {
-        randomNumber = Math.floor(Math.random() * question.options.length);
-      } while (question.options[randomNumber] === question.response);
-      options.push(question.options[randomNumber]);
-    }
-    options = shuffleArray(options);
+    let options = shuffleArray(question.options);
     setPossibleAnswers(options);
   };
 

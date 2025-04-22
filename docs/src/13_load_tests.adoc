@@ -2,11 +2,28 @@
 == Load Tests
 
 .Content
-This section describes the load testing activities conducted to assess the system's performance,
- stability, and behavior under varying levels of demand. The objective was to identify potential bottlenecks,
-  evaluate scalability, and ensure the system can handle real-world usage scenarios. 
+This section outlines the load testing performed to evaluate the system's performance and stability under simulated user demand. Using Gatling,
+we conducted tests to measure how the system handles concurrent users.
 
-- **Load Testing**: Several load tests were performed to evaluate the system's performance under different conditions. From these, we selected three representative scenarios:
-  1. A test where the system begins to slow down under high load, though it never crashes.
-  2. A scenario with multiple concurrent users where everything works smoothly and quickly.
-  3. A case where the testing tool itself ran out of space due to the volume of data generated.
+We recorded the specific functionalities to be tested and configured Gatling to simulate user interactions.
+Our initial test involved gradually increasing the number of concurrent requests to 1,000 over a 2-minute ramp-up period, mimicking a realistic usage scenario.
+The configuration details for this test are summarized below:
+
+*Configuration for Gatling Recording 1*
+- Ramp-up period: 2 minutes
+- Target users: 1,000
+- Test duration: 6 minutes (22:59 to 23:05)
+
+After executing the load test, we analyzed the results.
+Approximately 33% of requests failed. The majority of successful requests (around 40%) had response times between 800 and 1,200 ms,
+ while 35% were under 800 ms, as shown in the response time distribution.
+While response times were acceptable, reducing the failure rate is a priority to ensure a seamless user experience.
+
+The following graphs illustrate the test results, showing request failures, response times, and active users over the simulation period.
+
+image:13_responseTimeRanges.png["Image 13.1: Response Time Ranges"]
+image:13_activeUsersAlongTheSimulation.png["Image 13.2: Active Users along the Simulation"]
+image:13_responseTimeDistribution.png["Image 13.3: Response Time Distribution"]
+image:13_responseTimePercentilesOverTime.png["Image 13.4: Response Time Percentiles over Time (OK)"]
+image:13_numberOfRequestsPerSecond.png["Image 13.5: Number of Requests per Second"]
+image:13_numberOfResponsesPerSecond.png["Image 13.6: Number of Responses per Second"]

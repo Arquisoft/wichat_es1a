@@ -109,19 +109,21 @@ export class QuestionDBService extends PromiseStore {
         let set = this.get_cache(username)
         return this.getRandomEntities(n * 4, username, recipe).then((entities) => {
             console.log(`Got ${entities.length} entities`)
-            return entities.chunks(4).map((chunk) => {
+            return entities.chunks(4).map((chunk) => { 
                 set.add(chunk[0].wdId)
                 let g = recipe.generateQuestion();
-                return new WikidataQuestion(chunk[0], chunk[0].attrs)
+                let q =  new WikidataQuestion(chunk[0], chunk[0].attrs)
                             .set_response(g(chunk[0]))
                             .set_distractor(g(chunk[1]))
                             .set_distractor(g(chunk[2]))
                             .set_distractor(g(chunk[3]))
+                console.log(`Got question ${q.getJson().options}`)
+                return q
             });
         })
     }
 
-    async get_entities(n: number, username: String, recipe: WikidataRecipe) : Promise<AsyncGenerator<IQuestion>> {
+    async get_entities(n: number, username: String, recipe: WikidataRecipe) : Promise<AsyncGenerator<WikidataEntity>> {
         // NO AGGREGATE; FINCDDDDD
         let category = recipe.getCategory();
         const stream = Question.aggregate([
@@ -143,19 +145,21 @@ export class QuestionDBService extends PromiseStore {
 
         async function * filter_question(cursor: mongoose.Cursor<IQuestion>) : AsyncGenerator<WikidataEntity> {
             let count = 0;
-            let names = new Map();
-            for await (const doc of cursor) {
-                if (username != "" && set.has(doc.wdId)) {
-                    continue
-                }
+            let names = new Set();
 
+            for await (const doc of cursor) {
                 let en = entity(doc)
 
                 if (names.has(g(en))) {
+                    console.log("Repeated " + g(en))
                     continue
-                }
+                } 
+                console.log("New " + g(en)) 
                 names.add(g(en));
 
+                if (set.has(doc.wdId)) {
+                    continue
+                }
 
                 if (count == n) {
                     return en
@@ -218,7 +222,7 @@ export class QuestionDBService extends PromiseStore {
         let count = 0;
         let set = this.get_cache(username);
         for await (const doc of stream) {
-            if (username != "" && set.has(doc.wdId)) {
+            if (set.has(doc.wdId)) {
                 continue
             }
             count += 1;
@@ -247,7 +251,7 @@ export class QuestionDBService extends PromiseStore {
             let qid = e.qid.value
             qid = qid.replace("Q", "");
             e.wdId = Number(qid)
-            if (username != "" && set.has(e.wdId)) {
+            if (set.has(e.wdId)) {
                 // console.log("Repeated " + n)
                 return false;
             } else {

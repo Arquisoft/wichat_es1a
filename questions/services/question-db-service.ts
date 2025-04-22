@@ -121,24 +121,46 @@ export class QuestionDBService extends PromiseStore {
         })
     }
 
-    async get_questions(n: number, username: String, category: Number) : Promise<AsyncGenerator<IQuestion>> {
+    async get_entities(n: number, username: String, recipe: WikidataRecipe) : Promise<AsyncGenerator<IQuestion>> {
         // NO AGGREGATE; FINCDDDDD
+        let category = recipe.getCategory();
         const stream = Question.aggregate([
             { $match: { category } },
         ]).cursor();
 
         let set = this.get_cache(username);
 
-        async function * filter_question(cursor: mongoose.Cursor<IQuestion>) : AsyncGenerator<IQuestion> {
+        function entity(q: IQuestion) : WikidataEntity {
+            let entity = new WikidataEntity(q.image_url, q.wdId);
+            for (let i = 0; i < q.attrs.length; i++) {
+                let a = q.attrs[i];
+                entity.addAttribute(a[0], a[1]);
+            }
+            return entity
+        }
+
+        let g = recipe.generateQuestion();
+
+        async function * filter_question(cursor: mongoose.Cursor<IQuestion>) : AsyncGenerator<WikidataEntity> {
             let count = 0;
+            let names = new Map();
             for await (const doc of cursor) {
                 if (username != "" && set.has(doc.wdId)) {
                     continue
                 }
-                if (count == n) {
-                    return doc
+
+                let en = entity(doc)
+
+                if (names.has(g(en))) {
+                    continue
                 }
-                else yield doc
+                names.add(g(en));
+
+
+                if (count == n) {
+                    return en
+                }
+                else yield en
                 count += 1;
             }
         }
@@ -168,7 +190,7 @@ export class QuestionDBService extends PromiseStore {
             }
         }
 
-        let generator = await this.get_questions(n, username, recipe.getCategory());
+        let generator = await this.get_entities(n, username, recipe);
 
         /* Store the promise of the deletion, instead of blocking.
          * The next time we call resolvePendingPromises, it'll be
@@ -182,12 +204,7 @@ export class QuestionDBService extends PromiseStore {
 
         let questions = [];
         for await (const q of generator) {
-            let entity = new WikidataEntity(q.image_url, q.wdId);
-            for (let i = 0; i < q.attrs.length; i++) {
-                let a = q.attrs[i];
-                entity.addAttribute(a[0], a[1]);
-            }
-            questions.push(entity);
+            questions.push(q)
         }
 
         return questions

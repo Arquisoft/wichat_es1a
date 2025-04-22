@@ -104,8 +104,4 @@ This part is currently in progress.
 
 === Development Concepts
 - **Testing**: Includes unit tests for each functionality and end-to-end (e2e) tests for core gameplay features.
-- **Load Testing**: Several load tests were performed to evaluate the system's performance under different conditions. From these, we selected three representative scenarios:
-  1. A test where the system begins to slow down under high load, though it never crashes.
-  2. A scenario with multiple concurrent users where everything works smoothly and quickly.
-  3. A case where the testing tool itself ran out of space due to the volume of data generated.
 - https://arquisoft.github.io/wiq_es04a/#_acronyms[**CI/CD**]: The application is in continuous integration and deployment. Team members commit frequently into the repository where the project is stored. This makes it easier when assembling project parts involving collaboration from different team members.

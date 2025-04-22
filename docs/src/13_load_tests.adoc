@@ -1,0 +1,12 @@
+[[section-load-tests]]
+== Load Tests
+
+.Content
+This section describes the load testing activities conducted to assess the system's performance,
+ stability, and behavior under varying levels of demand. The objective was to identify potential bottlenecks,
+  evaluate scalability, and ensure the system can handle real-world usage scenarios. 
+
+- **Load Testing**: Several load tests were performed to evaluate the system's performance under different conditions. From these, we selected three representative scenarios:
+  1. A test where the system begins to slow down under high load, though it never crashes.
+  2. A scenario with multiple concurrent users where everything works smoothly and quickly.
+  3. A case where the testing tool itself ran out of space due to the volume of data generated.

@@ -201,7 +201,7 @@ export class QuestionDBService extends PromiseStore {
         let count = 0;
         let set = this.get_cache(username);
         for await (const doc of stream) {
-            if (username != "" && set.has(doc.wdId)) {
+            if (set.has(doc.wdId)) {
                 continue
             }
             count += 1;
@@ -230,7 +230,7 @@ export class QuestionDBService extends PromiseStore {
             let qid = e.qid.value
             qid = qid.replace("Q", "");
             e.wdId = Number(qid)
-            if (username != "" && set.has(e.wdId)) {
+            if (set.has(e.wdId)) {
                 // console.log("Repeated " + n)
                 return false;
             } else {

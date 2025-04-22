@@ -37,8 +37,7 @@ app.get('/ranking', async (req, res) => {
     const response = await axios.get(rankingUrL.href);
     res.json(response.data); // Send just the response data
   } catch (error) {
-    console.error("Error al obtener la sesión del usuario:", error);
-    res.status(500).json({ error: "Error al obtener la sesión del usuario" });
+    handleErrors(res, error);
   }
 });
 
@@ -94,7 +93,7 @@ app.put('/questionsRecord', async (req, res) => {
     const response = await axios.post(questionsRecordUrl.href, req.body);
     res.json(response.data);
   } catch (error) {
-    res.status(500).json({ error: "Error al actualizar el historial de preguntas" });
+    handleErrors(res, error);
   }
 });
 
@@ -126,7 +125,7 @@ app.get('/user', async (req, res) => {
     const response = await axios.get(userUrl.href);
     res.json(response.data); // Send just the response data
   } catch (error) {
-    res.status(500).json({ error: "Error al obtener la sesión del usuario" });
+    handleErrors(res, error);
   }
 });
 
@@ -136,7 +135,11 @@ app.post('/user', async (req, res) => {
     const userResponse = await axios.post(userUrl.href, req.body);
     res.json(userResponse.data);
   } catch (error) {
-    handleErrors(res, error);
+    if (error.response && error.response.status === 400) {
+      res.status(400).json({ error: error.response.data.error });
+    } else {
+      handleErrors(res, error);
+    }
   }
 });
 
@@ -147,8 +150,8 @@ app.get('/questions/random/:n', async (req, res) => {
     const questionsResponse = await axios.get(questionsUrl.href);
     res.send(questionsResponse.data);
   } catch (error) {
-    console.log("GS: ERROR: " + error)
-    res.status(error.response).send({ error: error.response });
+    const status = (error.response && error.response.status) ? error.response.status : 500;
+    res.status(status).send({ error: error.message || 'Error fetching questions' });
   }
 });
 
@@ -161,8 +164,8 @@ app.get('/questions/random/:category/:n', async (req, res) => {
     const questionsResponse = await axios.get(questionsUrl.href + `?username=${username}`);
     res.send(questionsResponse.data);
   } catch (error) {
-    console.log("GS: ERROR: " + error)
-    res.status(error.response).send({ error: error.response });
+    const status = (error.response && error.response.status) ? error.response.status : 500;
+    res.status(status).send({ error: error.message || 'Error fetching questions' });
   }
 });
 

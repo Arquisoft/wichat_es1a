@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "start": "node index.js",
-        "test": "cross-env TEST=true jest"
+        "test": "cross-env TEST=true jest --coverage"
     },
     "repository": {
         "type": "git",
@@ -26,7 +26,8 @@
         "jose": "5.2.2",
         "jsonwebtoken": "^9.0.2",
         "sequelize": "^6.6.5",
-        "sqlite3": "^5.1.7"
+        "sqlite3": "^5.1.7",
+        "test": "^3.3.0"
     },
     "devDependencies": {
         "cross-env": "^7.0.3",

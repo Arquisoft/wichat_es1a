@@ -16,7 +16,7 @@ const Statistics = () => {
     const [error, setError] = useState('');
 
     const [userStatics, setUserStatics] = useState([]);
-    const [selectedMode, setSelectedMode] = useState('TheChallenge');
+    const [selectedMode, setSelectedMode] = useState('PictureGame');
     const [questionsRecord, setQuestionsRecord] = useState([]);
     const [showQuestionsRecord, setShowQuestionsRecord] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);

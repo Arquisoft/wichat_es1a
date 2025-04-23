@@ -14,6 +14,14 @@ module.exports = {
         tsconfig: 'tsconfig.json',  // Usa tu archivo tsconfig.json
       },
     },
-    
+    collectCoverage: true,
+    coverageDirectory: "coverage",
+    collectCoverageFrom: [
+      "src/**/*.{js,ts}",
+      "services/**/*.{js,ts}",
+      "!**/node_modules/**",
+      "!**/test/**",
+      "!**/__tests__/**"
+    ],
   };
-  
+

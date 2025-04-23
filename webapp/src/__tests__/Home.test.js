@@ -1,38 +1,39 @@
-import React from "react";
-import { render, screen } from "@testing-library/react";
-import Home from "../pages/Home";
-import { SessionContext } from "../SessionContext";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { I18nextProvider } from "react-i18next";
-import i18n from 'i18next';
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import Home from '../pages/Home';
+import '../localize/i18n';
 
-const customRender = (ui, { providerProps, theme, ...renderOptions }) => {
-  return render(
-    <I18nextProvider i18n={i18n}>
-      <ThemeProvider theme={theme || createTheme()}>
-        <SessionContext.Provider {...providerProps}>{ui}</SessionContext.Provider>
-      </ThemeProvider>
-    </I18nextProvider>,
-    renderOptions
-  );
-};
+// Hacemos un mock del módulo '@mui/material' y su hook useMediaQuery
+jest.mock('@mui/material/useMediaQuery', () => ({
+    __esModule: true, // Esto es necesario para mocks de módulos ES6
+    default: jest.fn(), // Mock por defecto para todas las llamadas
+}));
 
-describe("Home Component", () => {
-  test("renders logo, button, and video", () => {
-    customRender(<Home />, { providerProps: { value: { username: "" } } });
+describe('Componente Home', () => {
+    afterEach(() => {
+        jest.restoreAllMocks(); // Limpiar todos los mocks después de cada prueba
+    });
 
-    expect(screen.getByAltText("Logo")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /home/i })).toBeInTheDocument();
-    expect(screen.getByTestId("video")).toBeInTheDocument();
-  });
+    it('debe aplicar estilos a la foto', () => {
+        render(<Home />);
+        expect(screen.getByAltText('Logo')).toHaveStyle('width: 100%');
+    });
 
-  test("redirects to login when username is empty", () => {
-    customRender(<Home />, { providerProps: { value: { username: "" } } });
-    expect(screen.getByRole("button", { name: /home/i })).toHaveAttribute("href", "/login");
-  });
+    it('debe reproducir el video a una velocidad de 0.85', async () => {
+        render(<Home />);
+        const videoElement = screen.getByTestId('video');
+        expect(videoElement).toBeInTheDocument();
+        expect(videoElement.playbackRate).toBe(0.85);
 
-  test("redirects to homepage when username is set", () => {
-    customRender(<Home />, { providerProps: { value: { username: "testuser" } } });
-    expect(screen.getByRole("button", { name: /home/i })).toHaveAttribute("href", "/homepage");
-  });
+    });
+
+    it('debe aplicar estilos maxLogo si la media query xxl es verdadera', () => {
+        const useMediaQuery = require('@mui/material/useMediaQuery').default;
+        useMediaQuery.mockImplementation(() => true); // Simula una media query verdadera
+
+        render(<Home />);
+        const box = screen.getByTestId('xxl');
+        expect(box).toHaveStyle(`width: 35em`); // Verifica que se aplican los estilos de maxLogo
+    });
+
 });

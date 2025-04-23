@@ -1,52 +1,82 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { BrowserRouter } from "react-router-dom";
-import Login from "../pages/Login";
-import { SessionContext } from "../SessionContext";
-import axios from "axios";
+import React from 'react';
+import { render, fireEvent, screen, waitFor } from '@testing-library/react';
+import { SessionContext } from '../SessionContext';
+import { createMemoryRouter, RouterProvider } from 'react-router-dom';
+import axios from 'axios';
+import MockAdapter from 'axios-mock-adapter';
+import Login from '../pages/Login';
+import '../localize/i18n';
 
-jest.mock("axios");
+const mockAxios = new MockAdapter(axios);
+const mockNavigate = jest.fn();
 
-describe("Login Page", () => {
-  const mockCreateSession = jest.fn();
-  const mockUpdateAvatar = jest.fn();
-  const mockNavigate = jest.fn();
+jest.mock('react-router-dom', () => ({
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockNavigate,
+}));
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-    render(
-      <SessionContext.Provider value={{ createSession: mockCreateSession, updateAvatar: mockUpdateAvatar }}>
-        <BrowserRouter>
-          <Login />
-        </BrowserRouter>
-      </SessionContext.Provider>
-    );
-  });
+describe('Login component', () => {
+    beforeEach(() => {
+        mockAxios.reset();
+        mockNavigate.mockReset();
+        mockAxios.onPost('http://localhost:8000/login').reply(200, { avatar: 'bertinIcon.jpg' });
+    });
 
-  test("renders input fields and login button", () => {
-    expect(screen.getByLabelText(/Login.username/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Login.password/i)).toBeInTheDocument();
-    expect(screen.getByText(/Login.button/i)).toBeInTheDocument();
-  });
+    it('should render login form', () => {
+        render(
+            <SessionContext.Provider value={{}}>
+                <RouterProvider router={createMemoryRouter([{ path: '/', element: <Login /> }])}>
+                    <Login />
+                </RouterProvider>
+            </SessionContext.Provider>
+        );
 
-  test("successful login redirects and updates session", async () => {
-    axios.post.mockResolvedValue({ data: { avatar: "avatar-url" } });
+        expect(screen.getByLabelText('Nombre de usuario')).toBeInTheDocument();
+        expect(screen.getByLabelText('Contraseña')).toBeInTheDocument();
+        expect(screen.getByTestId('login')).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: '¿No tienes una cuenta? Regístrate aquí.' })).toBeInTheDocument();
+    });
 
-    fireEvent.change(screen.getByLabelText(/Login.username/i), { target: { value: "testuser" } });
-    fireEvent.change(screen.getByLabelText(/Login.password/i), { target: { value: "password" } });
-    fireEvent.click(screen.getByText(/Login.button/i));
+    it('should log in a user', async () => {
+        const createSession = jest.fn();
+        const updateAvatar = jest.fn();
 
-    await waitFor(() => expect(axios.post).toHaveBeenCalledWith("http://localhost:8000/login", { username: "testuser", password: "password" }));
-    expect(mockUpdateAvatar).toHaveBeenCalledWith("avatar-url");
-    expect(mockCreateSession).toHaveBeenCalledWith("testuser");
-  });
+        render(
+            <SessionContext.Provider value={{ createSession, updateAvatar }}>
+                <RouterProvider router={createMemoryRouter([{ path: '/', element: <Login /> }])}>
+                    <Login />
+                </RouterProvider>
+            </SessionContext.Provider>
+        );
 
-  test("displays error message on failed login", async () => {
-    axios.post.mockRejectedValue({ response: { data: { error: "Invalid credentials" } } });
+        fireEvent.change(screen.getByLabelText('Nombre de usuario'), { target: { value: 'testuser' } });
+        fireEvent.change(screen.getByLabelText('Contraseña'), { target: { value: 'testpassword' } });
+        fireEvent.click(screen.getByTestId('login'));
 
-    fireEvent.change(screen.getByLabelText(/Login.username/i), { target: { value: "wronguser" } });
-    fireEvent.change(screen.getByLabelText(/Login.password/i), { target: { value: "wrongpass" } });
-    fireEvent.click(screen.getByText(/Login.button/i));
+        await waitFor(() => {
+            expect(createSession).toHaveBeenCalledWith('testuser');
+            expect(updateAvatar).toHaveBeenCalledWith('bertinIcon.jpg');
+            expect(mockNavigate).toHaveBeenCalledWith('/homepage');
+        });
+    });
 
-    await waitFor(() => expect(screen.getByText(/Error: Invalid credentials/i)).toBeInTheDocument());
-  });
+    it('should show error message if log in fails', async () => {
+        mockAxios.onPost('http://localhost:8000/login').reply(400, { error: 'The username cannot contain only spaces' });
+
+        render(
+            <SessionContext.Provider value={{}}>
+                <RouterProvider router={createMemoryRouter([{ path: '/', element: <Login /> }])}>
+                    <Login />
+                </RouterProvider>
+            </SessionContext.Provider>
+        );
+
+        fireEvent.change(screen.getByLabelText('Nombre de usuario'), { target: { value: '    ' } });
+        fireEvent.change(screen.getByLabelText('Contraseña'), { target: { value: 'testpassword' } });
+        fireEvent.click(screen.getByTestId('login'));
+
+        await waitFor(() => {
+            expect(screen.getByText('Error: The username cannot contain only spaces')).toBeInTheDocument();
+        });
+    });
 });

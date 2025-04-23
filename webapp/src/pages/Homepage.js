@@ -109,23 +109,6 @@ const Homepage = () => {
     //if online mode -> change link to go to online room
     const changeGameLink = React.useCallback((index) => {
         switch (info[index].nombre) {
-            /**
-            case "Wise Men Stack":
-                setGameLink("/wiseMenStackGame");
-                break;
-            case "Warm Question":
-                setGameLink("/warmQuestionGame");
-                break;
-            case "Discovering Cities":
-                setGameLink("/discoveringCitiesGame");
-                break;
-            case "Challenge":
-                setGameLink("/theChallengeGame");
-                break;
-            case "Multiplayer":
-                setGameLink("/multiplayerRoom");
-                break;
-                **/
             case "Picture":
                 setGameLink("/pictureGame");
                 break;

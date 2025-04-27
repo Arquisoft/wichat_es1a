@@ -482,9 +482,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_register">6.1. Register</a></li>
 <li><a href="#_login">6.2. Login</a></li>
 <li><a href="#_see_user_statistics">6.3. See User Statistics</a></li>
-<li><a href="#_see_users_and_groups_ranking">6.4. See Users and Groups Ranking</a></li>
-<li><a href="#_play_games">6.5. Play Games</a></li>
-<li><a href="#_see_and_edit_your_profile">6.6. See and edit your profile</a></li>
+<li><a href="#_play_games">6.4. Play Games</a></li>
+<li><a href="#_see_and_edit_your_profile">6.5. See and edit your profile</a></li>
 </ul>
 </li>
 <li><a href="#section-deployment-view">7. Deployment View</a></li>
@@ -526,6 +525,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_technical_terms">12.3. Technical Terms</a></li>
 </ul>
 </li>
+<li><a href="#section-load-tests">13. Load Tests</a></li>
+<li><a href="#section-monitoring">14. Appendix II: Application monitoring</a></li>
 </ul>
 </div>
 </div>
@@ -594,9 +595,6 @@ For documentation of your own system you use better the <em>plain</em> version.<
 </li>
 <li>
 <p>Pablo Pérez, <a href="mailto:UO288816@uniovi.es">UO288816@uniovi.es</a></p>
-</li>
-<li>
-<p>Sara Lamuño, <a href="mailto:UO283706@uniovi.es">UO283706@uniovi.es</a></p>
 </li>
 <li>
 <p>Saúl Valdelvira, <a href="mailto:UO283685@uniovi.es">UO283685@uniovi.es</a></p>
@@ -748,9 +746,6 @@ Not following this principle would heavily increase costs in new feature impleme
 </li>
 <li>
 <p>Pablo Pérez</p>
-</li>
-<li>
-<p>Sara Lamuño</p>
 </li>
 <li>
 <p>Saúl Valdelvira</p>
@@ -981,6 +976,10 @@ conventions (e.g. programming or versioning guidelines, documentation or naming 
 <td class="tableblock halign-left valign-top"><p class="tableblock">Budget</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">We will use free tools or services for which the University has a license.</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Termination of a team member</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Because of the decision to dismiss Sara Lamuño, we are a smaller team who needs to dedicate more time to solve all issues and to understand the code.</p></td>
+</tr>
 </tbody>
 </table>
 <div style="page-break-after: always;"></div>
@@ -1174,7 +1173,7 @@ Refer to details in the following sections.</p>
 <p>WikiData API to obtain question and answer information.</p>
 </li>
 <li>
-<p>ExpressJS to build the backend.</p>
+<p>ExpressJS and TypeScript to build the backend.</p>
 </li>
 </ul>
 </div>
@@ -1186,63 +1185,48 @@ This allowed us to build upon an existing foundation, facilitating development a
 <div class="sect2">
 <h3 id="_implementation_design">4.2. Implementation design</h3>
 <div class="sect3">
-<h4 id="_image_generation_strategy">4.2.1. Image generation strategy</h4>
+<h4 id="_question_generation">4.2.1. Question generation</h4>
 <div class="paragraph">
-<p>For the image generation process, we retrieve data from Wikidata using SPARQL queries based on a structured JSON format. This JSON structure defines categories and properties that guide the generation of image prompts.</p>
+<p>To generate questions, we use the questions service.</p>
 </div>
 <div class="paragraph">
-<p>The JSON structure allows us to select the desired categories for the images, and in the future, specify the style or format. Based on this, we construct a SPARQL query to fetch data from Wikidata and convert it into an image generation request. Here’s an example of a category element in the JSON:</p>
+<p>The QuestionDBService is the main orchestrator, responsible for querying
+wikidata and turning the API responses into questions.</p>
+</div>
+<div class="paragraph">
+<p>Every questions belongs to a specific category.
+For each category, we define a class that implements the interface
+'WikidataRecipe'.</p>
+</div>
+<div class="paragraph">
+<p>This interface is used by the QuestionDBService to
+1) Create a WikidataQueryBuilder, that asks for the specific entities for the
+   category
+2) Convert the API&#8217;s response into WikidataEntities, and intern the questions in
+   the dababase
+3) Generate questions from those entities.</p>
+</div>
+<div class="paragraph">
+<p>After this process is completed, the service returns a JSON object with the
+following structure</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-json" data-lang="json">[
     {
-        "name": "country",
-        "instance": "Q6256",
-        "properties": [
-            {
-                "property": "P18",
-                "query": "SELECT ?capital WHERE { ?country wdt:P18 ?capital . FILTER(?country = wd:{x}) }",
-                "image": "https://upload.wikimedia.org/wikipedia/commons/3/3a/Meerkat.jpg",
-                "category": ["Geography", "Cities"]
-            },
-            {
-                "property": "P18",
-                "query": "SELECT ?currency WHERE { ?country wdt:P38 ?currency . FILTER(?country = wd:{x}) }",
-                "image": "https://upload.wikimedia.org/wikipedia/commons/3/3a/Meerkat.jpg",
-                "category": ["Economy"]
-            },
-            ...
-        ],
-        ...
+      "image_url" : "http://commons.wikimedia.org/wiki/Special:FilePath/Erithacus%20rubecula%20with%20cocked%20head.jpg",
+      "response" : "Erithacus rubecula",
+      "distractors" : ["Invertebrata","Bilateria","Erithacus rubecula"],
+      "options" : ["Invertebrata","Bilateria","Erithacus rubecula","Erithacus rubecula"],
+      "attrs" : {
+          "common_name" : "Petirrojo europeo",
+          "taxon_name" : "Erithacus rubecula",
+          ...
+      }
     },
     ...
 ]</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>his structure allows us to dynamically generate SPARQL queries to fetch data from Wikidata, which is then transformed into image generation prompts.</p>
-</div>
-<div class="paragraph">
-<p>The process consists of the following steps:</p>
-</div>
-<div class="paragraph">
-<p>Define categories and properties in JSON format.</p>
-</div>
-<div class="paragraph">
-<p>Generate a SPARQL query based on the selected properties.</p>
-</div>
-<div class="paragraph">
-<p>Retrieve data from Wikidata using the query.</p>
-</div>
-<div class="paragraph">
-<p>Convert the data into an image prompt.</p>
-</div>
-<div class="paragraph">
-<p>Generate the image using an external image generation API.</p>
-</div>
-<div class="paragraph">
-<p>This approach enables the dynamic creation of images based on specific categories and properties, ensuring a diverse set of visual representations across different topics and languages.</p>
 </div>
 </div>
 </div>
@@ -1593,19 +1577,13 @@ Most diagrams are taken from the WIQ project, our base project, because that fun
 </div>
 </div>
 <div class="sect2">
-<h3 id="_see_users_and_groups_ranking">6.4. See Users and Groups Ranking</h3>
-<div class="paragraph">
-<p><span class="image"><img src="./images/06_groups_ranking.png" alt="See Ranking Sequence"></span></p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_play_games">6.5. Play Games</h3>
+<h3 id="_play_games">6.4. Play Games</h3>
 <div class="paragraph">
 <p><span class="image"><img src="./images/06_play_llm.png" alt="Play Games Sequence"></span></p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_see_and_edit_your_profile">6.6. See and edit your profile</h3>
+<h3 id="_see_and_edit_your_profile">6.5. See and edit your profile</h3>
 <div class="paragraph">
 <p><span class="image"><img src="./images/06_profile.png" alt="See Profile Sequence"></span></p>
 </div>
@@ -1966,11 +1944,6 @@ on this list.</p>
 <p><a href="https://arquisoft.github.io/wiq_es04a/#_acronyms"><strong>CI/CD</strong></a>: The application is in continuous integration and deployment. Team members commit frequently into the repository where the project is stored. This makes it easier when assembling project parts involving collaboration from different team members.</p>
 </li>
 </ul>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="./images/Mindmap_08.png" alt="Mindmap of the app">
-</div>
 </div>
 <div style="page-break-after: always;"></div>
 </div>
@@ -2599,6 +2572,10 @@ current architecture.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Code cleanup and adaptation from last year’s project</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The project inherits code from last year’s implementation, which may not meet current requirements or best practices. To address this, we will dedicate time to learning how to properly transfer and adapt the previous project to align with the updated requirements. This includes improving code quality, removing redundant code, and ensuring compatibility with the new project scope.</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Departure of a team member</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The departure of a team member in the middle of the project creates a gap in the team&#8217;s capacity and can lead to reorganization of work and issues. This also impacts knowledge continuity, requiring time for other members to onboard and understand the previous work. To mitigate this, we will equally redistribute tasks and maintain a good team atmosphere.</p></td>
+</tr>
 </tbody>
 </table>
 <div class="paragraph">
@@ -2766,6 +2743,65 @@ current architecture.</p></td>
 </tr>
 </tbody>
 </table>
+<div style="page-break-after: always;"></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="section-load-tests">13. Load Tests</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<div class="title">Content</div>
+<p>This section outlines the load testing performed to evaluate the system&#8217;s performance and stability under simulated user demand. Using Gatling,
+we conducted tests to measure how the system handles concurrent users.</p>
+</div>
+<div class="paragraph">
+<p>We recorded the specific functionalities to be tested and configured Gatling to simulate user interactions.
+Our initial test involved gradually increasing the number of concurrent requests to 1,000 over a 2-minute ramp-up period, mimicking a realistic usage scenario.
+The configuration details for this test are summarized below:</p>
+</div>
+<div class="paragraph">
+<p><strong>Configuration for Gatling Recording 1</strong>
+- Ramp-up period: 2 minutes
+- Target users: 1,000
+- Test duration: 6 minutes (22:59 to 23:05)</p>
+</div>
+<div class="paragraph">
+<p>After executing the load test, we analyzed the results.
+Approximately 33% of requests failed. The majority of successful requests (around 40%) had response times between 800 and 1,200 ms,
+ while 35% were under 800 ms, as shown in the response time distribution.
+While response times were acceptable, reducing the failure rate is a priority to ensure a seamless user experience.</p>
+</div>
+<div class="paragraph">
+<p>The following graphs illustrate the test results, showing request failures, response times, and active users over the simulation period.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="./images/13_responseTimeRanges.png" alt="Image 13.1: Response Time Ranges"></span>
+<span class="image"><img src="./images/13_activeUsersAlongTheSimulation.png" alt="Image 13.2: Active Users along the Simulation"></span>
+<span class="image"><img src="./images/13_responseTimeDistribution.png" alt="Image 13.3: Response Time Distribution"></span>
+<span class="image"><img src="./images/13_responseTimePercentilesOverTime.png" alt="Image 13.4: Response Time Percentiles over Time (OK)"></span>
+<span class="image"><img src="./images/13_numberOfRequestsPerSecond.png" alt="Image 13.5: Number of Requests per Second"></span>
+<span class="image"><img src="./images/13_numberOfResponsesPerSecond.png" alt="Image 13.6: Number of Responses per Second"></span></p>
+</div>
+<div style="page-break-after: always;"></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="section-monitoring">14. Appendix II: Application monitoring</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Monitoring an application is a crucial part of it. It is an easy way of knowing how well a web application is working through different graphics and metrics. For this, we adapted the monitoring system that was given to us and we personalized it. That means we are using Prometheus as well as Grafana to monitorize our project. Prometheus intercepts every request that reaches our application&#8217;s gateway. Grafana takes those data at paints them in easy-understanding graphics. We have a dashboard in Grafana to display some aspects that we consider relevant.</p>
+</div>
+<div class="paragraph">
+<p>The dashboard that we are using to monitorize our project is called <em>wichat_es1a Dashboard</em> and it has 3 different panels. The first of them shows the number of requests through time. The second one shows requests that succeed. The third one paints a graphic of the average time each request takes.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/14_monitoring_graphics.png" alt="Grafana dashboard">
+</div>
+</div>
+<div class="paragraph">
+<p>To see how Grafana works we have used Apache. We have stablished the number of requests and how fast we want them to execute. This lets us check easily how our project treats requests. Also, another interesting thing to mention are the <a href="http://172.187.170.130/:8000/metrics"> metrics </a>. It shows every different request on the application and its status code.</p>
 </div>
 </div>
 </div>
@@ -2773,7 +2809,7 @@ current architecture.</p></td>
 <div id="footer">
 <div id="footer-text">
 Version 8.2 EN<br>
-Last updated 2025-03-10 18:17:49 +0100
+Last updated 2025-04-27 19:11:10 +0200
 </div>
 </div>
 </body>

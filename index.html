@@ -525,8 +525,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_technical_terms">12.3. Technical Terms</a></li>
 </ul>
 </li>
-<li><a href="#section-load-tests">13. Load Tests</a></li>
-<li><a href="#section-monitoring">14. Appendix II: Application monitoring</a></li>
+<li><a href="#section-load-tests">13. Appendix I: Load Tests</a>
+<ul class="sectlevel2">
+<li><a href="#_unit_tests_throughout_the_development_of_the_application_we_consistently_implemented_unit_tests_these_tests_were_key_to_verifying_that_newly_added_features_worked_correctly_they_also_made_it_easier_to_catch_unintended_changes_if_something_was_modified_we_would_adjust_the_unit_tests_accordingly_this_helped_us_spot_unexpected_impacts_on_other_parts_of_the_application_and_identify_unwanted_dependencies_between_components">13.1. Unit Tests Throughout the development of the application, we consistently implemented unit tests. These tests were key to verifying that newly added features worked correctly. They also made it easier to catch unintended changes — if something was modified, we would adjust the unit tests accordingly. This helped us spot unexpected impacts on other parts of the application and identify unwanted dependencies between components.</a></li>
+<li><a href="#_usability_tests_usability_was_one_of_our_main_quality_goals_and_we_kept_it_in_mind_throughout_the_development_process_however_to_ensure_that_the_application_was_truly_user_friendly_we_conducted_a_series_of_simple_usability_tests">13.2. Usability Tests Usability was one of our main quality goals, and we kept it in mind throughout the development process. However, to ensure that the application was truly user-friendly, we conducted a series of simple usability tests.</a></li>
+</ul>
+</li>
+<li><a href="#section-monitoring">14. Appendix III: Application monitoring</a></li>
 </ul>
 </div>
 </div>
@@ -2748,7 +2753,7 @@ current architecture.</p></td>
 </div>
 </div>
 <div class="sect1">
-<h2 id="section-load-tests">13. Load Tests</h2>
+<h2 id="section-load-tests">13. Appendix I: Load Tests</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <div class="title">Content</div>
@@ -2784,10 +2789,43 @@ While response times were acceptable, reducing the failure rate is a priority to
 <span class="image"><img src="./images/13_numberOfResponsesPerSecond.png" alt="Image 13.6: Number of Responses per Second"></span></p>
 </div>
 <div style="page-break-after: always;"></div>
+<div class="paragraph">
+<p><a id="section-other-tests"></a> == Appendix II: Other Tests</p>
+</div>
+<div class="sect2">
+<h3 id="_unit_tests_throughout_the_development_of_the_application_we_consistently_implemented_unit_tests_these_tests_were_key_to_verifying_that_newly_added_features_worked_correctly_they_also_made_it_easier_to_catch_unintended_changes_if_something_was_modified_we_would_adjust_the_unit_tests_accordingly_this_helped_us_spot_unexpected_impacts_on_other_parts_of_the_application_and_identify_unwanted_dependencies_between_components">13.1. Unit Tests Throughout the development of the application, we consistently implemented unit tests. These tests were key to verifying that newly added features worked correctly. They also made it easier to catch unintended changes — if something was modified, we would adjust the unit tests accordingly. This helped us spot unexpected impacts on other parts of the application and identify unwanted dependencies between components.</h3>
+<div class="paragraph">
+<p>For these reasons, maintaining a high level of test coverage was a priority. We successfully achieved over 80% code coverage across the project.</p>
+</div>
+<div class="sect3">
+<h4 id="_sonarcloud_the_image_below_provides_an_overview_of_our_repository_as_analyzed_by_sonarcloud_as_shown_all_services_have_reached_at_least_80_coverage_with_some_nearing_90_overall_the_project_maintains_an_average_coverage_of_about_82_however_its_important_to_note_that_good_testing_is_not_just_about_high_numbers_but_about_meaningful_effective_coverage">13.1.1. SonarCloud The image below provides an overview of our repository as analyzed by SonarCloud. As shown, all services have reached at least 80% coverage, with some nearing 90%. Overall, the project maintains an average coverage of about 82%. However, it&#8217;s important to note that good testing is not just about high numbers, but about meaningful, effective coverage.</h4>
+<div class="paragraph">
+<p>Additionally, SonarCloud offers a graphic showing risk levels across different parts of the codebase. Bubbles located in the top-right area of the graph indicate potential long-term risks, while green bubbles in the bottom-left represent healthy code. In our case, the graphic shows all green bubbles, with most positioned in the safest zone at the bottom-left.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/14_SonarCloud_2.png" alt="Risks graphic">
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_usability_tests_usability_was_one_of_our_main_quality_goals_and_we_kept_it_in_mind_throughout_the_development_process_however_to_ensure_that_the_application_was_truly_user_friendly_we_conducted_a_series_of_simple_usability_tests">13.2. Usability Tests Usability was one of our main quality goals, and we kept it in mind throughout the development process. However, to ensure that the application was truly user-friendly, we conducted a series of simple usability tests.</h3>
+<div class="paragraph">
+<p>We asked three users to test the application during different stages of development, helping us identify issues that we might have missed ourselves.</p>
+</div>
+<div class="paragraph">
+<p>For example, one user pointed out that the 'Play' button on the homepage always redirected to the login page, even when the user was already logged in. This caused confusion, so we updated the behavior to redirect logged-in users directly to the game selection page.</p>
+</div>
+<div class="paragraph">
+<p>Another usability test was carried out on the Android application. A user noticed that the navigation bar occasionally behaved oddly, disrupting the entire interface. Based on this feedback, we adjusted and improved the navbar to ensure a smoother experience.</p>
+</div>
+<div style="page-break-after: always;"></div>
+</div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="section-monitoring">14. Appendix II: Application monitoring</h2>
+<h2 id="section-monitoring">14. Appendix III: Application monitoring</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Monitoring an application is a crucial part of it. It is an easy way of knowing how well a web application is working through different graphics and metrics. For this, we adapted the monitoring system that was given to us and we personalized it. That means we are using Prometheus as well as Grafana to monitorize our project. Prometheus intercepts every request that reaches our application&#8217;s gateway. Grafana takes those data at paints them in easy-understanding graphics. We have a dashboard in Grafana to display some aspects that we consider relevant.</p>
@@ -2797,7 +2835,7 @@ While response times were acceptable, reducing the failure rate is a priority to
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="./images/14_monitoring_graphics.png" alt="Grafana dashboard">
+<img src="./images/15_monitoring_graphics.png" alt="Grafana dashboard">
 </div>
 </div>
 <div class="paragraph">
@@ -2809,7 +2847,7 @@ While response times were acceptable, reducing the failure rate is a priority to
 <div id="footer">
 <div id="footer-text">
 Version 8.2 EN<br>
-Last updated 2025-04-27 19:11:10 +0200
+Last updated 2025-04-27 23:49:02 +0200
 </div>
 </div>
 </body>

@@ -1,5 +1,5 @@
 [[section-load-tests]]
-== Load Tests
+== Appendix I: Load Tests
 
 .Content
 This section outlines the load testing performed to evaluate the system's performance and stability under simulated user demand. Using Gatling,

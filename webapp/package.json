@@ -15,6 +15,7 @@
     "axios": "^1.6.5",
     "babel": "^6.23.0",
     "cross-env": "^7.0.3",
+    "cypress-cucumber-preprocessor": "^4.3.1",
     "express": "^4.19.2",
     "get-uri": "^6.0.3",
     "i18next": "^23.11.0",
@@ -29,6 +30,7 @@
     "sequelize": "^6.37.3",
     "socket.io-client": "^4.7.5",
     "sqlite3": "^5.1.7",
+    "ts-node": "^10.9.2",
     "web-vitals": "^3.5.1"
   },
   "scripts": {
@@ -36,7 +38,7 @@
     "build": "react-scripts build",
     "prod": "serve -s build",
     "test": "react-scripts test --passWithNoTests --transformIgnorePatterns 'node_modules/(?!axios)/'",
-    "test:e2e": "start-server-and-test 'node e2e/test-environment-setup.js' http://localhost:8000/health prod 3000 \"cd e2e && jest\" ",
+    "test:e2e": "start-server-and-test 'node e2e/test-environment-setup.js' http://localhost:8000/health start http://localhost:3000/ \"cd e2e && jest\"",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

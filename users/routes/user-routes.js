@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcrypt');
-const { User, Statistics, Group, UserGroup, QuestionsRecord, sequelize } = require('../services/user-model');
+const { User, Statistics, Group, UserGroup, QuestionsRecord, sequelize, createUser } = require('../services/user-model');
 const { getRandomPic } = require("../data/icons");
 const assert = require("../assert")
 
@@ -265,22 +264,10 @@ router.post('/', async (req, res) => {
             throw new Error('The surname cannot be empty or contain only spaces');
         }
 
-        const salt = bcrypt.genSaltSync();
-
-        // Hash the password
-        const hashedPassword = bcrypt.hashSync(password, salt);
-
         const imageUrl = getRandomPic();
 
         // Create the user in the database using Sequelize
-        const newUser = await User.create({
-            username,
-            password: hashedPassword,
-            salt,
-            name,
-            surname,
-            imageUrl
-        });
+        const newUser = createUser(username, password, name, surname, imageUrl);
         console.log(`Created new user '${username}'`);
 
         assert(newUser.salt === salt)

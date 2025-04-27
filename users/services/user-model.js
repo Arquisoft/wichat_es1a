@@ -1,4 +1,5 @@
 const { Sequelize, DataTypes } = require('sequelize');
+const bcrypt = require("bcrypt")
 
 // Function to create Sequelize instance with appropriate configurations
 function createSequelizeInstance() {
@@ -18,6 +19,23 @@ function createSequelizeInstance() {
             logging
         });
     }
+}
+
+async function createUser(username, password, name, surname, imageUrl) {
+    const salt = bcrypt.genSaltSync();
+
+    // Hash the password
+    const hashedPassword = bcrypt.hashSync(password, salt);
+
+    // Create the user in the database using Sequelize
+    return await User.create({
+        username,
+        password: hashedPassword,
+        salt,
+        name,
+        surname,
+        imageUrl
+    });
 }
 
 // Database connection configuration
@@ -227,4 +245,4 @@ sequelize
         console.error('Error connecting to the database:', err);
     });
 
-module.exports = { sequelize, User, Group, UserGroup, Statistics, QuestionsRecord };
+module.exports = { sequelize, User, Group, UserGroup, Statistics, QuestionsRecord, createUser };

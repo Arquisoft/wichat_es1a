@@ -1,4 +1,4 @@
-import { Given, When, Then } from 'cypress-cucumber-preprocessor/steps';
+const { Given, When, Then } = require('cypress-cucumber-preprocessor/steps');
 
 const apiEndpoint = 'http://localhost:8000';
 
@@ -13,6 +13,12 @@ When('the user enters valid credentials', () => {
 
   cy.get('input[name="username"]').type(validUsername);
   cy.get('input[name="password"]').type(validPassword);
+
+
+});
+
+Then('the user should be redirected to the homepage', () => {
+  cy.url().should('include', '/homepage');
 });
 
 When('the user enters invalid credentials', () => {
@@ -26,10 +32,6 @@ When('the user enters invalid credentials', () => {
 
 When('the user clicks the login button', () => {
   cy.get('button').contains('Login').click();
-});
-
-Then('the user should be redirected to the homepage', () => {
-  cy.url().should('include', '/homepage');
 });
 
 Then('a success message should be displayed', () => {

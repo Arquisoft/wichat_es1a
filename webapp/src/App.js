@@ -8,7 +8,7 @@ import Home from './pages/Home';
 import Homepage from './pages/Homepage';
 import Game from './pages/games/Game';
 import Statistics from './pages/Statistics';
-import Ranking from './pages/Ranking'
+// import Ranking from './pages/Ranking'
 import Profile from './pages/Profile'
 import {Route, Routes} from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -56,9 +56,8 @@ function App() {
             <Route path="/pictureGame" element={<PrivateRoute element={PictureGame}/>}/>
             <Route path="/game" element={<PrivateRoute element={Game} />} />
             <Route path="/statistics/:user" element={<PrivateRoute element={Statistics }/>}/>
-            <Route path="/ranking" element={<PrivateRoute element={Ranking}/>}/>
             <Route path="/profile" element={<PrivateRoute element={Profile}/>}/>
-            <Route path="*" element={<NotFound />} /> 
+            <Route path="*" element={<NotFound />} />
           </Routes>
         <Footer/>
       </ThemeProvider>

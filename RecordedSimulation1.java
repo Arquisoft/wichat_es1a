@@ -266,9 +266,9 @@ public class RecordedSimulation extends Simulation {
     );
 
   {
-	  setUp(scn.injectOpen(rampUsers(1000).during(30),
-    		constantUsersPerSec(300).during(60),
-   		rampUsers(2000).during(30))).protocols(httpProtocol);
+	  setUp(scn.injectOpen(rampUsers(300).during(30),
+    		constantUsersPerSec(200).during(60),
+   		rampUsers(500).during(30))).protocols(httpProtocol);
     //este ya empieza a saturar viendo como algunas peticiones ya llegan a los 5 segundos
   }
 }

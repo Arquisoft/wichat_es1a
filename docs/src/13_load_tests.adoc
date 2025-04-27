@@ -1,0 +1,29 @@
+[[section-load-tests]]
+== Load Tests
+
+.Content
+This section outlines the load testing performed to evaluate the system's performance and stability under simulated user demand. Using Gatling,
+we conducted tests to measure how the system handles concurrent users.
+
+We recorded the specific functionalities to be tested and configured Gatling to simulate user interactions.
+Our initial test involved gradually increasing the number of concurrent requests to 1,000 over a 2-minute ramp-up period, mimicking a realistic usage scenario.
+The configuration details for this test are summarized below:
+
+*Configuration for Gatling Recording 1*
+- Ramp-up period: 2 minutes
+- Target users: 1,000
+- Test duration: 6 minutes (22:59 to 23:05)
+
+After executing the load test, we analyzed the results.
+Approximately 33% of requests failed. The majority of successful requests (around 40%) had response times between 800 and 1,200 ms,
+ while 35% were under 800 ms, as shown in the response time distribution.
+While response times were acceptable, reducing the failure rate is a priority to ensure a seamless user experience.
+
+The following graphs illustrate the test results, showing request failures, response times, and active users over the simulation period.
+
+image:13_responseTimeRanges.png["Image 13.1: Response Time Ranges"]
+image:13_activeUsersAlongTheSimulation.png["Image 13.2: Active Users along the Simulation"]
+image:13_responseTimeDistribution.png["Image 13.3: Response Time Distribution"]
+image:13_responseTimePercentilesOverTime.png["Image 13.4: Response Time Percentiles over Time (OK)"]
+image:13_numberOfRequestsPerSecond.png["Image 13.5: Number of Requests per Second"]
+image:13_numberOfResponsesPerSecond.png["Image 13.6: Number of Responses per Second"]

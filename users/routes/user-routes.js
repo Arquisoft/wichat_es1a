@@ -270,8 +270,6 @@ router.post('/', async (req, res) => {
         const newUser = createUser(username, password, name, surname, imageUrl);
         console.log(`Created new user '${username}'`);
 
-        assert(newUser.salt === salt)
-
         // Create the user statistics
         await Statistics.create({
             username

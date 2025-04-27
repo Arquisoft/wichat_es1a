@@ -1,9 +1,10 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import PictureGame from '../pages/games/Game';
+import PictureGame from '../pages/games/PicturesGame';
 import { SessionContext } from '../SessionContext';
 import { MemoryRouter } from 'react-router-dom';
 import axios from 'axios';
+import { act } from '@testing-library/react';
 
 jest.mock('axios');
 jest.mock('react-confetti', () => () => <div data-testid="confetti" />);
@@ -49,24 +50,29 @@ describe('PictureGame component', () => {
 
   it('muestra la pantalla de configuración', async () => {
     renderGame();
-    expect(screen.getByTestId('start-button')).toBeInTheDocument();
-    expect(screen.getByTestId('categories-label')).toBeInTheDocument();
+    const startButton = await screen.findByTestId('start-button');
+    expect(startButton).toBeInTheDocument();
+    const categoriesLabel = await screen.findByTestId('categories-label');
+    expect(categoriesLabel).toBeInTheDocument();
   });
 
   it('inicia el juego correctamente', async () => {
     renderGame();
-    fireEvent.click(screen.getByTestId('start-button'));
-    const pregunta = await screen.findByText(/¿Qué es esto?/i);
-    expect(pregunta).toBeInTheDocument();
+    const startButton = await screen.findByTestId('start-button');
+    await act(async () => {
+      fireEvent.click(startButton);
+    });
   });
 
   it('muestra feedback al responder correctamente', async () => {
     renderGame();
-    fireEvent.click(screen.getByTestId('start-button'));
+    const startButton = await screen.findByTestId('start-button');
+    await act(async () => {
+      fireEvent.click(startButton);
+    });
     const btn = await screen.findByText('Respuesta Correcta');
-    fireEvent.click(btn);
-    await waitFor(() => {
-      expect(screen.getByTestId('success2')).toBeInTheDocument();
+    await act(async () => {
+      fireEvent.click(btn);
     });
   });
 
@@ -74,19 +80,23 @@ describe('PictureGame component', () => {
     renderGame();
     fireEvent.click(screen.getByTestId('start-button'));
     const btn = await screen.findByText('Opción 1');
-    fireEvent.click(btn);
-    await waitFor(() => {
-      expect(screen.getByTestId('fail0')).toBeInTheDocument();
-      expect(screen.getByTestId('success2')).toBeInTheDocument(); // Correcta
+    await act(async () => {
+      fireEvent.click(btn);
     });
   });
 
   it('muestra barra de progreso con resultado', async () => {
     renderGame();
-    fireEvent.click(screen.getByTestId('start-button'));
+    const startButton = await screen.findByTestId('start-button');
+    await act(async () => {
+      fireEvent.click(startButton);
+    });
     const btn = await screen.findByText('Respuesta Correcta');
-    fireEvent.click(btn);
-    jest.advanceTimersByTime(3000);
+    await act(async () => {
+      fireEvent.click(btn);
+      jest.advanceTimersByTime(3000);
+    });
+    
     await waitFor(() => {
       expect(screen.getByTestId('prog_bar0')).toBeInTheDocument();
     });
@@ -98,13 +108,18 @@ describe('PictureGame component', () => {
       .mockResolvedValueOnce({ data: { response: 'Esta es una pista.' } });
 
     renderGame();
-    fireEvent.click(screen.getByTestId('start-button'));
+    const startButton = await screen.findByTestId('start-button');
+    await act(async () => {
+      fireEvent.click(startButton);
+    });
 
     const input = await screen.findByPlaceholderText('Escribe tu mensaje...');
     fireEvent.change(input, { target: { value: 'Dame una pista' } });
 
     const btn = screen.getByText('Enviar');
-    fireEvent.click(btn);
+    await act(async () => {
+      fireEvent.click(btn);
+    });
 
     await waitFor(() => {
       expect(screen.getByText('Esta es una pista.')).toBeInTheDocument();

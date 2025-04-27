@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent, screen, waitFor } from '@testing-library/react';
-import { SessionContext } from '../../SessionContext';
+import { SessionContext } from '../SessionContext';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
@@ -33,12 +33,12 @@ describe('Register component', () => {
       </SessionContext.Provider>
     );
 
-    expect(screen.getByLabelText('Username')).toBeInTheDocument();
-    expect(screen.getByLabelText('Password')).toBeInTheDocument();
-    expect(screen.getByLabelText('Name')).toBeInTheDocument();
-    expect(screen.getByLabelText('Surname')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Sign up' })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Already have an account? Login here.' })).toBeInTheDocument();
+    expect(screen.getByLabelText('Nombre de usuario')).toBeInTheDocument();
+    expect(screen.getByLabelText('Contraseña')).toBeInTheDocument();
+    expect(screen.getByLabelText('Nombre')).toBeInTheDocument();
+    expect(screen.getByLabelText('Apellido')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Registrarse' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: '¿Ya tienes una cuenta? Inicia sesión aquí.' })).toBeInTheDocument();
   });
 
   it('should sign up a user', async () => {
@@ -53,12 +53,12 @@ describe('Register component', () => {
       </SessionContext.Provider>
     );
 
-    fireEvent.change(screen.getByLabelText('Username'), { target: { value: 'testuser' } });
-    fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'testpassword' } });
-    fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'John' } });
-    fireEvent.change(screen.getByLabelText('Surname'), { target: { value: 'Doe' } });
+    fireEvent.change(screen.getByLabelText('Nombre de usuario'), { target: { value: 'testuser' } });
+    fireEvent.change(screen.getByLabelText('Contraseña'), { target: { value: 'testpassword' } });
+    fireEvent.change(screen.getByLabelText('Nombre'), { target: { value: 'John' } });
+    fireEvent.change(screen.getByLabelText('Apellido'), { target: { value: 'Doe' } });
 
-    fireEvent.click(screen.getByRole('button', { name: 'Sign up' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Registrarse' }));
 
     await waitFor(() => {
       expect(mockAxios.history.post.length).toBe(2); // Ensure two POST requests are made
@@ -76,7 +76,7 @@ describe('Register component', () => {
       </SessionContext.Provider>
     );
 
-    fireEvent.click(screen.getByRole('button', { name: 'Sign up' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Registrarse' }));
 
     await waitFor(() => {
       expect(screen.getByText('Error: Username already exists')).toBeInTheDocument();

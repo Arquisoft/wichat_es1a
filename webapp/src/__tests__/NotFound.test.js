@@ -26,8 +26,8 @@ describe('NotFound component', () => {
         <NotFound />
       </MemoryRouter>
     );
-    expect(screen.getByRole('button')).toHaveTextContent('NotFound.button_msg');
-    expect(screen.getByRole('button').closest('a')).toHaveAttribute('href', '/');
+    expect(screen.getByRole('link', { name: 'NotFound.button_msg' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'NotFound.button_msg' })).toHaveAttribute('href', '/');
   });
 
   it('renderiza el fondo animado correctamente', () => {
@@ -36,7 +36,7 @@ describe('NotFound component', () => {
         <NotFound />
       </MemoryRouter>
     );
-    const container = screen.getByRole('button').previousSibling;
+    const container = screen.getByRole('link', { name: 'NotFound.button_msg' }).previousSibling;
     expect(container).toHaveStyle('background-image: url(https://cdn.dribbble.com/users/285475/screenshots/2083086/dribbble_1.gif)');
   });
 });

@@ -435,11 +435,31 @@ const PictureGame = () => {
       background: 'linear-gradient(to bottom, #f5f7fa, #e4e8f0)'
     }}>
       <CssBaseline />
-
+      {/*Botón para mostrar el chat*/}
+      <Button
+        variant="contained"
+        onClick={() => setChatOpen(prev => !prev)}
+        sx={{
+         marginBottom: '1em',
+         backgroundColor: 'white',
+         color: theme.palette.primary.dark,
+          '&:hover': {
+            backgroundColor: theme.palette.primary.dark,
+            color: 'white',
+          },
+          fontWeight: 'bold',
+          fontSize: '1rem',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.5em'
+        }}
+      >
+      {chatOpen ? 'Ocultar Chat ❌' : 'Abrir Chat 💬'}
+      </Button>
       {/* Contenedor principal usando Grid para mejor organización del espacio */}
       <Grid container spacing={3}>
         {/* Columna izquierda (juego) - ocupa 8/12 en pantallas grandes, 12/12 en pequeñas */}
-        <Grid item xs={12} md={8}>
+        <Grid item xs={12} md={chatOpen ? 8 : 12}>
           <Container sx={{
             display: 'flex',
             flexDirection: 'column',
@@ -554,6 +574,7 @@ const PictureGame = () => {
         </Grid>
 
         {/* Columna derecha (chat) - ocupa 4/12 en pantallas grandes, 12/12 en pequeñas */}
+        {chatOpen && (
         <Grid item xs={12} md={4}>
           {/* Contenedor de chat integrado */}
           <Paper
@@ -675,6 +696,7 @@ const PictureGame = () => {
             </Box>
           </Paper>
         </Grid>
+        )}
       </Grid>
     </Container>
   );

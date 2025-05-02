@@ -125,4 +125,42 @@ describe('PictureGame component', () => {
       expect(screen.getByText('Esta es una pista.')).toBeInTheDocument();
     });
   });
+  it('calls endGame and redirects after finishing the last round', async () => {
+    renderGame();
+    const startButton = await screen.findByTestId('start-button');
+    
+    await act(async () => {
+      fireEvent.click(startButton);
+    });
+  
+    for (let i = 0; i < 5; i++) {
+      const btn = await screen.findByText('Respuesta Correcta');
+      await act(async () => {
+        fireEvent.click(btn);
+        jest.advanceTimersByTime(3000);
+      });
+    }
+  
+    await waitFor(() => {
+      expect(screen.getByTestId('end-game-message')).toBeInTheDocument();
+    });
+  
+    expect(axios.put).toHaveBeenCalledWith(expect.stringContaining('/statistics'), expect.anything());
+    expect(axios.put).toHaveBeenCalledWith(expect.stringContaining('/questionsRecord'), expect.anything());
+  });
+  
+  it('renders correct question text based on initial category', async () => {
+    renderGame();
+  
+    const startButton = await screen.findByTestId('start-button');
+    await act(async () => {
+      fireEvent.click(startButton);
+    });
+  
+    await waitFor(() => {
+      expect(screen.getByText('¿De dónde es esta bandera?')).toBeInTheDocument();
+    });
+  });  
+  
+  
 });

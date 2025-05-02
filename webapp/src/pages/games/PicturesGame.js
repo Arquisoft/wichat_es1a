@@ -195,29 +195,10 @@ const PictureGame = () => {
     try {
       await axios.put(`${apiEndpoint}/statistics`, {
         username: username,
-        the_callenge_earned_money: 0,
-        the_callenge_correctly_answered_questions: 0,
-        the_callenge_incorrectly_answered_questions: 0,
-        the_callenge_total_time_played: 0,
-        the_callenge_games_played: 0,
         wise_men_stack_earned_money: totalScore,
         wise_men_stack_correctly_answered_questions: correctlyAnsweredQuestions,
         wise_men_stack_incorrectly_answered_questions: incorrectlyAnsweredQuestions,
-        wise_men_stack_games_played: 1,
-        warm_question_earned_money: 0,
-        warm_question_correctly_answered_questions: 0,
-        warm_question_incorrectly_answered_questions: 0,
-        warm_question_passed_questions: 0,
-        warm_question_games_played: 0,
-        discovering_cities_earned_money: 0,
-        discovering_cities_correctly_answered_questions: 0,
-        discovering_cities_incorrectly_answered_questions: 0,
-        discovering_cities_games_played: 0,
-        online_earned_money: 0,
-        online_correctly_answered_questions: 0,
-        online_incorrectly_answered_questions: 0,
-        online_total_time_played: 0,
-        online_games_played: 0,
+        wise_men_stack_games_played: 1
       });
     } catch (error) {
       console.error("Error:", error);
@@ -454,11 +435,31 @@ const PictureGame = () => {
       background: 'linear-gradient(to bottom, #f5f7fa, #e4e8f0)'
     }}>
       <CssBaseline />
-
+      {/*Botón para mostrar el chat*/}
+      <Button
+        variant="contained"
+        onClick={() => setChatOpen(prev => !prev)}
+        sx={{
+         marginBottom: '1em',
+         backgroundColor: 'white',
+         color: theme.palette.primary.dark,
+          '&:hover': {
+            backgroundColor: theme.palette.primary.dark,
+            color: 'white',
+          },
+          fontWeight: 'bold',
+          fontSize: '1rem',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.5em'
+        }}
+      >
+      {chatOpen ? 'Ocultar Chat ❌' : 'Abrir Chat 💬'}
+      </Button>
       {/* Contenedor principal usando Grid para mejor organización del espacio */}
       <Grid container spacing={3}>
         {/* Columna izquierda (juego) - ocupa 8/12 en pantallas grandes, 12/12 en pequeñas */}
-        <Grid item xs={12} md={8}>
+        <Grid item xs={12} md={chatOpen ? 8 : 12}>
           <Container sx={{
             display: 'flex',
             flexDirection: 'column',
@@ -573,6 +574,7 @@ const PictureGame = () => {
         </Grid>
 
         {/* Columna derecha (chat) - ocupa 4/12 en pantallas grandes, 12/12 en pequeñas */}
+        {chatOpen && (
         <Grid item xs={12} md={4}>
           {/* Contenedor de chat integrado */}
           <Paper
@@ -694,6 +696,7 @@ const PictureGame = () => {
             </Box>
           </Paper>
         </Grid>
+        )}
       </Grid>
     </Container>
   );

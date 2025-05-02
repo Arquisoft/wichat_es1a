@@ -2,16 +2,19 @@ ifndef::imagesdir[:imagesdir: ../images]
 
 [[section-other-tests]] == Appendix II: Other Tests
 
-=== Unit Tests Throughout the development of the application, we consistently implemented unit tests. These tests were key to verifying that newly added features worked correctly. They also made it easier to catch unintended changes — if something was modified, we would adjust the unit tests accordingly. This helped us spot unexpected impacts on other parts of the application and identify unwanted dependencies between components.
+=== Unit Tests 
+Throughout the development of the application, we consistently implemented unit tests. These tests were key to verifying that newly added features worked correctly. They also made it easier to catch unintended changes — if something was modified, we would adjust the unit tests accordingly. This helped us spot unexpected impacts on other parts of the application and identify unwanted dependencies between components.
 For these reasons, maintaining a high level of test coverage was a priority. We successfully achieved over 80% code coverage across the project.
 
-==== SonarCloud The image below provides an overview of our repository as analyzed by SonarCloud. As shown, all services have reached at least 80% coverage, with some nearing 90%. Overall, the project maintains an average coverage of about 82%. However, it's important to note that good testing is not just about high numbers, but about meaningful, effective coverage.
+==== SonarCloud
+The image below provides an overview of our repository as analyzed by SonarCloud. As shown, all services have reached at least 80% coverage, with some nearing 90%. Overall, the project maintains an average coverage of about 82%. However, it's important to note that good testing is not just about high numbers, but about meaningful, effective coverage.
 
 Additionally, SonarCloud offers a graphic showing risk levels across different parts of the codebase. Bubbles located in the top-right area of the graph indicate potential long-term risks, while green bubbles in the bottom-left represent healthy code. In our case, the graphic shows all green bubbles, with most positioned in the safest zone at the bottom-left.
 
 image::14_SonarCloud_2.png["Risks graphic"]
 
-=== Usability Tests Usability was one of our main quality goals, and we kept it in mind throughout the development process. However, to ensure that the application was truly user-friendly, we conducted a series of simple usability tests.
+=== Usability Tests 
+Usability was one of our main quality goals, and we kept it in mind throughout the development process. However, to ensure that the application was truly user-friendly, we conducted a series of simple usability tests.
 
 We asked three users to test the application during different stages of development, helping us identify issues that we might have missed ourselves.
 

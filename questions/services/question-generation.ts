@@ -1,23 +1,30 @@
-import { Console } from "console";
-import { WikidataQuestion } from "./question-db-service";
 import { Categories, P, Q, WikidataEntity } from "./wikidata";
 import { WikidataQueryBuilder } from "./wikidata/query_builder";
 
 export type GenFunction = (we: WikidataEntity) => String;
 
-export interface WikidataRecipe {
-    buildQuery(qb: WikidataQueryBuilder);
-    getAttributes(binding: any) : Array<[String,String]>;
-    generateQuestion(): GenFunction;
-
-    getCategory() : Number;
+export abstract class WikidataRecipe {
+    abstract buildQuery(qb: WikidataQueryBuilder): void;
+    getImageUrl(binding: any) : String {
+         return binding.imagen.value
+    }
+    isValid(binding: any) : boolean {
+       let itemLabel = binding.itemLabel;
+       if (itemLabel)
+           return !itemLabel.value.startsWith("Q")
+       else
+           return true
+    }
+    abstract getAttributes(binding: any) : Array<[String,String]>;
+    abstract generateQuestion(): GenFunction;
+    abstract getCategory() : Number;
 }
 
-export class AnimalRecipe implements WikidataRecipe {
+export class AnimalRecipe extends WikidataRecipe {
     buildQuery(qb: WikidataQueryBuilder) {
         qb
         .subclassOf(Q.ANIMAL)
-        .assocProperty(1843, "common_name", true, "es")
+        .assocProperty(1843, "common_name", null, true, "es")
     }
     getAttributes(binding: any): Array<[String,String]> {
         return [
@@ -27,14 +34,12 @@ export class AnimalRecipe implements WikidataRecipe {
     generateQuestion(): GenFunction {
         return (we: WikidataEntity) => we.getAttribute("item_label")
     }
-
     getCategory(): Number {
         return Categories.Animals
     }
-
 }
 
-export class GeographyRecipe implements WikidataRecipe {
+export class GeographyRecipe extends WikidataRecipe {
     buildQuery(qb: WikidataQueryBuilder) {
         qb.subclassOf(Q.CITY)
     }
@@ -53,7 +58,7 @@ export class GeographyRecipe implements WikidataRecipe {
 
 }
 
-export class FlagsRecipe implements WikidataRecipe {
+export class FlagsRecipe extends WikidataRecipe {
     buildQuery(qb: WikidataQueryBuilder) {
         qb
         .instanceOf(186516)
@@ -69,6 +74,33 @@ export class FlagsRecipe implements WikidataRecipe {
     }
     getCategory(): Number {
         return Categories.Flags
+    }
+
+}
+
+export class LogosRecipe extends WikidataRecipe {
+    buildQuery(qb: WikidataQueryBuilder) {
+        qb.clearProperties();
+        qb
+        .instanceOf(4830453)
+        .assocProperty(361, "partof", 242345)
+        .assocProperty(154, "logo")
+        console.log(qb.build())
+    }
+    getImageUrl(binding: any): String {
+        return binding.logoLabel.value
+    }
+    getAttributes(binding: any): Array<[String, String]> {
+        return [
+            ["logo", binding.logoLabel.value],
+            ["item_label", binding.itemLabel.value],
+        ]
+    }
+    generateQuestion(): GenFunction {
+        return (we: WikidataEntity) => we.getAttribute("item_label")
+    }
+    getCategory(): Number {
+        return Categories.Logos
     }
 
 }

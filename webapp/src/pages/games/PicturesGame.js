@@ -435,27 +435,7 @@ const PictureGame = () => {
       background: 'linear-gradient(to bottom, #f5f7fa, #e4e8f0)'
     }}>
       <CssBaseline />
-      {/*Botón para mostrar el chat*/}
-      <Button
-        variant="contained"
-        onClick={() => setChatOpen(prev => !prev)}
-        sx={{
-         marginBottom: '1em',
-         backgroundColor: 'white',
-         color: theme.palette.primary.dark,
-          '&:hover': {
-            backgroundColor: theme.palette.primary.dark,
-            color: 'white',
-          },
-          fontWeight: 'bold',
-          fontSize: '1rem',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '0.5em'
-        }}
-      >
-      {chatOpen ? 'Ocultar Chat ❌' : 'Abrir Chat 💬'}
-      </Button>
+      
       {/* Contenedor principal usando Grid para mejor organización del espacio */}
       <Grid container spacing={3}>
         {/* Columna izquierda (juego) - ocupa 8/12 en pantallas grandes, 12/12 en pequeñas */}
@@ -518,24 +498,48 @@ const PictureGame = () => {
               </CountdownCircleTimer>
             }
 
-            <Box sx={{ position: 'relative', display: 'inline-block', mt: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2, mt: 2 }}>
+            {/* Imagen con texto encima */}
+            <Box sx={{ textAlign: 'center' }}>
               <Typography variant="h5" gutterBottom>
                 {questionText}
               </Typography>
               <Box
-                  component="img"
-                  src={questionData?.image_url ?? '/loading.gif'}
-                  alt={`Imagen de la pregunta`}
-                  sx={{
-                    maxHeight: '15em',
-                    maxWidth: '100%',
-                    height: 'auto',
-                    borderRadius: 2,
-                    objectFit: 'contain'
-                  }}
+                component="img"
+                src={questionData?.image_url ?? '/loading.gif'}
+                alt="Imagen de la pregunta"
+                sx={{
+                  maxHeight: '15em',
+                  maxWidth: '100%',
+                  height: 'auto',
+                  borderRadius: 2,
+                  objectFit: 'contain'
+                }}
               />
             </Box>
 
+            {/*Botón para mostrar el chat*/}
+            <Button
+              variant="contained"
+              onClick={() => setChatOpen(prev => !prev)}
+              sx={{
+              marginBottom: '1em',
+              backgroundColor: 'white',
+              color: theme.palette.primary.dark,
+                '&:hover': {
+                  backgroundColor: theme.palette.primary.dark,
+                  color: 'white',
+                },
+                fontWeight: 'bold',
+                fontSize: '1rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5em'
+              }}
+            >
+            {chatOpen ? 'Ocultar Chat ❌' : 'Abrir Chat 💬'}
+            </Button>
+          </Box>
 
             <Grid container spacing={2} justifyContent="center" mt={2}>
               {possibleAnswers.map((option, index) => (

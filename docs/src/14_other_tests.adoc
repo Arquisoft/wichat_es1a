@@ -1,6 +1,7 @@
 ifndef::imagesdir[:imagesdir: ../images]
 
-[[section-other-tests]] == Appendix II: Other Tests
+[[section-other-tests]] 
+== Appendix II: Other Tests
 
 === Unit Tests 
 Throughout the development of the application, we consistently implemented unit tests. These tests were key to verifying that newly added features worked correctly. They also made it easier to catch unintended changes — if something was modified, we would adjust the unit tests accordingly. This helped us spot unexpected impacts on other parts of the application and identify unwanted dependencies between components.

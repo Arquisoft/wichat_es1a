@@ -56,24 +56,4 @@ describe('QuestionDBService', () => {
         });
     });
 
-    // describe('generateQuestions', () => {
-    //     it('should generate a batch of questions and store them in the database', async () => {
-    //         // Simula que la función de generación de preguntas responde correctamente
-    //         const mockQuestions = [
-    //             { image_url: 'https://example.com/image1', common_name: 'Common Name 1', wdUri: 'Q123' },
-    //             { image_url: 'https://example.com/image2', common_name: 'Common Name 2', wdUri: 'Q124' },
-    //         ];
-
-    //         // service.getRandomEntities = jest.fn().mockResolvedValue(mockQuestions);
-
-    //         // Mock del método save en el modelo Question
-    //         const saveMock = jest.fn().mockResolvedValue(true);
-    //         Question.prototype.save = saveMock;
-
-    //         await service.generateQuestions(2);
-
-    //         expect(saveMock).toHaveBeenCalled(2);
-
-    //     });
-    // });
 });

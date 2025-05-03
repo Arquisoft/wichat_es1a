@@ -234,7 +234,7 @@ export class QuestionDBService extends PromiseStore {
                 // console.log("Repeated " + n)
                 return false;
             } else {
-                return true;
+                return recipe.isValid(e);
             }
         })
 
@@ -243,7 +243,7 @@ export class QuestionDBService extends PromiseStore {
 
             let attrs = recipe.getAttributes(elem);
             return new Question({
-                image_url: elem.imagen.value,
+                image_url: recipe.getImageUrl(elem),
                 wdId: elem.wdId,
                 attrs,
                 category: recipe.getCategory()

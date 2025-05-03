@@ -370,6 +370,7 @@ const PictureGame = () => {
                 <MenuItem value="animals" onClick={() => setCategory(('animals'))}>Animales</MenuItem>
                 <MenuItem value="cities" onClick={() => setCategory(('cities'))}>Ciudades</MenuItem>
                 <MenuItem value="flags" onClick={() => setCategory(('flags'))}>Banderas</MenuItem>
+                <MenuItem value="logos" onClick={() => setCategory(('logos'))}>Logos</MenuItem>
                 {/* Agrega más categorías si lo deseas */}
               </Select>
             </Box>

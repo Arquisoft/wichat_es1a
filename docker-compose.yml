@@ -74,31 +74,14 @@ services:
     build: ./webapp
     depends_on:
       - gatewayservice
-      - multiplayer
     ports:
       - "3000:3000"
     networks:
       - mynetwork
     environment:
       REACT_APP_API_ENDPOINT: http://gatewayservice:8000
-      REACT_APP_MULTIPLAYER_ENDPOINT: http://multiplayer:5010
     restart: always
 
-  multiplayer:
-    container_name: multiplayer
-    image: ghcr.io/arquisoft/wichat_es1a/multiplayer:latest
-    profiles: ["dev", "prod"]
-    build: ./multiplayer
-    depends_on:
-      - gatewayservice
-    ports:
-      - "5010:5010"
-    networks:
-      - mynetwork
-    environment:
-      WEBAPP_ENDPOINT: http://webapp:3000
-      GATEWAY_SERVICE_ENDPOINT: http://gatewayservice:8000
-    restart: always
 
   prometheus:
     image: prom/prometheus

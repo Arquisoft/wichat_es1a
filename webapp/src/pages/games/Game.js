@@ -12,7 +12,7 @@ import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import { useTranslation } from 'react-i18next';
 import i18n from '../../localize/i18n';
 
-const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
+import { API_URL } from '../../env';
 
 const Game = () => {
     const navigate = useNavigate();
@@ -56,11 +56,11 @@ const Game = () => {
                 setTotalTimePlayed((prevTotalTime) => prevTotalTime + 1);
             }, 1000);
         }
-    
+
         return () => clearInterval(timer);
     }, [timerRunning]);
 
-    // hook to initiating new rounds if the current number of rounds is less than or equal to 3 
+    // hook to initiating new rounds if the current number of rounds is less than or equal to 3
     React.useEffect(() => {
         if (round <= MAX_ROUNDS) {
             startNewRound();
@@ -97,10 +97,10 @@ const Game = () => {
 
         // Updates current language
         setCurrentLanguage(i18n.language);
-        axios.get(`${apiEndpoint}/questions/${language}`)
+        axios.get(`${API_URL}/questions/${language}`)
         .then(quest => {
             // every new round it gets a new question from db
-            setQuestionData(quest.data);    
+            setQuestionData(quest.data);
             setButtonStates(new Array(quest.data.options.length).fill(null));
         }).catch(error => {
             console.error(error);
@@ -109,7 +109,7 @@ const Game = () => {
 
     const updateStatistics = async() => {
         try {
-            await axios.put(`${apiEndpoint}/statistics`, {
+            await axios.put(`${API_URL}/statistics`, {
                 username:username,
                 the_callenge_earned_money:totalScore,
                 the_callenge_correctly_answered_questions:correctlyAnsweredQuestions,
@@ -124,7 +124,7 @@ const Game = () => {
 
     const updateQuestionsRecord = async() => {
         try {
-            await axios.put(`${apiEndpoint}/questionsRecord`, {
+            await axios.put(`${API_URL}/questionsRecord`, {
                 questions: userResponses,
                 username: username,
                 gameMode: "TheChallenge"
@@ -134,7 +134,7 @@ const Game = () => {
         };
     }
 
-    // this function is called when a user selects a response. 
+    // this function is called when a user selects a response.
     const selectResponse = async (index, response) => {
         setAnswered(true);
         const newButtonStates = [...buttonStates];
@@ -197,7 +197,7 @@ const Game = () => {
         return questionHistorial.map((isCorrect, index) => (
             <Card data-testid={`prog_bar${index}`} sx={{ width: `${100 / MAX_ROUNDS}%`, padding:'0.2em', margin:'0 0.1em', backgroundColor: isCorrect === null ? 'gray' : isCorrect ? theme.palette.success.main : theme.palette.error.main }}/>
         ));
-    };    
+    };
 
     const togglePause = () => {
         setTimerRunning(!timerRunning);
@@ -214,7 +214,7 @@ const Game = () => {
         );
     }
 
-    // redirect to homepage if game over 
+    // redirect to homepage if game over
     if (shouldRedirect) {
         // Redirect after 4 seconds
         setTimeout(() => {
@@ -246,7 +246,7 @@ const Game = () => {
                 { answered ?
                     // Pausa
                     <IconButton variant="contained" size="large" color="primary" aria-label={ paused ? t("Game.play") : t("Game.pause") }
-                                onClick={() => togglePause()} sx={{ height: 100, width: 100, border: `2px solid ${theme.palette.primary.main}` }} 
+                                onClick={() => togglePause()} sx={{ height: 100, width: 100, border: `2px solid ${theme.palette.primary.main}` }}
                                 data-testid={ paused ? "play" : "pause"} >
                         { paused ? <PlayArrow sx={{ fontSize:75 }} /> : <Pause sx={{ fontSize:75 }} /> }
                     </IconButton>

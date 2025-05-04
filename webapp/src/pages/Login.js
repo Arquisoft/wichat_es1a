@@ -5,6 +5,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { SessionContext } from '../SessionContext';
 import { useTranslation } from 'react-i18next';
 
+import { API_URL } from '../env';
+
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -12,17 +14,15 @@ const Login = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const theme = useTheme();
-  
+
   const navigate = useNavigate();
 
   const { createSession, updateAvatar } = useContext(SessionContext);
   const { t } = useTranslation();
 
-  const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
-
   const loginUser = async () => {
     try {
-      let response = await axios.post(`${apiEndpoint}/login`, { username, password });
+      let response = await axios.post(`${API_URL}/login`, { username, password });
       updateAvatar(response.data.avatar);
       setOpenSnackbar(true);
       createSession(username);

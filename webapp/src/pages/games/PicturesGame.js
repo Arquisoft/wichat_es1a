@@ -29,8 +29,7 @@ import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import { useTranslation } from 'react-i18next';
 import i18n from '../../localize/i18n';
 
-const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
-const llmEndpoint = 'http://localhost:8003';
+import { API_URL, LLM_URL } from '../../env';
 
 const PictureGame = () => {
   const navigate = useNavigate();
@@ -141,7 +140,7 @@ const PictureGame = () => {
     setQuestionData(null);
 
     // 3. Obtenemos la nueva pregunta
-    axios.get(`${apiEndpoint}/questions/random/${category}/4?username=${username}`)
+    axios.get(`${API_URL}/questions/random/${category}/4?username=${username}`)
       .then(async (quest) => {
         const question = quest.data[0];
         setQuestionData(question);
@@ -152,7 +151,7 @@ const PictureGame = () => {
         // 4. Configuramos la imagen en el LLM
         if (question.image_url) {
           try {
-            const response = await axios.post(`${llmEndpoint}/set-image`, {
+            const response = await axios.post(`${LLM_URL}/set-image`, {
               imageUrl: question.image_url,
               gameCategory: category
             });
@@ -193,7 +192,7 @@ const PictureGame = () => {
 
   const updateStatistics = async () => {
     try {
-      await axios.put(`${apiEndpoint}/statistics`, {
+      await axios.put(`${API_URL}/statistics`, {
         username: username,
         wise_men_stack_earned_money: totalScore,
         wise_men_stack_correctly_answered_questions: correctlyAnsweredQuestions,
@@ -207,7 +206,7 @@ const PictureGame = () => {
 
   const updateQuestionsRecord = async () => {
     try {
-      await axios.put(`${apiEndpoint}/questionsRecord`, {
+      await axios.put(`${API_URL}/questionsRecord`, {
         questions: userResponses,
         username: username,
         gameMode: "WiseMenStack"
@@ -315,7 +314,7 @@ const PictureGame = () => {
     setChatInput('');
     try {
       console.log("Enviando mensaje al LLM con historial completo:", [...chatMessages, userMessage]);
-      const response = await axios.post(`${llmEndpoint}/chat`, {
+      const response = await axios.post(`${LLM_URL}/chat`, {
         messages: [...chatMessages, userMessage],  // Enviamos todo el historial del chat
         gameCategory: category  // Envía la categoría del juego
       });
@@ -332,11 +331,11 @@ const PictureGame = () => {
   const getHint = async () => {
     try {
       console.log("Llamando a /set-image con URL:", questionData.image_url);
-      await axios.post(`${llmEndpoint}/set-image`, {
+      await axios.post(`${LLM_URL}/set-image`, {
         imageUrl: questionData.image_url
       });
 
-      const response = await axios.post(`${llmEndpoint}/chat`, {
+      const response = await axios.post(`${LLM_URL}/chat`, {
         messages: [{ sender: "user", text: "Dame una pista sobre el objeto en la imagen." }],
         gameCategory: category
       });
@@ -435,7 +434,7 @@ const PictureGame = () => {
       background: 'linear-gradient(to bottom, #f5f7fa, #e4e8f0)'
     }}>
       <CssBaseline />
-      
+
       {/* Contenedor principal usando Grid para mejor organización del espacio */}
       <Grid container spacing={3}>
         {/* Columna izquierda (juego) - ocupa 8/12 en pantallas grandes, 12/12 en pequeñas */}

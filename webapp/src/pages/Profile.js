@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Button, Container, Typography, Divider, Snackbar } from '@mui/material';
 import { SessionContext } from '../SessionContext';
 
-import { EMILIO } from '../data/icons';
+import { EMILIO, SNOOPY } from '../data/icons';
 
 import { useTranslation } from 'react-i18next';
 
@@ -81,6 +81,10 @@ const Profile = () => {
                 <Button sx={{ display:'flex', flexDirection:'column', borderBottom: selectedAvatar === EMILIO ? '2px solid #006699' : 'none' }} onClick={() => handleAvatarSelect(EMILIO)} data-testid="hugo-button">
                     <img src={EMILIO} style={{ flex: 1, maxWidth: '50%', borderRadius:'50%', margin:'1em' }} alt="Icon1" />
                     <Typography sx={{color: '#000000', fontWeight:'bold'  }}>Emilio</Typography>
+                </Button>
+                <Button sx={{ display:'flex', flexDirection:'column', borderBottom: selectedAvatar === SNOOPY ? '2px solid #006699' : 'none' }} onClick={() => handleAvatarSelect(SNOOPY)} data-testid="snoopy-button">
+                    <img src={SNOOPY} style={{ flex: 1, maxWidth: '50%', borderRadius:'50%', margin:'1em' }} alt="Icon2" />
+                    <Typography sx={{color: '#000000', fontWeight:'bold'  }}>Snoopy</Typography>
                 </Button>
             </Container>
             <Container sx={{ display:'flex', justifyContent:'center', marginTop:'2em' }}>

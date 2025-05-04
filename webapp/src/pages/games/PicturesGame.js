@@ -97,7 +97,7 @@ const PictureGame = () => {
   const questionText = useMemo(() => {
     switch (category) {
       case 'animals': return '¿Que animal es este?';
-      case 'cities': return '¿Que país es este?';
+      case 'logos': return '¿Que logo es este?';
       case 'flags': return '¿De dónde es esta bandera?';
     }
   }, [category]);
@@ -367,7 +367,6 @@ const PictureGame = () => {
               </Typography>
               <Select value={category} style={{ minWidth: '120px' }}>
                 <MenuItem value="animals" onClick={() => setCategory(('animals'))}>Animales</MenuItem>
-                <MenuItem value="cities" onClick={() => setCategory(('cities'))}>Ciudades</MenuItem>
                 <MenuItem value="flags" onClick={() => setCategory(('flags'))}>Banderas</MenuItem>
                 <MenuItem value="logos" onClick={() => setCategory(('logos'))}>Logos</MenuItem>
                 {/* Agrega más categorías si lo deseas */}

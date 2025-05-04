@@ -31,7 +31,7 @@ describe('WikidataQueryBuilder', () => {
       .instanceOf(146)
       .subclassOf(279)
       .assocProperty(18, "image")
-      .assocProperty(569, "birthDate", true, "es")
+      .assocProperty(569, "birthDate", null, true, "es")
       .build();
 
     expect(query).toContain("wdt:P31 wd:Q146;");

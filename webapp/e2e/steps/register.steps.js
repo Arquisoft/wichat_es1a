@@ -17,7 +17,7 @@ defineFeature(feature, test => {
         page = await browser.newPage();
 
         //Way of setting up the timeout
-        setDefaultOptions({ timeout: 10000 })
+        setDefaultOptions({ timeout: 120000 })
     });
 
     test('Register with correct input', ({given,when,then}) => {

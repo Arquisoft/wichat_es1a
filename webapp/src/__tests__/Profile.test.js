@@ -7,17 +7,6 @@ import axios from 'axios';
 // Mockeo de axios
 jest.mock('axios');
 
-// Mock de las funciones de avatar
-jest.mock('../data/icons', () => ({
-    getHugo: () => 'hugo.png',
-    getAlberto: () => 'alberto.png',
-    getWiffo: () => 'wiffo.png',
-    getAndina: () => 'andina.png',
-    getSamu: () => 'samu.png',
-    getBarrero: () => 'barrero.png',
-    getTeresa: () => 'teresa.png',
-}));
-
 const userMock = {
     username: 'testuser',
     name: 'Test',
@@ -56,7 +45,7 @@ describe('Profile component', () => {
             </SessionContext.Provider>
         );
 
-        const hugoButton = await screen.findByTestId('hugo-button');
+        const hugoButton = await screen.findByTestId('emilio-button');
         fireEvent.click(hugoButton);
 
         const confirmButton = screen.getByTestId('confirm-button');
@@ -65,7 +54,7 @@ describe('Profile component', () => {
         await waitFor(() =>
             expect(screen.getByText(/Avatar changed successfully/i)).toBeInTheDocument()
         );
-        expect(contextMock.updateAvatar).toHaveBeenCalledWith('hugo.png');
+        expect(contextMock.updateAvatar).toHaveBeenCalledWith('icons/Emilio.png');
     });
 
     it('muestra error si no puede cargar el perfil', async () => {

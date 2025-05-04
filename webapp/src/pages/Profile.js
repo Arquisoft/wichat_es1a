@@ -78,7 +78,7 @@ const Profile = () => {
 
             <Typography variant="h5" sx={{ textAlign:'center', fontWeight:'bold'  }}>{t("Profile.choose_your_avatar")}</Typography>
             <Container sx={{ display: 'flex', justifyContent: 'space-around' }}>
-                <Button sx={{ display:'flex', flexDirection:'column', borderBottom: selectedAvatar === EMILIO ? '2px solid #006699' : 'none' }} onClick={() => handleAvatarSelect(EMILIO)} data-testid="hugo-button">
+                <Button sx={{ display:'flex', flexDirection:'column', borderBottom: selectedAvatar === EMILIO ? '2px solid #006699' : 'none' }} onClick={() => handleAvatarSelect(EMILIO)} data-testid="emilio-button">
                     <img src={EMILIO} style={{ flex: 1, maxWidth: '50%', borderRadius:'50%', margin:'1em' }} alt="Icon1" />
                     <Typography sx={{color: '#000000', fontWeight:'bold'  }}>Emilio</Typography>
                 </Button>

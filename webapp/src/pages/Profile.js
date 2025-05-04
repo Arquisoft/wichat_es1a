@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Button, Container, Typography, Divider, Snackbar } from '@mui/material';
 import { SessionContext } from '../SessionContext';
 
-import { EMILIO, SNOOPY } from '../data/icons';
+import { EMILIO, SNOOPY, CHETIS, ALDEA } from '../data/icons';
 
 import { useTranslation } from 'react-i18next';
 
@@ -85,6 +85,14 @@ const Profile = () => {
                 <Button sx={{ display:'flex', flexDirection:'column', borderBottom: selectedAvatar === SNOOPY ? '2px solid #006699' : 'none' }} onClick={() => handleAvatarSelect(SNOOPY)} data-testid="snoopy-button">
                     <img src={SNOOPY} style={{ flex: 1, maxWidth: '50%', borderRadius:'50%', margin:'1em' }} alt="Icon2" />
                     <Typography sx={{color: '#000000', fontWeight:'bold'  }}>Snoopy</Typography>
+                </Button>
+                <Button sx={{ display:'flex', flexDirection:'column', borderBottom: selectedAvatar === CHETIS ? '2px solid #006699' : 'none' }} onClick={() => handleAvatarSelect(CHETIS)} data-testid="chetis-button">
+                    <img src={CHETIS} style={{ flex: 1, maxWidth: '50%', borderRadius:'50%', margin:'1em' }} alt="Icon2" />
+                    <Typography sx={{color: '#000000', fontWeight:'bold'  }}>Chetis</Typography>
+                </Button>
+                <Button sx={{ display:'flex', flexDirection:'column', borderBottom: selectedAvatar === ALDEA ? '2px solid #006699' : 'none' }} onClick={() => handleAvatarSelect(ALDEA)} data-testid="aldea-button">
+                    <img src={ALDEA} style={{ flex: 1, maxWidth: '50%', borderRadius:'50%', margin:'1em' }} alt="Icon2" />
+                    <Typography sx={{color: '#000000', fontWeight:'bold'  }}>Aldea</Typography>
                 </Button>
             </Container>
             <Container sx={{ display:'flex', justifyContent:'center', marginTop:'2em' }}>

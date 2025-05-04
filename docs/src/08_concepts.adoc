@@ -73,12 +73,11 @@ At the moment, the application follows this schema:
 image::08_domain_model_1.png["Current version of the domain model"]
 
 * **User**: it is the person that uses the application. Multiple user sessions are an option in this application. 
-* **Contest**: The contest is the part that the User can see. It contains everything the user can do, such as play games, be part of groups or look for rankings and statistics.
+* **Contest**: The contest is the part that the User can see. It contains everything the user can do, such as play games, look for statistics...
 * **Game**: The User can play the game here.
 * **Question**: Each question has different answers but only one of them is correct. Answering correctly to the questions rewards users with _points_.
-* **Statistics**: Each user has statistics that show different aspects of their profile, such as the time they invested on each game mode, correct and incorrect questions, etc.
+* **Statistics**: Each user has statistics that show different aspects of their profile, such as the time they invested on the game, correct and incorrect questions, etc.
 * **Profile**: User's profile has data such as their username and the amount on _points_ they have earned. They can also choose a profile picture from between some given avatars.
-* **Group**: Users are able to join or create groups, that way the can get to a groups ranking.
 
 
 === User Experience (UX)

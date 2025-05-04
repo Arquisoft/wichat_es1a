@@ -85,7 +85,6 @@ export class LogosRecipe extends WikidataRecipe {
         .instanceOf(4830453)
         .assocProperty(361, "partof", 242345)
         .assocProperty(154, "logo")
-        console.log(qb.build())
     }
     getImageUrl(binding: any): String {
         return binding.logoLabel.value

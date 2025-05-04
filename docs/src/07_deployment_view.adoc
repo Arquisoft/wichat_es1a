@@ -57,9 +57,8 @@ The different containers used will be listed below:
 - MongoDB: for questions management (store the questions with the distractors and the correct answer from a specified JSON file, and do several things with that information).
 - SQLite: for users management (create various roles, e.g. User,  which has many parameters, a group of users and groups, among others).
 - Questions: Generates questions to use in the game. The questions will have three wrong answers and one correct answer.
-- Multiplayer: Permits users to play multiplayer games with other users.
 
-image:Deployment Diagram.jpg["Deployment View"]
+image:Deployment Diagram.png["Deployment View"]
 
 
 .Further Information

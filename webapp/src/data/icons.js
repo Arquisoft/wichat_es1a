@@ -1,29 +1,8 @@
-const getHugo = () => {
-  return "/hugoIcon.jpg";
-}
+const EMILIO = "icons/Emilio.png";
+const SNOOPY = "icons/Snoopy.jpg"
 
-const getAlberto = () => {
-    return "bertinIcon.jpg";
-}
+const CHETIS = "icons/chetis.jpg"
 
-const getWiffo = () => {
-return "wiffoIcon.jpg";
-}
+const ALDEA = "icons/Aldea.jpg"
 
-const getAndina = () => {
-return "and1naIcon.jpg";
-}
-
-const getSamu = () => {
-return "samuIcon.jpg";
-}
-
-const getBarrero = () => {
-return "barreroIcon.jpg";
-}
-
-const getTeresa = () => {
-return "teresaIcon.jpg";
-}
-
-export { getHugo, getAlberto, getWiffo, getAndina, getSamu, getBarrero, getTeresa };
+export { EMILIO, SNOOPY, CHETIS, ALDEA }

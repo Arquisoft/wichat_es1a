@@ -8,7 +8,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTranslation } from 'react-i18next';
 
-const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
+import { API_URL } from '../env';
 
 const Statistics = () => {
     const { t } = useTranslation();
@@ -28,7 +28,7 @@ const Statistics = () => {
     useEffect(() => {
         const fetchUserStatics = async () => {
             try {
-                const response = await axios.get(`${apiEndpoint}/statistics/${user}`, { params: { loggedUser: username } });
+                const response = await axios.get(`${API_URL}/statistics/${user}`, { params: { loggedUser: username } });
                 setUserStatics(response.data);
             } catch (error) {
                 setError(error.response.data.error);
@@ -41,7 +41,7 @@ const Statistics = () => {
     useEffect(() => {
         const fetchQuestionsRecord = async () => {
             try {
-                const response = await axios.get(`${apiEndpoint}/questionsRecord/${user}/${selectedMode}`, {
+                const response = await axios.get(`${API_URL}/questionsRecord/${user}/${selectedMode}`, {
                     username: user,
                     gameMode: selectedMode
                 });
@@ -202,7 +202,7 @@ const Statistics = () => {
                             } else {
                                 setSelectedMode('WiseMenStack');
                             }
-                        }} 
+                        }}
                         variant="contained" sx={{ marginBottom: isSmallScreen ? '0.5em' : '0', backgroundColor: theme.palette.primary.main, color: theme.palette.secondary.main, borderColor: theme.palette.primary.main, '&:hover': { backgroundColor: theme.palette.secondary.main, color: theme.palette.primary.main, borderColor: theme.palette.primary.main } }}>
                             Picture Game
                         </Button>

@@ -9,4 +9,4 @@ The dashboard that we are using to monitorize our project is called _wichat_es1a
 
 image::15_monitoring_graphics.png["Grafana dashboard"]
 
-To see how Grafana works we have used Apache. We have stablished the number of requests and how fast we want them to execute. This lets us check easily how our project treats requests. Also, another interesting thing to mention are the http://172.187.170.130/:8000/metrics[ metrics ]. It shows every different request on the application and its status code.
+To see how Grafana works we have used Apache. We have stablished the number of requests and how fast we want them to execute. This lets us check easily how our project treats requests. Also, another interesting thing to mention are the http://172.187.170.130:8000/metrics[ metrics ]. It shows every different request on the application and its status code.

@@ -11,12 +11,18 @@ export class WDPropertyAssoc {
     name: String
     optional: boolean
     lang: String | null
+    _to: Number | null
 
     constructor(id: Number, name: String, optional: boolean = false, lang = null) {
         this.id = id;
         this.name = name;
         this.optional = optional;
         this.lang = lang;
+        this._to = null
+    }
+
+    to(t: Number) {
+        this._to = t;
     }
 
     toString() : String {
@@ -24,7 +30,11 @@ export class WDPropertyAssoc {
         if (this.lang != null) {
             filter = ` . FILTER (lang(?${this.name}) = "${this.lang}") `;
         }
-        let text = `wdt:P${this.id} ?${this.name} ${filter}`;
+        let to = `?${this.name}`;
+        if (this._to) {
+            to = ` wd:Q${this._to} `
+        }
+        let text = `wdt:P${this.id} ${to} ${filter}`;
         if (this.optional)
             text = `OPTIONAL{ ?item ${text}}`
         return text;
@@ -75,9 +85,17 @@ export class WikidataQueryBuilder {
         return this;
     }
 
-    assocProperty(id: Number, name: String, optional: boolean = false, lang: String = null) : WikidataQueryBuilder {
-        this._assocProperties.push(new WDPropertyAssoc(id, name, optional, lang));
+    assocProperty(id: Number, name: String, to: Number | null = null, optional: boolean = false, lang: String = null) : WikidataQueryBuilder {
+        let p = new WDPropertyAssoc(id, name, optional, lang);
+        if (to) {
+            p.to(to)
+        }
+        this._assocProperties.push(p)
         return this;
+    }
+
+    clearProperties() {
+        this._assocProperties = []
     }
 
     orderBy(ord: String) : WikidataQueryBuilder {

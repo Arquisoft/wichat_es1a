@@ -5,7 +5,7 @@ ifndef::imagesdir[:imagesdir: ../images]
 
 In this section, we will define and translate some key concepts we consider essential to understand our application.
 
-The format is simple: a table with the term, its definition, and, if applicable, its Spanish translation.
+The format is simple: a table with the term and its definition.
 
 For more information, check the arc42 documentation: https://docs.arc42.org/section-12/[Glossary].
 
@@ -36,65 +36,51 @@ For more information, check the arc42 documentation: https://docs.arc42.org/sect
 |===
 
 === Domain Terms
-[cols="1,3,1",options="header"]
+[cols="1,3",options="header"]
 |===
-|Term |Definition |Spanish Translation
-
-|Discovering Cities
-|A challenge where participants receive clues about a city and must guess which one it is. Clues can include geographical features, monuments, historical or cultural events.
-|Descubriendo ciudades
+|Term |Definition
 
 |ChattySw
 |Fictional company name we simulate being hired by to develop the application.
-|_N/A_
 
 |Know & Win
 |Spanish television program that mixes quiz contests with learning. It is broadcast on La 2 of Televisión Española and features challenges in general culture, history, science, art, etc.
-|"Saber y Ganar"
+
 
 |Player
 |A user who registers in the application to play the various available quizzes.
-|Jugador
 
-|The Challenge
-|A test where contestants answer questions or perform activities to test their knowledge on various topics. It may include multiple-choice questions, completing phrases, identifying images, and more.
-|El desafío
+|Picture Game
+|A challenge with questions from various topics (animals, logos, flags). The goal is to answer as many questions correctly as possible within a limited time, the round ends after 5 questions.
 
-|Warm Question
-|A round where contestants must answer questions quickly and accurately. The questions are presented without pauses, requiring fast thinking, but without risking too much because incorrect answers can deduct points.
-|Pregunta caliente
-
-|Wise Men Stack
-|A challenge with questions from various topics (literature, history, science, pop culture, etc.). The goal is to answer as many questions correctly as possible within a limited time.
-|Batería de sabios
 |===
 
 === Technical Terms
-[cols="1,3,1",options="header"]
+[cols="1,3",options="header"]
 |===
-|Term |Definition |Spanish Translation
+|Term |Definition
 
 |arc42
 |A set of recommendations for documenting and designing software architectures. It provides a structured template to better communicate the system’s technical aspects.
-|_N/A_
+
 
 |Backend
 |The part of the software that runs on the server and is not visible to users. It handles data processing, database storage, and business logic.
-|_N/A_
+
 
 |Container
 |A lightweight and portable unit that includes everything needed to run an application (code, dependencies, libraries, etc.), ensuring it works the same in any environment.
-|Contenedor
+
 
 |Frontend
 |The part of the software that directly interacts with the user. It includes the graphical interface and the user experience in the browser or an application.
-|_N/A_
+
 
 |Git
 |A free and open-source version control system that allows managing code changes and collaborating with other developers.
-|_N/A_
+
 
 |Wikidata
 |An open and free database that stores structured information from Wikimedia projects and others. It allows sharing and querying data about people, places, events, concepts, etc.
-|_N/A_
+
 |===

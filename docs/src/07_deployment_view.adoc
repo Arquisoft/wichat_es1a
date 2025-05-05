@@ -52,7 +52,7 @@ The different containers used will be listed below:
 - WebApp: The primary user interface that interacts with the system. Retrieves data from the Gateway Service.
 - Gateway Service: Data access interface for services.
 - Users: Manages everything related to users, for example authentification.
-- LLMService: Manages LLM chat with the user to help them with the questions generated. **It is worth clarifying that the LLM has not been chosen yet.**
+- LLMService: Manages LLM chat with the user to help them with the questions generated.
 - Two databases, which are:
 - MongoDB: for questions management (store the questions with the distractors and the correct answer from a specified JSON file, and do several things with that information).
 - SQLite: for users management (create various roles, e.g. User,  which has many parameters, a group of users and groups, among others).

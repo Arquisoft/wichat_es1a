@@ -33,12 +33,13 @@ const getCategoryPrompt = (category) => {
         "Menciona características físicas, hábitat, comportamiento o curiosidades del animal."
       ]
     },
-    geography: {
-      subject: "el lugar geográfico",
+    logos: {
+      subject: "el logo",
       specificInstructions: [
-        "Menciona características del clima, cultura, ubicación o datos históricos del lugar."
+        "Menciona características de la empresa o marca asociada al logo."
       ]
-    },    flags: {
+    },    
+    flags: {
       subject: "el país o región cuya bandera",
       specificInstructions: [
         "Menciona características del país como geografía, cultura, historia, economía o datos curiosos.",
@@ -68,8 +69,8 @@ const getCategoryPrompt = (category) => {
 const getWelcomeMessage = (gameCategory) => {
   if (gameCategory?.toLowerCase() === "animals") {
     return "¡Bienvenido al juego de adivinanzas de animales! Hazme preguntas y te daré pistas para que adivines qué animal aparece en la imagen.";
-  } else if (gameCategory?.toLowerCase() === "geography") {
-    return "¡Bienvenido al juego de adivinanzas de lugares geográficos! Hazme preguntas y te daré pistas para que adivines qué lugar aparece en la imagen.";
+  } else if (gameCategory?.toLowerCase() === "logos") {
+    return "¡Bienvenido al juego de adivinanzas de logos! Hazme preguntas y te daré pistas para que adivines qué logo aparece en la imagen.";
   } else if (gameCategory?.toLowerCase() === "flags") {
     return "¡Bienvenido al juego de adivinanzas de banderas! Hazme preguntas y te daré pistas para que adivines a qué país o región pertenece la bandera que aparece en la imagen.";
   } else {

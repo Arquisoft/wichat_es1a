@@ -160,7 +160,29 @@ describe('PictureGame component', () => {
     await waitFor(() => {
       expect(screen.getByText('¿De dónde es esta bandera?')).toBeInTheDocument();
     });
-  });  
-  
-  
+  });
+  it('changes question text when selecting logos category', async () => {
+    renderGame();
+    
+    // Find the select element and change its value to logos
+    const categorySelect = await screen.findByRole('combobox');
+    await act(async () => {
+      fireEvent.mouseDown(categorySelect);
+    });
+    
+    // Find and click on the logos option
+    const logosOption = await screen.findByText('Logos');
+    await act(async () => {
+      fireEvent.click(logosOption);
+    });
+    
+    const startButton = await screen.findByTestId('start-button');
+    await act(async () => {
+      fireEvent.click(startButton);
+    });
+    
+    await waitFor(() => {
+      expect(screen.getByText('¿Que logo es este?')).toBeInTheDocument();
+    });
+  });
 });

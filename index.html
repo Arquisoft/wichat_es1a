@@ -1679,7 +1679,7 @@ when your infrastructure is more complex.</p>
 <p>Users: Manages everything related to users, for example authentification.</p>
 </li>
 <li>
-<p>LLMService: Manages LLM chat with the user to help them with the questions generated. <strong>It is worth clarifying that the LLM has not been chosen yet.</strong></p>
+<p>LLMService: Manages LLM chat with the user to help them with the questions generated.</p>
 </li>
 <li>
 <p>Two databases, which are:</p>
@@ -1693,13 +1693,10 @@ when your infrastructure is more complex.</p>
 <li>
 <p>Questions: Generates questions to use in the game. The questions will have three wrong answers and one correct answer.</p>
 </li>
-<li>
-<p>Multiplayer: Permits users to play multiplayer games with other users.</p>
-</li>
 </ul>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="./images/Deployment%20Diagram.jpg" alt="Deployment View"></span></p>
+<p><span class="image"><img src="./images/Deployment%20Diagram.png" alt="Deployment View"></span></p>
 </div>
 <div class="paragraph">
 <div class="title">Further Information</div>
@@ -1855,7 +1852,7 @@ on this list.</p>
 <p><strong>User</strong>: it is the person that uses the application. Multiple user sessions are an option in this application.</p>
 </li>
 <li>
-<p><strong>Contest</strong>: The contest is the part that the User can see. It contains everything the user can do, such as play games, be part of groups or look for rankings and statistics.</p>
+<p><strong>Contest</strong>: The contest is the part that the User can see. It contains everything the user can do, such as play games, look for statistics&#8230;&#8203;</p>
 </li>
 <li>
 <p><strong>Game</strong>: The User can play the game here.</p>
@@ -1864,13 +1861,10 @@ on this list.</p>
 <p><strong>Question</strong>: Each question has different answers but only one of them is correct. Answering correctly to the questions rewards users with <em>points</em>.</p>
 </li>
 <li>
-<p><strong>Statistics</strong>: Each user has statistics that show different aspects of their profile, such as the time they invested on each game mode, correct and incorrect questions, etc.</p>
+<p><strong>Statistics</strong>: Each user has statistics that show different aspects of their profile, such as the time they invested on the game, correct and incorrect questions, etc.</p>
 </li>
 <li>
 <p><strong>Profile</strong>: User&#8217;s profile has data such as their username and the amount on <em>points</em> they have earned. They can also choose a profile picture from between some given avatars.</p>
-</li>
-<li>
-<p><strong>Group</strong>: Users are able to join or create groups, that way the can get to a groups ranking.</p>
 </li>
 </ul>
 </div>
@@ -2598,7 +2592,7 @@ current architecture.</p></td>
 <p>In this section, we will define and translate some key concepts we consider essential to understand our application.</p>
 </div>
 <div class="paragraph">
-<p>The format is simple: a table with the term, its definition, and, if applicable, its Spanish translation.</p>
+<p>The format is simple: a table with the term and its definition.</p>
 </div>
 <div class="paragraph">
 <p>For more information, check the arc42 documentation: <a href="https://docs.arc42.org/section-12/">Glossary</a>.</p>
@@ -2651,52 +2645,31 @@ current architecture.</p></td>
 <h3 id="_domain_terms">12.2. Domain Terms</h3>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 20%;">
-<col style="width: 60%;">
-<col style="width: 20%;">
+<col style="width: 25%;">
+<col style="width: 75%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">Term</th>
 <th class="tableblock halign-left valign-top">Definition</th>
-<th class="tableblock halign-left valign-top">Spanish Translation</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Discovering Cities</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A challenge where participants receive clues about a city and must guess which one it is. Clues can include geographical features, monuments, historical or cultural events.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Descubriendo ciudades</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ChattySw</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Fictional company name we simulate being hired by to develop the application.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>N/A</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Know &amp; Win</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Spanish television program that mixes quiz contests with learning. It is broadcast on La 2 of Televisión Española and features challenges in general culture, history, science, art, etc.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">"Saber y Ganar"</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Player</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">A user who registers in the application to play the various available quizzes.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Jugador</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The Challenge</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A test where contestants answer questions or perform activities to test their knowledge on various topics. It may include multiple-choice questions, completing phrases, identifying images, and more.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">El desafío</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Warm Question</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A round where contestants must answer questions quickly and accurately. The questions are presented without pauses, requiring fast thinking, but without risking too much because incorrect answers can deduct points.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Pregunta caliente</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Wise Men Stack</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A challenge with questions from various topics (literature, history, science, pop culture, etc.). The goal is to answer as many questions correctly as possible within a limited time.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Batería de sabios</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Picture Game</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A challenge with questions from various topics (animals, logos, flags). The goal is to answer as many questions correctly as possible within a limited time, the round ends after 5 questions.</p></td>
 </tr>
 </tbody>
 </table>
@@ -2705,47 +2678,39 @@ current architecture.</p></td>
 <h3 id="_technical_terms">12.3. Technical Terms</h3>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 20%;">
-<col style="width: 60%;">
-<col style="width: 20%;">
+<col style="width: 25%;">
+<col style="width: 75%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">Term</th>
 <th class="tableblock halign-left valign-top">Definition</th>
-<th class="tableblock halign-left valign-top">Spanish Translation</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">arc42</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">A set of recommendations for documenting and designing software architectures. It provides a structured template to better communicate the system’s technical aspects.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>N/A</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Backend</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The part of the software that runs on the server and is not visible to users. It handles data processing, database storage, and business logic.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>N/A</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Container</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">A lightweight and portable unit that includes everything needed to run an application (code, dependencies, libraries, etc.), ensuring it works the same in any environment.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Contenedor</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Frontend</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The part of the software that directly interacts with the user. It includes the graphical interface and the user experience in the browser or an application.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>N/A</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Git</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">A free and open-source version control system that allows managing code changes and collaborating with other developers.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>N/A</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Wikidata</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">An open and free database that stores structured information from Wikimedia projects and others. It allows sharing and querying data about people, places, events, concepts, etc.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>N/A</em></p></td>
 </tr>
 </tbody>
 </table>
@@ -2891,7 +2856,7 @@ For these reasons, maintaining a high level of test coverage was a priority. We 
 </div>
 </div>
 <div class="paragraph">
-<p>To see how Grafana works we have used Apache. We have stablished the number of requests and how fast we want them to execute. This lets us check easily how our project treats requests. Also, another interesting thing to mention are the <a href="http://172.187.170.130/:8000/metrics"> metrics </a>. It shows every different request on the application and its status code.</p>
+<p>To see how Grafana works we have used Apache. We have stablished the number of requests and how fast we want them to execute. This lets us check easily how our project treats requests. Also, another interesting thing to mention are the <a href="http://172.187.170.130:8000/metrics"> metrics </a>. It shows every different request on the application and its status code.</p>
 </div>
 </div>
 </div>
@@ -2899,7 +2864,7 @@ For these reasons, maintaining a high level of test coverage was a priority. We 
 <div id="footer">
 <div id="footer-text">
 Version 8.2 EN<br>
-Last updated 2025-04-27 23:49:02 +0200
+Last updated 2025-05-05 18:34:00 +0200
 </div>
 </div>
 </body>

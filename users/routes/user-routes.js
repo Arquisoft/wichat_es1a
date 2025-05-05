@@ -17,7 +17,7 @@ router.get('/profile', async (req, res) => {
         });
 
         if (!user) {
-            return res.status(404).json({ error: 'No user found' });
+            return res.status(404).json({ error: 'Usuario no encontrado' });
         }
 
         res.status(200).json({ user });
@@ -33,7 +33,7 @@ router.post('/profile/:username', async (req, res) => {
         //Update the user's fields with the provided values
         const [affectedRows] = await User.update({ imageUrl }, { where: { username } });
         if (affectedRows === 0) {
-            return res.status(404).json({ error: 'No user could be updated' });
+            return res.status(404).json({ error: 'No se ha podido actualizar el usuario' });
         }
 
         res.status(200).json({ affectedRows });
@@ -109,40 +109,40 @@ router.post('/', async (req, res) => {
         const user = await User.findOne({ where: { username } });
 
         if (user != null) {
-            throw new Error('Invalid username');
+            throw new Error('Usuario inválido');
         }
 
         // Email validation
         if (username.trim().length < 4) {
-            throw new Error('The username must be at least 4 characters long');
+            throw new Error('El usuario debe contener al menos 4 caracteres');
         }
 
         // Password validation
         if (password.trim().length < 8) {
-            throw new Error('The password must be at least 8 characters long');
+            throw new Error('La contraseña debe contener al menos 8 caracteres');
         }
         if (!/\d/.test(password)) {
-            throw new Error('The password must contain at least one numeric character');
+            throw new Error('La contraseña debe contener al menos un número');
         }
         if (!/[A-Z]/.test(password)) {
-            throw new Error('The password must contain at least one uppercase letter');
+            throw new Error('La contraseña debe contener al menos una mayúscula');
         }
 
         // Name validation
         if (!name.trim()) {
-            throw new Error('The name cannot be empty or contain only spaces');
+            throw new Error('El nombre no puede estar vacío');
         }
 
         // Surname validation
         if (!surname.trim()) {
-            throw new Error('The surname cannot be empty or contain only spaces');
+            throw new Error('El apellido no puede estar vacío');
         }
 
         const imageUrl = getRandomPic();
 
         // Create the user in the database using Sequelize
         const newUser = createUser(username, password, name, surname, imageUrl);
-        console.log(`Created new user '${username}'`);
+        console.log(`Nuevo usuario creado '${username}'`);
 
         // Create the user statistics
         await Statistics.create({
@@ -175,7 +175,7 @@ router.post('/statistics', async (req, res) => {
 
         // Check if the user exists
         if (!statisticsUserToUpdate) {
-            return res.status(404).json({ error: 'User not found' });
+            return res.status(404).json({ error: 'Usuario no encontrado' });
         }
 
         // Update the user's fields with the provided values
@@ -210,7 +210,7 @@ router.post('/statistics', async (req, res) => {
         // Save the changes to the database
         await statisticsUserToUpdate.save();
         res.status(200);
-        res.json({ message: 'User statics updated successfully' });
+        res.json({ message: 'Estadísticas actualizadas correctamente' });
     } catch (error) {
         res.status(500).json({ error: 'Internal Server Error', details: error.message });
     }
@@ -223,7 +223,7 @@ router.get('/statistics/:username', async (req,res) => {
         const loggedUser = req.query.loggedUser;
 
         if(loggedUser === null || loggedUser === undefined){
-            return res.status(403).json({ error: 'You must be logged to see a user statistics' });
+            return res.status(403).json({ error: 'Debes haber iniciado sesión para ver las estadísticas de este usuario' });
         }else if(username !== loggedUser){
             const userGroups = await UserGroup.findAll({
                 where: {
@@ -243,7 +243,7 @@ router.get('/statistics/:username', async (req,res) => {
                 });
 
                 if(!hasCommonGroup){
-                    return res.status(403).json({ error: 'You are not allowed to see this user statistics' });
+                    return res.status(403).json({ error: 'No puedes ver las estadísticas de este usuario' });
                 }
             }
         }

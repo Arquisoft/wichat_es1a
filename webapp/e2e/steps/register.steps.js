@@ -10,10 +10,12 @@ let browser;
 defineFeature(feature, test => {
 
     beforeAll(async () => {
-
-        browser = process.env.GITHUB_ACTIONS
-            ? await puppeteer.launch()
-            : await puppeteer.launch({ headless: false, slowMo: 40 });
+        browser = await puppeteer.launch({
+            headless: true, // Use headless mode for CI
+            args: ['--no-sandbox', '--disable-setuid-sandbox'], // For stability in CI
+            defaultViewport: { width: 1280, height: 720 }, // Consistent viewport size
+            slowMo: 40 // Keep some slowdown for stability
+        });
         page = await browser.newPage();
 
         //Way of setting up the timeout

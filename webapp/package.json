@@ -32,13 +32,19 @@
     "sqlite3": "^5.1.7",
     "ts-node": "^10.9.2",
     "web-vitals": "^3.5.1"
-  },
-  "scripts": {
+  },  "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "prod": "serve -s build",
     "test": "react-scripts test --passWithNoTests --transformIgnorePatterns 'node_modules/(?!axios)/'",
     "test:e2e": "start-server-and-test 'node e2e/test-environment-setup.js' http://localhost:8000/health start http://localhost:3000/ \"cd e2e && jest\"",
+    "test:e2e:login": "start-server-and-test 'node e2e/test-environment-setup.js' http://localhost:8000/health start http://localhost:3000/ \"cd e2e && jest -i steps/login.steps.js\"",
+    "test:e2e:register": "start-server-and-test 'node e2e/test-environment-setup.js' http://localhost:8000/health start http://localhost:3000/ \"cd e2e && jest -i steps/register.steps.js\"",
+    "test:e2e:category": "start-server-and-test 'node e2e/test-environment-setup.js' http://localhost:8000/health start http://localhost:3000/ \"cd e2e && jest -i steps/category.steps.js\"",
+    "test:e2e:chat": "start-server-and-test 'node e2e/test-environment-setup.js' http://localhost:8000/health start http://localhost:3000/ \"cd e2e && jest -i steps/chat.steps.js\"",
+    "test:e2e:navigation": "start-server-and-test 'node e2e/test-environment-setup.js' http://localhost:8000/health start http://localhost:3000/ \"cd e2e && jest -i steps/navigation.steps.js\"",
+    "test:e2e:picturesgame": "start-server-and-test 'node e2e/test-environment-setup.js' http://localhost:8000/health start http://localhost:3000/ \"cd e2e && jest -i steps/picturesgame.steps.js\"",
+    "test:e2e:statistics": "start-server-and-test 'node e2e/test-environment-setup.js' http://localhost:8000/health start http://localhost:3000/ \"cd e2e && jest -i steps/statistics.steps.js\"",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

@@ -29,7 +29,36 @@ defineFeature(feature, test => {
 
     afterAll(async () => {
         await browser.close();
-    });    test('Change game category to monuments', ({ given, when, then }) => {
+    });
+    
+    test('Default category should be flags', ({ given, when, then }) => {
+        given('I am in the PicturesGame setup page', async () => {
+            await page.goto('http://localhost:3000/pictureGame', { waitUntil: 'networkidle0' });
+            await page.waitForSelector('[data-testid="categories-label"]');
+            expect(page.url()).toContain('/pictureGame');
+        });
+
+        when('I start the game without changing the category', async () => {
+            // Click the start button directly without changing the category
+            await page.click('[data-testid="start-button"]');
+        });
+
+        then('The question text should show flags-related question', async () => {
+            // Wait for the game to load
+            await page.waitForFunction(
+                'document.querySelector("body").innerText.includes("¿De dónde es esta bandera?")',
+                { timeout: 5000 }
+            );
+            
+            // Verificar que hemos cargado correctamente un juego de banderas
+            const questionText = await page.evaluate(() => {
+                return document.body.innerText;
+            });
+            expect(questionText).toContain('¿De dónde es esta bandera?');
+        });
+    });
+
+    test('Change game category to monuments', ({ given, when, then }) => {
         given('I am in the PicturesGame setup page', async () => {
             await page.goto('http://localhost:3000/pictureGame', { waitUntil: 'networkidle0' });
             await page.waitForSelector('[data-testid="categories-label"]');

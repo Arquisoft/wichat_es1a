@@ -148,8 +148,7 @@ describe('PictureGame component', () => {
     expect(axios.put).toHaveBeenCalledWith(expect.stringContaining('/statistics'), expect.anything());
     expect(axios.put).toHaveBeenCalledWith(expect.stringContaining('/questionsRecord'), expect.anything());
   });
-  
-  it('renders correct question text based on initial category', async () => {
+    it('renders correct question text based on initial category (flags)', async () => {
     renderGame();
   
     const startButton = await screen.findByTestId('start-button');
@@ -158,7 +157,7 @@ describe('PictureGame component', () => {
     });
   
     await waitFor(() => {
-      expect(screen.getByText('¿Qué monumento es este?')).toBeInTheDocument();
+      expect(screen.getByText('¿De dónde es esta bandera?')).toBeInTheDocument();
     });
   });
   it('changes question text when selecting logos category', async () => {

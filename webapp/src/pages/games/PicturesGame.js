@@ -60,7 +60,7 @@ const PictureGame = () => {
   const [questionCountdownRunning, setQuestionCountdownRunning] = React.useState(false);
   const [userResponses, setUserResponses] = React.useState([]);  const [language, setCurrentLanguage] = React.useState(i18n.language);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
-  const [category, setCategory] = React.useState('monuments');
+  const [category, setCategory] = React.useState('flags');
   const [possibleAnswers, setPossibleAnswers] = React.useState([]);
   const [isConfigured, setConfiguration] = React.useState(false);
   const [paused, setPaused] = React.useState(false);

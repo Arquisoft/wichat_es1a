@@ -79,7 +79,7 @@ services:
     networks:
       - mynetwork
     environment:
-      REACT_APP_API_ENDPOINT: http://gateway-service:8000
+      IP: ${IP}
     restart: always
 
 

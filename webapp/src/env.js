@@ -1,4 +1,4 @@
-const IP = "localhost";
+const IP = process.env.TEST == "true" ? "localhost" : "172.187.170.130";
 
 module.exports = {
     IP,

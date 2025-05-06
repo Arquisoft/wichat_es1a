@@ -81,37 +81,83 @@ export class FlagsRecipe extends WikidataRecipe {
 export class LogosRecipe extends WikidataRecipe {
     buildQuery(qb: WikidataQueryBuilder) {
         qb.clearProperties();
-        qb
-        .instanceOf(4830453)  // Sigue buscando empresas/negocios
-        .assocProperty(361, "partof", 242345)
-        .assocProperty(154, "logo")
-        .assocProperty(487, "symbol")  // También busca símbolos asociados
-    }
-    getImageUrl(binding: any): String {
-        // Prioriza el uso de símbolos sobre logos si están disponibles
+        qb.instanceOf(14073567)
+        .assocProperty(18, "imagen", null, false)  // P18 = imagen
+        
+        // Intentamos obtener logo o símbolo, pero son opcionales
+        .assocProperty(154, "logo", null, true)  // P154 = logo
+        .assocProperty(487, "symbol", null, true)  // P487 = símbolo
+    }getImageUrl(binding: any): String {
+        // Más robusto - verifica todas las posibles fuentes de imagen
         if (binding.symbolLabel && binding.symbolLabel.value) {
             return binding.symbolLabel.value;
         }
-        return binding.logoLabel.value;
-    }
-    getAttributes(binding: any): Array<[String, String]> {
+        if (binding.logoLabel && binding.logoLabel.value) {
+            return binding.logoLabel.value;
+        }
+        if (binding.imagen && binding.imagen.value) {
+            return binding.imagen.value;
+        }
+        
+        // Si llegamos aquí, no hay imágenes disponibles
+        console.log("No image found for entity:", binding.itemLabel?.value || "Unknown");
+        return "";
+    }    getAttributes(binding: any): Array<[String, String]> {
         const attributes = [];
         
-        // Añadir logo o símbolo según esté disponible
+        // Recopilar todos los atributos disponibles
         if (binding.symbolLabel && binding.symbolLabel.value) {
             attributes.push(["symbol", binding.symbolLabel.value]);
-        } else if (binding.logoLabel && binding.logoLabel.value) {
+        }
+        
+        if (binding.logoLabel && binding.logoLabel.value) {
             attributes.push(["logo", binding.logoLabel.value]);
         }
         
-        attributes.push(["item_label", binding.itemLabel.value]);
+        if (binding.imagen && binding.imagen.value) {
+            attributes.push(["imagen", binding.imagen.value]);
+        }
+        
+        // El nombre de la entidad es esencial para la pregunta
+        if (binding.itemLabel && binding.itemLabel.value) {
+            attributes.push(["item_label", binding.itemLabel.value]);
+        } else {
+            // Si no hay nombre, poner un placeholder para evitar errores
+            attributes.push(["item_label", "Entidad desconocida"]);
+        }
+        
         return attributes;
     }
     generateQuestion(): GenFunction {
         return (we: WikidataEntity) => we.getAttribute("item_label")
-    }
-    getCategory(): Number {
+    }    getCategory(): Number {
         return Categories.Logos
     }
-
+    
+    // Sobrescribimos el método isValid para ser más permisivo con logos y símbolos
+    isValid(binding: any): boolean {
+        // Primero verificamos que tenga una imagen que mostrar
+        const hasImage = (
+            (binding.imagen && binding.imagen.value) || 
+            (binding.logoLabel && binding.logoLabel.value) || 
+            (binding.symbolLabel && binding.symbolLabel.value)
+        );
+        
+        if (!hasImage) {
+            return false;
+        }
+        
+        // Luego verificamos que tenga un nombre válido
+        let itemLabel = binding.itemLabel;
+        if (!itemLabel || !itemLabel.value) {
+            return false;
+        }
+        
+        // Los IDs de Wikidata comienzan con Q, no son útiles como respuestas
+        if (itemLabel.value.startsWith("Q")) {
+            return false;
+        }
+        
+        return true;
+    }
 }

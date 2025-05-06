@@ -41,8 +41,7 @@ describe("LLM Service API Tests", () => {
       expect(res.statusCode).toBe(200);
       expect(res.body).toHaveProperty("message", "Imagen de referencia actualizada correctamente.");      expect(res.body).toHaveProperty("welcomeMessage");
       expect(res.body.welcomeMessage).toContain("¡Bienvenido al juego de adivinanzas de monumentos del mundo!");
-    });
-      test("debería devolver mensaje de bienvenida específico para logos", async () => {
+    });      test("debería devolver mensaje de bienvenida específico para emblemas y símbolos", async () => {
       const res = await request(server)
         .post("/set-image")
         .send({
@@ -52,7 +51,7 @@ describe("LLM Service API Tests", () => {
 
       expect(res.statusCode).toBe(200);
       expect(res.body).toHaveProperty("welcomeMessage");
-      expect(res.body.welcomeMessage).toContain("logos");
+      expect(res.body.welcomeMessage).toContain("emblemas y símbolos");
     });
     test("debería devolver mensaje de bienvenida específico para banderas", async () => {
       const res = await request(server)
@@ -219,12 +218,10 @@ describe("LLM Service API Tests", () => {
         });
 
       expect(res.statusCode).toBe(200);
-      expect(res.body).toHaveProperty("response", "Soy una respuesta del LLM sobre logos");
-
-      // Verificar contexto de logos
+      expect(res.body).toHaveProperty("response", "Soy una respuesta del LLM sobre logos");      // Verificar contexto de emblemas y símbolos
       const requestData = axios.post.mock.calls[0][1];
-      expect(requestData.contents[0].parts[0].text).toContain("el logo");
-      expect(requestData.contents[0].parts[0].text).toContain("empresa o marca");
+      expect(requestData.contents[0].parts[0].text).toContain("el emblema o símbolo");
+      expect(requestData.contents[0].parts[0].text).toContain("entidad, empresa o organización");
     });
     
     test("debería procesar correctamente una solicitud de chat para banderas", async () => {
@@ -537,11 +534,9 @@ describe("LLM Service API Tests", () => {
 
       // Verificar que se envió el mensaje de bienvenida al LLM
       const requestData = axios.post.mock.calls[0][1];
-      const chatHistory = requestData.contents[0].parts[1].text;
-
-      // Verificar que el historial del chat incluye un mensaje de bienvenida específico para logos
-      expect(chatHistory).toContain("system: ¡Bienvenido al juego de adivinanzas de logos!");
-      expect(chatHistory).toContain("adivines qué logo aparece en la imagen");
+      const chatHistory = requestData.contents[0].parts[1].text;      // Verificar que el historial del chat incluye un mensaje de bienvenida específico para emblemas y símbolos
+      expect(chatHistory).toContain("system: ¡Bienvenido al juego de adivinanzas de emblemas y símbolos!");
+      expect(chatHistory).toContain("adivines a qué marca, entidad u organización pertenece el emblema o símbolo");
     });
     
     test("debería añadir un mensaje de bienvenida específico para la categoría banderas", async () => {

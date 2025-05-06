@@ -32,13 +32,13 @@ const getCategoryPrompt = (category) => {
         "Menciona características arquitectónicas, historia, ubicación o datos curiosos del monumento.",
         "No menciones directamente el nombre del monumento, pero puedes dar pistas sobre su localización o estilo."
       ]
-    },
-    logos: {
-      subject: "el logo",
+    },    logos: {
+      subject: "el emblema o símbolo",
       specificInstructions: [
-        "Menciona características de la empresa o marca asociada al logo."
+        "Menciona características de la entidad, empresa o organización asociada al emblema o símbolo sin nombrarla directamente.",
+        "Puedes referirte a su historia, significado visual, colores o elementos distintivos, pero no describas texto que pueda aparecer en el símbolo."
       ]
-    },    
+    },
     flags: {
       subject: "el país o región cuya bandera",
       specificInstructions: [
@@ -68,10 +68,9 @@ const getCategoryPrompt = (category) => {
 // Obtener el mensaje de bienvenida según la categoría
 const getWelcomeMessage = (gameCategory) => {
   if (gameCategory?.toLowerCase() === "monuments") {
-    return "¡Bienvenido al juego de adivinanzas de monumentos del mundo! Hazme preguntas y te daré pistas para que adivines qué monumento aparece en la imagen.";
-  } else if (gameCategory?.toLowerCase() === "logos") {
-    return "¡Bienvenido al juego de adivinanzas de logos! Hazme preguntas y te daré pistas para que adivines qué logo aparece en la imagen.";
-  } else if (gameCategory?.toLowerCase() === "flags") {
+    return "¡Bienvenido al juego de adivinanzas de monumentos del mundo! Hazme preguntas y te daré pistas para que adivines qué monumento aparece en la imagen.";  } else if (gameCategory?.toLowerCase() === "logos") {
+    return "¡Bienvenido al juego de adivinanzas de emblemas y símbolos! Hazme preguntas y te daré pistas para que adivines a qué marca, entidad u organización pertenece el emblema o símbolo que aparece en la imagen.";
+  }else if (gameCategory?.toLowerCase() === "flags") {
     return "¡Bienvenido al juego de adivinanzas de banderas! Hazme preguntas y te daré pistas para que adivines a qué país o región pertenece la bandera que aparece en la imagen.";
   } else {
     return "¡Bienvenido al juego de adivinanzas! Hazme preguntas y te daré pistas para que adivines lo que aparece en la imagen.";

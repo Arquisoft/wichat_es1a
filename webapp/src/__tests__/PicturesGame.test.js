@@ -168,9 +168,8 @@ describe('PictureGame component', () => {
     await act(async () => {
       fireEvent.mouseDown(categorySelect);
     });
-    
-    // Find and click on the logos option
-    const logosOption = await screen.findByText('Logos');
+      // Find and click on the logos option
+    const logosOption = await screen.findByText('Emblemas y Símbolos');
     await act(async () => {
       fireEvent.click(logosOption);
     });
@@ -181,7 +180,7 @@ describe('PictureGame component', () => {
     });
     
     await waitFor(() => {
-      expect(screen.getByText('¿Que logo es este?')).toBeInTheDocument();
+      expect(screen.getByText('¿A qué marca o entidad pertenece este emblema o símbolo?')).toBeInTheDocument();
     });
   });
 });

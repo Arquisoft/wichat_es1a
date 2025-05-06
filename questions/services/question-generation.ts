@@ -82,18 +82,30 @@ export class LogosRecipe extends WikidataRecipe {
     buildQuery(qb: WikidataQueryBuilder) {
         qb.clearProperties();
         qb
-        .instanceOf(4830453)
+        .instanceOf(4830453)  // Sigue buscando empresas/negocios
         .assocProperty(361, "partof", 242345)
         .assocProperty(154, "logo")
+        .assocProperty(487, "symbol")  // También busca símbolos asociados
     }
     getImageUrl(binding: any): String {
-        return binding.logoLabel.value
+        // Prioriza el uso de símbolos sobre logos si están disponibles
+        if (binding.symbolLabel && binding.symbolLabel.value) {
+            return binding.symbolLabel.value;
+        }
+        return binding.logoLabel.value;
     }
     getAttributes(binding: any): Array<[String, String]> {
-        return [
-            ["logo", binding.logoLabel.value],
-            ["item_label", binding.itemLabel.value],
-        ]
+        const attributes = [];
+        
+        // Añadir logo o símbolo según esté disponible
+        if (binding.symbolLabel && binding.symbolLabel.value) {
+            attributes.push(["symbol", binding.symbolLabel.value]);
+        } else if (binding.logoLabel && binding.logoLabel.value) {
+            attributes.push(["logo", binding.logoLabel.value]);
+        }
+        
+        attributes.push(["item_label", binding.itemLabel.value]);
+        return attributes;
     }
     generateQuestion(): GenFunction {
         return (we: WikidataEntity) => we.getAttribute("item_label")

@@ -29,37 +29,37 @@ defineFeature(feature, test => {
 
     afterAll(async () => {
         await browser.close();
-    });    test('Change game category to animals', ({ given, when, then }) => {
+    });    test('Change game category to monuments', ({ given, when, then }) => {
         given('I am in the PicturesGame setup page', async () => {
             await page.goto('http://localhost:3000/pictureGame', { waitUntil: 'networkidle0' });
             await page.waitForSelector('[data-testid="categories-label"]');
             expect(page.url()).toContain('/pictureGame');
         });
 
-        when('I select the "animals" category and start the game', async () => {
+        when('I select the "monuments" category and start the game', async () => {
             // Click the dropdown to open it
             await page.click('div.MuiSelect-select');
-            // Find and click on the "Animales" option
-            await page.waitForSelector('li[data-value="animals"]');
-            await page.click('li[data-value="animals"]');
+            // Find and click on the "Monumentos" option
+            await page.waitForSelector('li[data-value="monuments"]');
+            await page.click('li[data-value="monuments"]');
             // Click the start button
             await page.click('[data-testid="start-button"]');
         });
 
-        then('The question text changes to show animal-related question', async () => {
+        then('The question text changes to show monuments-related question', async () => {
             // Wait for the game to load
             await page.waitForFunction(
-                'document.querySelector("body").innerText.includes("¿Que animal es este?")',
+                'document.querySelector("body").innerText.includes("¿Qué monumento es este?")',
                 { timeout: 5000 }
             );
             
-            // Verificar que hemos cargado correctamente un juego de animales
+            // Verificar que hemos cargado correctamente un juego de monumentos
             const questionText = await page.evaluate(() => {
                 return document.body.innerText;
             });
-            expect(questionText).toContain('¿Que animal es este?');
+            expect(questionText).toContain('¿Qué monumento es este?');
         });
-    });    test('Change game category to logos', ({ given, when, then }) => {
+    });test('Change game category to logos', ({ given, when, then }) => {
         given('I am in the PicturesGame setup page', async () => {
             await page.goto('http://localhost:3000/pictureGame', { waitUntil: 'networkidle0' });
             await page.waitForSelector('[data-testid="categories-label"]');

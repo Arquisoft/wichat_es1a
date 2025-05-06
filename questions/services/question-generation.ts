@@ -20,11 +20,11 @@ export abstract class WikidataRecipe {
     abstract getCategory() : Number;
 }
 
-export class AnimalRecipe extends WikidataRecipe {
+export class MonumentsRecipe extends WikidataRecipe {
     buildQuery(qb: WikidataQueryBuilder) {
         qb
-        .subclassOf(Q.ANIMAL)
-        .assocProperty(1843, "common_name", null, true, "es")
+        .instanceOf(Q.MONUMENT)
+        .assocProperty(276, "location", null, true)  // P276 es la propiedad "location"
     }
     getAttributes(binding: any): Array<[String,String]> {
         return [
@@ -35,7 +35,7 @@ export class AnimalRecipe extends WikidataRecipe {
         return (we: WikidataEntity) => we.getAttribute("item_label")
     }
     getCategory(): Number {
-        return Categories.Animals
+        return Categories.Monuments
     }
 }
 

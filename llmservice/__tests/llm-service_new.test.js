@@ -30,18 +30,17 @@ describe("LLM Service API Tests", () => {
     jest.clearAllMocks();
   });
 
-  describe("POST /set-image", () => {
-    test("debería configurar la imagen de referencia correctamente y devolver mensaje de bienvenida", async () => {
+  describe("POST /set-image", () => {    test("debería configurar la imagen de referencia correctamente y devolver mensaje de bienvenida", async () => {
       const res = await request(server)
         .post("/set-image")
         .send({
           imageUrl: "https://example.com/image.jpg",
-          gameCategory: "animals"
+          gameCategory: "monuments"
         });
 
       expect(res.statusCode).toBe(200);
       expect(res.body).toHaveProperty("message", "Imagen de referencia actualizada correctamente.");      expect(res.body).toHaveProperty("welcomeMessage");
-      expect(res.body.welcomeMessage).toContain("¡Bienvenido al juego de adivinanzas de animales!");
+      expect(res.body.welcomeMessage).toContain("¡Bienvenido al juego de adivinanzas de monumentos del mundo!");
     });
       test("debería devolver mensaje de bienvenida específico para logos", async () => {
       const res = await request(server)
@@ -181,7 +180,7 @@ describe("LLM Service API Tests", () => {
         .post("/chat")
         .send({
           messages: [{ sender: "user", text: "Dame una pista" }],
-          gameCategory: "animals"
+          gameCategory: "monuments"
         });
 
       expect(res.statusCode).toBe(200);
@@ -279,7 +278,7 @@ describe("LLM Service API Tests", () => {
         .post("/chat")
         .send({
           messages: [{ sender: "user", text: "Dame una pista" }],
-          gameCategory: "animals"
+          gameCategory: "monuments"
         });
 
       // Verificar que el prompt incluye las instrucciones para respuestas concisas

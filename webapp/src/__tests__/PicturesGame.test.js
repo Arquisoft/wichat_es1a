@@ -158,7 +158,7 @@ describe('PictureGame component', () => {
     });
   
     await waitFor(() => {
-      expect(screen.getByText('¿De dónde es esta bandera?')).toBeInTheDocument();
+      expect(screen.getByText('¿Qué monumento es este?')).toBeInTheDocument();
     });
   });
   it('changes question text when selecting logos category', async () => {

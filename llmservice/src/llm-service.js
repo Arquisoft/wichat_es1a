@@ -24,13 +24,13 @@ const getCategoryPrompt = (category) => {
     "Cada respuesta debe tener 2-3 frases informativas.",
     "No des respuestas de sí/no solamente.",
     "Si preguntan algo fuera del juego responde: 'Lo siento, solo puedo darte pistas sobre"
-  ];
-  // Configuración específica por categoría
+  ];  // Configuración específica por categoría
   const categoryConfig = {
-    animals: {
-      subject: "el animal",
+    monuments: {
+      subject: "el monumento",
       specificInstructions: [
-        "Menciona características físicas, hábitat, comportamiento o curiosidades del animal."
+        "Menciona características arquitectónicas, historia, ubicación o datos curiosos del monumento.",
+        "No menciones directamente el nombre del monumento, pero puedes dar pistas sobre su localización o estilo."
       ]
     },
     logos: {
@@ -67,8 +67,8 @@ const getCategoryPrompt = (category) => {
 
 // Obtener el mensaje de bienvenida según la categoría
 const getWelcomeMessage = (gameCategory) => {
-  if (gameCategory?.toLowerCase() === "animals") {
-    return "¡Bienvenido al juego de adivinanzas de animales! Hazme preguntas y te daré pistas para que adivines qué animal aparece en la imagen.";
+  if (gameCategory?.toLowerCase() === "monuments") {
+    return "¡Bienvenido al juego de adivinanzas de monumentos del mundo! Hazme preguntas y te daré pistas para que adivines qué monumento aparece en la imagen.";
   } else if (gameCategory?.toLowerCase() === "logos") {
     return "¡Bienvenido al juego de adivinanzas de logos! Hazme preguntas y te daré pistas para que adivines qué logo aparece en la imagen.";
   } else if (gameCategory?.toLowerCase() === "flags") {

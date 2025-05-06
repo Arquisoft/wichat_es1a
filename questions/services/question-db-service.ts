@@ -6,7 +6,7 @@ import { WikidataEntity, category_into_recipe, Categories, P } from "./wikidata"
 
 import * as dotenv from "dotenv";
 import { PromiseStore } from '../utils/promises.ts';
-import { AnimalRecipe, FlagsRecipe, WikidataRecipe } from './question-generation.ts';
+import { MonumentsRecipe, FlagsRecipe, WikidataRecipe } from './question-generation.ts';
 import { WikidataQueryBuilder } from './wikidata/query_builder.ts';
 import { chunks } from '../utils/array-chunks.ts';
 

@@ -11,7 +11,7 @@ describe('WikidataEntity', () => {
 });
 
 describe('Q Constants', () => {
-  it('should have the correct value for ANIMAL', () => {
-    expect(Q.ANIMAL).toBe(729);
+  it('should have the correct value for MONUMENT', () => {
+    expect(Q.MONUMENT).toBe(4989906);
   });
 });

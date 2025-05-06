@@ -1,7 +1,7 @@
 import { QuestionDBService } from "../../../services/question-db-service";
 import { WikidataEntity } from "../../../services/wikidata/index";
 import { Question } from "../../../services/question-data-model";
-import { AnimalRecipe, FlagsRecipe, GeographyRecipe } from "../../../services/question-generation";
+import { MonumentsRecipe, FlagsRecipe, GeographyRecipe } from "../../../services/question-generation";
 
 let service: QuestionDBService;
 
@@ -13,8 +13,7 @@ afterAll(async () => {
 
 describe('Recipes test', () => {
     describe('getQuestion', () => {
-        it('Should generate the question', async () => {
-            let recipe = new AnimalRecipe();
+        it('Should generate the question', async () => {            let recipe = new MonumentsRecipe();
             let entity = new WikidataEntity("").addAttribute("item_label", "abc");
             let genq = recipe.generateQuestion();
             expect(genq(entity)).toBe("abc")

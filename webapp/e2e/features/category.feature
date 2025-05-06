@@ -1,9 +1,8 @@
 Feature: Category selection in PicturesGame
-
-  Scenario: Change game category to animals
+  Scenario: Change game category to monuments
     Given I am in the PicturesGame setup page
-    When I select the "animals" category and start the game
-    Then The question text changes to show animal-related question
+    When I select the "monuments" category and start the game
+    Then The question text changes to show monuments-related question
 
   Scenario: Change game category to logos
     Given I am in the PicturesGame setup page

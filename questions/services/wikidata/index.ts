@@ -1,4 +1,4 @@
-import { AnimalRecipe, FlagsRecipe, GeographyRecipe, LogosRecipe, WikidataRecipe } from "../question-generation";
+import { FlagsRecipe, GeographyRecipe, LogosRecipe, MonumentsRecipe, WikidataRecipe } from "../question-generation";
 
 export class ItemAttribute {
     name: String;
@@ -27,7 +27,7 @@ export class WikidataEntity {
 }
 
 export const Q = {
-    ANIMAL: 729,
+    MONUMENT: 4989906,
     CITY: 515,
 }
 
@@ -40,15 +40,15 @@ export const P = {
 }
 
 export const Categories = {
-    Animals: 1,
+    Monuments: 1,
     Geography: 2,
     Flags: 3,
     Logos: 4,
 }
 
 export function category_from_str(name: String) : Number | null {
-    if (name == "animals")
-        return Categories.Animals
+    if (name == "monuments")
+        return Categories.Monuments
     if (name == "geography")
         return Categories.Geography
     if (name == "flags")
@@ -59,8 +59,8 @@ export function category_from_str(name: String) : Number | null {
 }
 
 export function category_into_recipe(cat: Number) : WikidataRecipe {
-    if (cat == Categories.Animals)
-        return new AnimalRecipe();
+    if (cat == Categories.Monuments)
+        return new MonumentsRecipe();
     if (cat == Categories.Geography)
         return new GeographyRecipe();
     if (cat == Categories.Flags)

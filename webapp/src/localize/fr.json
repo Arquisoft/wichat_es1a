@@ -77,9 +77,8 @@
             "sports":"Sport",
             "cities": "Villes",
             "art": "Art",
-            "entertainment": "Divertissement",
-            "games": "Jeux",
-            "animals": "Animaux"
+            "entertainment": "Divertissement",            "games": "Jeux",
+            "monuments": "Monuments"
         }
     },
     

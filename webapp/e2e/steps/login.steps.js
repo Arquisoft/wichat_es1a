@@ -9,10 +9,8 @@ let browser;
 
 defineFeature(feature, test => {
 
-    beforeAll(async () => {
-
-        browser = await puppeteer.launch({
-            headless: true, // Use headless mode for CI
+    beforeAll(async () => {        browser = await puppeteer.launch({
+            headless: "new", // Use new headless mode to avoid deprecation warning
             args: ['--no-sandbox', '--disable-setuid-sandbox'], // For stability in CI
             defaultViewport: { width: 1280, height: 720 }, // Consistent viewport size
             slowMo: 40 // Keep some slowdown for stability

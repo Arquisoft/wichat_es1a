@@ -99,6 +99,7 @@ const PictureGame = () => {
       case 'animals': return '¿Que animal es este?';
       case 'logos': return '¿Que logo es este?';
       case 'flags': return '¿De dónde es esta bandera?';
+      default: return '¿Qué es esto?';
     }
   }, [category]);
 

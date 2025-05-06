@@ -1,4 +1,4 @@
-const IP = "localhost";
+const IP = process.env.IP || "localhost";
 
 module.exports = {
     IP,

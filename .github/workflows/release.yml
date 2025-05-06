@@ -105,17 +105,14 @@ jobs:
     - name: Publish to Registry
       uses: elgohr/Publish-Docker-Github-Action@v5
       env:
-        API_URI: http://${{ secrets.DEPLOY_HOST }}:8000
-        ONLINE_URI: http://${{ secrets.DEPLOY_HOST }}:5010
+        IP: ${{ secrets.DEPLOY_HOST }}
       with:
           name: arquisoft/wichat_es1a/web-app
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: ghcr.io
           workdir: webapp
-          buildargs: |
-            API_URI
-            ONLINE_URI
+          buldargs: IP
   docker-push-llmservice:
     name: Push llm service Docker Image to GitHub Packages
     runs-on: ubuntu-latest

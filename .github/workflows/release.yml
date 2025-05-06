@@ -102,20 +102,18 @@ jobs:
     needs: [unit-tests]
     steps:
     - uses: actions/checkout@v4
+
+    - name: Set env
+      run: echo "REACT_APP_IP=${{ secrets.DEPLOY_HOST }}" > webapp/.env
+
     - name: Publish to Registry
       uses: elgohr/Publish-Docker-Github-Action@v5
-      env:
-        API_URI: http://${{ secrets.DEPLOY_HOST }}:8000
-        ONLINE_URI: http://${{ secrets.DEPLOY_HOST }}:5010
       with:
           name: arquisoft/wichat_es1a/web-app
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: ghcr.io
           workdir: webapp
-          buildargs: |
-            API_URI
-            ONLINE_URI
   docker-push-llmservice:
     name: Push llm service Docker Image to GitHub Packages
     runs-on: ubuntu-latest
@@ -146,5 +144,7 @@ jobs:
             pass: ${{ secrets.DEPLOY_KEY }}
             command: |
               wget https://raw.githubusercontent.com/arquisoft/wichat_es1a/master/docker-compose.yml -O docker-compose.yml
-              docker compose --profile prod down
-              docker compose --profile prod up -d --pull always
+              docker compose --profile dev down
+              docker container stop $(docker container ls -qa)
+              docker container rm $(docker container ls -qa)
+              docker compose --profile dev up -d --pull always

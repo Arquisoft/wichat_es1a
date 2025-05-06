@@ -1,4 +1,4 @@
-const IP = "localhost";
+const IP = process.env.REACT_APP_IP || "localhost";
 
 module.exports = {
     IP,

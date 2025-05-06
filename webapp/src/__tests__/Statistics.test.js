@@ -70,7 +70,7 @@ describe('Statistics component', () => {
         // Verificamos que se cargue el contenido principal usando heurísticas de contenido
         await waitFor(() => {
             expect(
-                screen.getByText((text) => text.toLowerCase().includes('picture game'))
+                screen.getByText((text) => text.toLowerCase().includes('pictures game'))
             ).toBeInTheDocument();
         });
     });

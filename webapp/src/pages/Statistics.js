@@ -20,7 +20,7 @@ const Statistics = () => {
     const [questionsRecord, setQuestionsRecord] = useState([]);
     const [showQuestionsRecord, setShowQuestionsRecord] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 1;
+    const itemsPerPage = 6;
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
     const { username } = useContext(SessionContext);
     const { user } = useParams();
@@ -41,9 +41,9 @@ const Statistics = () => {
     useEffect(() => {
         const fetchQuestionsRecord = async () => {
             try {
-                const response = await axios.get(`${API_URL}/questionsRecord/${user}/${selectedMode}`, {
+                const response = await axios.get(`${API_URL}/questionsRecord/${user}/WiseMenStack`, {
                     username: user,
-                    gameMode: selectedMode
+                    gameMode: 'WiseMenStack' //se cambiaría a selectedMode si hubiera más de un modo de juego
                 });
                 setQuestionsRecord(response.data);
             } catch (error) {
@@ -54,7 +54,17 @@ const Statistics = () => {
         fetchQuestionsRecord();
     }, [user, selectedMode]);
 
-    const totalPages = Math.ceil(questionsRecord.length / itemsPerPage);
+    const flattenedQuestions = questionsRecord.flatMap((record) =>
+        record.questions.map((q) => ({
+          ...q,
+          createdAt: record.createdAt
+        }))
+      );
+
+    const totalPages = Math.ceil(flattenedQuestions.length / itemsPerPage);
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = flattenedQuestions.slice(indexOfFirstItem, indexOfLastItem);
 
     const handleNextPage = () => {
         setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages));
@@ -107,60 +117,63 @@ const Statistics = () => {
     };
 
     const renderQuestions = () => {
-        if (showQuestionsRecord) {
-            const indexOfLastItem = currentPage * itemsPerPage;
-            const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-            const currentItems = questionsRecord.slice(indexOfFirstItem, indexOfLastItem);
-
-            return (
-                <div>
-                    {currentItems.map((record, index) => (
-                        <div key={index}>
-                        <Typography variant="h5" gutterBottom>
-                           {t("Statistics.game")} {formatCreatedAt(record.createdAt)}
-                        </Typography>
-
-                        <Grid container spacing={2}>
-                            {record.questions.map((question, questionIndex) => (
-                                <Grid item xs={12} key={questionIndex}>
-                                    <Box sx={{ bgcolor: '#f0f0f0', borderRadius: '20px', padding: '2%' }}>
-                                        <Typography variant="body1" gutterBottom>
-                                            {question.correctAnswer === question.response ? <CheckIcon style={{color: theme.palette.success.main, fontSize: '1.2rem'}} /> : <ClearIcon style={{color: theme.palette.error.main, fontSize: '1.2rem'}} />}
-                                            {question.question}
-                                        </Typography>
-                                        {question.options.map((option, optionIndex) => (
-                                            <Box
-                                                key={optionIndex}
-                                                sx={{
-                                                    bgcolor: option === question.correctAnswer ? theme.palette.success.main : question.response === option ? theme.palette.error.main : '#ffffff',
-                                                    color: option === question.correctAnswer || option === question.response ? '#ffffff' : 'inherit',
-                                                    borderRadius: '20px',
-                                                    padding: '2%',
-                                                    border: '1px solid #ccc',
-                                                    marginTop: '2%',
-                                                }}
-                                >
-                                                {option === question.correctAnswer? <CheckIcon />: option === question.response? <ClearIcon /> : null}
-                                                {option}
-                                            </Box>
-                                        ))}
-                                    </Box>
-                                </Grid>
-                            ))}
-                        </Grid>
-                    </div>
-                ))}
-                {currentItems.length > 0 && (
-                    <div style={{ marginBottom: '4%', display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '2%' }}>
-                        <button onClick={handlePrevPage} disabled={currentPage === 1} style={{ fontSize: '1rem' }}>&lt;</button>
-                        <p style={{ margin: '0 4%', fontSize: '1rem' }}>Page {currentPage} of {totalPages === 0 ? 1 : totalPages}</p>
-                        <button onClick={handleNextPage} disabled={currentPage === totalPages} style={{ fontSize: '1rem' }}>&gt;</button>
-                    </div>
-                )}
+        if (!showQuestionsRecord) return null;
+      
+        return (
+          <div>
+            <Grid container spacing={2}>
+              {currentItems.map((question, index) => (
+                <Grid item xs={12} sm={6} md={4} key={index}>
+                  <Box sx={{ bgcolor: '#f0f0f0', borderRadius: '20px', padding: '1em' }}>
+                    <Typography variant="subtitle2" color="textSecondary">
+                      {t("Statistics.game")} {formatCreatedAt(question.createdAt)}
+                    </Typography>
+                    <Typography variant="body1" gutterBottom>
+                      {question.correctAnswer === question.response
+                        ? <CheckIcon style={{ color: theme.palette.success.main, fontSize: '1.2rem' }} />
+                        : <ClearIcon style={{ color: theme.palette.error.main, fontSize: '1.2rem' }} />}
+                      {question.question}
+                    </Typography>
+                    {question.options.map((option, idx) => (
+                      <Box
+                        key={idx}
+                        sx={{
+                          bgcolor:
+                            option === question.correctAnswer
+                              ? theme.palette.success.main
+                              : option === question.response
+                                ? theme.palette.error.main
+                                : '#ffffff',
+                          color:
+                            option === question.correctAnswer || option === question.response
+                              ? '#ffffff'
+                              : 'inherit',
+                          borderRadius: '20px',
+                          padding: '2%',
+                          border: '1px solid #ccc',
+                          marginTop: '2%',
+                        }}
+                      >
+                        {option === question.correctAnswer ? <CheckIcon /> : option === question.response ? <ClearIcon /> : null}
+                        {option}
+                      </Box>
+                    ))}
+                  </Box>
+                </Grid>
+              ))}
+            </Grid>
+      
+            <div style={{ marginTop: '2%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <button onClick={handlePrevPage} disabled={currentPage === 1} style={{ fontSize: '1rem' }}>&lt;</button>
+              <p style={{ margin: '0 4%', fontSize: '1rem' }}>
+                {currentPage} / {totalPages || 1}
+              </p>
+              <button onClick={handleNextPage} disabled={currentPage === totalPages} style={{ fontSize: '1rem' }}>&gt;</button>
             </div>
-            );
-        }
-    };
+          </div>
+        );
+      };
+      
 
     //Video settings
     const styles = {
@@ -204,17 +217,19 @@ const Statistics = () => {
                             }
                         }}
                         variant="contained" sx={{ marginBottom: isSmallScreen ? '0.5em' : '0', backgroundColor: theme.palette.primary.main, color: theme.palette.secondary.main, borderColor: theme.palette.primary.main, '&:hover': { backgroundColor: theme.palette.secondary.main, color: theme.palette.primary.main, borderColor: theme.palette.primary.main } }}>
-                            Picture Game
+                            Pictures Game
                         </Button>
                     </div>
                     {renderStatistics()}
-                    <Button
-                        onClick={() => setShowQuestionsRecord(!showQuestionsRecord)}
-                        variant="contained"
-                        sx={{ marginBottom: '0.5em', marginTop: '0.5em', backgroundColor: theme.palette.success.main, color: theme.palette.secondary.main, borderColor: theme.palette.primary.main, '&:hover': { backgroundColor: theme.palette.secondary.main, color: theme.palette.primary.main, borderColor: theme.palette.primary.main } }}
-                    >
-                        {showQuestionsRecord ? t("Statistics.button.hide_record") : t("Statistics.button.show_record")}
-                    </Button>
+                    <div style={{ display: 'flex', justifyContent: 'center', margin: '1em 0' }}>
+                        <Button
+                            onClick={() => setShowQuestionsRecord(!showQuestionsRecord)}
+                            variant="contained"
+                            sx={{ marginBottom: '0.5em', marginTop: '0.5em', backgroundColor: theme.palette.success.main, color: theme.palette.secondary.main, borderColor: theme.palette.primary.main, '&:hover': { backgroundColor: theme.palette.secondary.main, color: theme.palette.primary.main, borderColor: theme.palette.primary.main } }}
+                        >
+                            {showQuestionsRecord ? t("Statistics.button.hide_record") : t("Statistics.button.show_record")}
+                        </Button>
+                        </div>
                     {renderQuestions()}
                 </Box>
             )}

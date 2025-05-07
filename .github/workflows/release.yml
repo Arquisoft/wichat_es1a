@@ -100,9 +100,6 @@ jobs:
     needs: [e2e-tests]
     steps:
     - uses: actions/checkout@v4
-    - name: Set env
-      run: |
-        echo "IP=${{ secrets.DEPLOY_HOST }}" > webapp/.env
     - name: Publish to Registry
       uses: elgohr/Publish-Docker-Github-Action@v5
       with:

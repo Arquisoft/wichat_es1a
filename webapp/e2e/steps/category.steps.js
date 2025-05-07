@@ -88,33 +88,32 @@ defineFeature(feature, test => {
             });
             expect(questionText).toContain('¿Qué monumento es este?');
         });
-    });test('Change game category to logos', ({ given, when, then }) => {
+    });test('Change game category to famous people', ({ given, when, then }) => {
         given('I am in the PicturesGame setup page', async () => {
             await page.goto('http://localhost:3000/pictureGame', { waitUntil: 'networkidle0' });
             await page.waitForSelector('[data-testid="categories-label"]');
             expect(page.url()).toContain('/pictureGame');
         });        when('I select the "logos" category and start the game', async () => {
             // Click the dropdown to open it
-            await page.click('div.MuiSelect-select');
-            // Find and click on the "Emblemas y Símbolos" option
+            await page.click('div.MuiSelect-select');            // Find and click on the "Personas Famosas" option
             await page.waitForSelector('li[data-value="logos"]');
             await page.click('li[data-value="logos"]');
             // Click the start button
             await page.click('[data-testid="start-button"]');
         });
 
-        then('The question text changes to show logo-related question', async () => {
+        then('The question text changes to show famous-people-related question', async () => {
             // Wait for the game to load
             await page.waitForFunction(
-                'document.querySelector("body").innerText.includes("¿A qué marca o entidad pertenece este emblema o símbolo?")',
+                'document.querySelector("body").innerText.includes("¿Quién es esta persona famosa?")',
                 { timeout: 5000 }
             );
             
-            // Verificar que hemos cargado correctamente un juego de emblemas y símbolos
+            // Verificar que hemos cargado correctamente un juego de personas famosas
             const questionText = await page.evaluate(() => {
                 return document.body.innerText;
             });
-            expect(questionText).toContain('¿A qué marca o entidad pertenece este emblema o símbolo?');
+            expect(questionText).toContain('¿Quién es esta persona famosa?');
         });
     });
 });

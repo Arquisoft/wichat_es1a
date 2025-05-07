@@ -25,11 +25,19 @@ export class MonumentsRecipe extends WikidataRecipe {
         qb
         .instanceOf(Q.MONUMENT)
         .assocProperty(276, "location", null, true)  // P276 es la propiedad "location"
+        .assocProperty(17, "country", null, true)   // P17 es la propiedad "país"
+        .random()                                   // Obtener resultados aleatorios
+        .limit(50)                                  // Aumentar el límite para obtener más monumentos
     }
     getAttributes(binding: any): Array<[String,String]> {
-        return [
-            ["item_label", binding.itemLabel.value],
-        ]
+        let attributes: [String, String][] = [["item_label", binding.itemLabel.value]];
+        
+        // Añadir el país al que pertenece el monumento si está disponible
+        if (binding.countryLabel && binding.countryLabel.value) {
+            attributes.push(["country", binding.countryLabel.value]);
+        }
+        
+        return attributes;
     }
     generateQuestion(): GenFunction {
         return (we: WikidataEntity) => we.getAttribute("item_label")
@@ -81,73 +89,75 @@ export class FlagsRecipe extends WikidataRecipe {
 export class LogosRecipe extends WikidataRecipe {
     buildQuery(qb: WikidataQueryBuilder) {
         qb.clearProperties();
-        qb.instanceOf(14073567)
-        .assocProperty(18, "imagen", null, false)  // P18 = imagen
-        
-        // Intentamos obtener logo o símbolo, pero son opcionales
-        .assocProperty(154, "logo", null, true)  // P154 = logo
-        .assocProperty(487, "symbol", null, true)  // P487 = símbolo
-    }getImageUrl(binding: any): String {
-        // Más robusto - verifica todas las posibles fuentes de imagen
-        if (binding.symbolLabel && binding.symbolLabel.value) {
-            return binding.symbolLabel.value;
-        }
-        if (binding.logoLabel && binding.logoLabel.value) {
-            return binding.logoLabel.value;
-        }
+        // Usamos la clase "humano" como instancia base (Q5 es el ID de Wikidata para "humano")
+        qb.instanceOf(5)
+        // Requisitos adicionales para filtrar personas famosas
+        .assocProperty(31, "occupation", null, true)   // P31 = instancia de
+        .assocProperty(18, "imagen", null, false)      // P18 = imagen (requerido)
+        .assocProperty(106, "occupation", null, true)  // P106 = ocupación
+        .assocProperty(569, "birthDate", null, true)   // P569 = fecha de nacimiento
+        .assocProperty(570, "deathDate", null, true)   // P570 = fecha de muerte (opcional)
+        .random()                                      // Obtener resultados aleatorios
+        .limit(50)                                     // Aumentar el límite para obtener más personas
+    }
+    
+    getImageUrl(binding: any): String {
         if (binding.imagen && binding.imagen.value) {
             return binding.imagen.value;
         }
         
         // Si llegamos aquí, no hay imágenes disponibles
-        console.log("No image found for entity:", binding.itemLabel?.value || "Unknown");
+        console.log("No image found for person:", binding.itemLabel?.value || "Unknown");
         return "";
-    }    getAttributes(binding: any): Array<[String, String]> {
+    }
+    
+    getAttributes(binding: any): Array<[String, String]> {
         const attributes = [];
         
-        // Recopilar todos los atributos disponibles
-        if (binding.symbolLabel && binding.symbolLabel.value) {
-            attributes.push(["symbol", binding.symbolLabel.value]);
-        }
-        
-        if (binding.logoLabel && binding.logoLabel.value) {
-            attributes.push(["logo", binding.logoLabel.value]);
-        }
-        
-        if (binding.imagen && binding.imagen.value) {
-            attributes.push(["imagen", binding.imagen.value]);
-        }
-        
-        // El nombre de la entidad es esencial para la pregunta
+        // El nombre de la persona es esencial para la pregunta
         if (binding.itemLabel && binding.itemLabel.value) {
             attributes.push(["item_label", binding.itemLabel.value]);
         } else {
             // Si no hay nombre, poner un placeholder para evitar errores
-            attributes.push(["item_label", "Entidad desconocida"]);
+            attributes.push(["item_label", "Persona desconocida"]);
+        }
+        
+        // Añadir ocupación si está disponible
+        if (binding.occupationLabel && binding.occupationLabel.value) {
+            attributes.push(["occupation", binding.occupationLabel.value]);
+        }
+        
+        // Añadir fecha de nacimiento si está disponible
+        if (binding.birthDateLabel && binding.birthDateLabel.value) {
+            attributes.push(["birth_date", binding.birthDateLabel.value]);
+        }
+        
+        // Añadir fecha de muerte si está disponible
+        if (binding.deathDateLabel && binding.deathDateLabel.value) {
+            attributes.push(["death_date", binding.deathDateLabel.value]);
         }
         
         return attributes;
     }
+    
     generateQuestion(): GenFunction {
         return (we: WikidataEntity) => we.getAttribute("item_label")
-    }    getCategory(): Number {
+    }
+    
+    getCategory(): Number {
         return Categories.Logos
     }
     
-    // Sobrescribimos el método isValid para ser más permisivo con logos y símbolos
+    // Sobrescribimos el método isValid para personas famosas
     isValid(binding: any): boolean {
-        // Primero verificamos que tenga una imagen que mostrar
-        const hasImage = (
-            (binding.imagen && binding.imagen.value) || 
-            (binding.logoLabel && binding.logoLabel.value) || 
-            (binding.symbolLabel && binding.symbolLabel.value)
-        );
+        // Verificar que tenga una imagen
+        const hasImage = binding.imagen && binding.imagen.value;
         
         if (!hasImage) {
             return false;
         }
         
-        // Luego verificamos que tenga un nombre válido
+        // Verificar que tenga un nombre válido
         let itemLabel = binding.itemLabel;
         if (!itemLabel || !itemLabel.value) {
             return false;

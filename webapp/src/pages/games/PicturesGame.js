@@ -94,7 +94,7 @@ const PictureGame = () => {
   }, [round]);  const questionText = useMemo(() => {
     switch (category) {
       case 'monuments': return '¿Qué monumento es este?';
-      case 'logos': return '¿A qué marca o entidad pertenece este emblema o símbolo?';
+      case 'logos': return '¿Quién es esta persona famosa?';
       case 'flags': return '¿De dónde es esta bandera?';
       default: return '¿Qué es esto?';
     }
@@ -360,11 +360,10 @@ const PictureGame = () => {
             </Box>
             {/* Dropdown para seleccionar categoría */}            <Box sx={{ display: 'flex', alignItems: 'center', gap: '1em' }}>              <Typography data-testid="categories-label" variant="h5" htmlFor="category">
                 {t("Game.config.category")}:
-              </Typography>
-              <Select value={category} style={{ minWidth: '120px' }}>
+              </Typography>              <Select value={category} style={{ minWidth: '120px' }}>
                 <MenuItem value="monuments" onClick={() => setCategory(('monuments'))}>Monumentos</MenuItem>
                 <MenuItem value="flags" onClick={() => setCategory(('flags'))}>Banderas</MenuItem>
-                <MenuItem value="logos" onClick={() => setCategory(('logos'))}>Emblemas y Símbolos</MenuItem>
+                <MenuItem value="logos" onClick={() => setCategory(('logos'))}>Personas Famosas</MenuItem>
                 {/* Agrega más categorías si lo deseas */}
               </Select>
             </Box>

@@ -40,8 +40,7 @@ describe("LLM Service API Tests", () => {
 
       expect(res.statusCode).toBe(200);
       expect(res.body).toHaveProperty("message", "Imagen de referencia actualizada correctamente.");      expect(res.body).toHaveProperty("welcomeMessage");
-      expect(res.body.welcomeMessage).toContain("¡Bienvenido al juego de adivinanzas de monumentos del mundo!");
-    });      test("debería devolver mensaje de bienvenida específico para emblemas y símbolos", async () => {
+      expect(res.body.welcomeMessage).toContain("¡Bienvenido al juego de adivinanzas de monumentos del mundo!");    });      test("debería devolver mensaje de bienvenida específico para personas famosas", async () => {
       const res = await request(server)
         .post("/set-image")
         .send({
@@ -51,7 +50,7 @@ describe("LLM Service API Tests", () => {
 
       expect(res.statusCode).toBe(200);
       expect(res.body).toHaveProperty("welcomeMessage");
-      expect(res.body.welcomeMessage).toContain("emblemas y símbolos");
+      expect(res.body.welcomeMessage).toContain("personas famosas");
     });
     test("debería devolver mensaje de bienvenida específico para banderas", async () => {
       const res = await request(server)
@@ -215,13 +214,11 @@ describe("LLM Service API Tests", () => {
         .send({
           messages: [{ sender: "user", text: "Dame una pista" }],
           gameCategory: "logos"
-        });
-
-      expect(res.statusCode).toBe(200);
-      expect(res.body).toHaveProperty("response", "Soy una respuesta del LLM sobre logos");      // Verificar contexto de emblemas y símbolos
+        });      expect(res.statusCode).toBe(200);
+      expect(res.body).toHaveProperty("response", "Soy una respuesta del LLM sobre logos");      // Verificar contexto de personas famosas
       const requestData = axios.post.mock.calls[0][1];
-      expect(requestData.contents[0].parts[0].text).toContain("el emblema o símbolo");
-      expect(requestData.contents[0].parts[0].text).toContain("entidad, empresa o organización");
+      expect(requestData.contents[0].parts[0].text).toContain("la persona famosa");
+      expect(requestData.contents[0].parts[0].text).toContain("profesión, logros");
     });
     
     test("debería procesar correctamente una solicitud de chat para banderas", async () => {
@@ -528,15 +525,14 @@ describe("LLM Service API Tests", () => {
         .send({
           messages: [{ sender: "user", text: "Dame una pista" }],
           gameCategory: "logos"
-        });
-
-      expect(res.statusCode).toBe(200);
+        });      expect(res.statusCode).toBe(200);
 
       // Verificar que se envió el mensaje de bienvenida al LLM
       const requestData = axios.post.mock.calls[0][1];
-      const chatHistory = requestData.contents[0].parts[1].text;      // Verificar que el historial del chat incluye un mensaje de bienvenida específico para emblemas y símbolos
-      expect(chatHistory).toContain("system: ¡Bienvenido al juego de adivinanzas de emblemas y símbolos!");
-      expect(chatHistory).toContain("adivines a qué marca, entidad u organización pertenece el emblema o símbolo");
+      const chatHistory = requestData.contents[0].parts[1].text;
+      // Verificar que el historial del chat incluye un mensaje de bienvenida específico para personas famosas
+      expect(chatHistory).toContain("system: ¡Bienvenido al juego de adivinanzas de personas famosas!");
+      expect(chatHistory).toContain("adivines quién es la persona famosa que aparece en la imagen");
     });
     
     test("debería añadir un mensaje de bienvenida específico para la categoría banderas", async () => {

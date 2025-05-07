@@ -9,8 +9,7 @@ describe('LogosRecipe', () => {
   beforeEach(() => {
     recipe = new LogosRecipe();
   });
-  
-  describe('buildQuery', () => {
+    describe('buildQuery', () => {
     it('should build appropriate query with clearProperties and instance', () => {
       const qb = new WikidataQueryBuilder();
       const spyClear = jest.spyOn(qb, 'clearProperties');
@@ -20,36 +19,16 @@ describe('LogosRecipe', () => {
       recipe.buildQuery(qb);
       
       expect(spyClear).toHaveBeenCalled();
-      expect(spyInstance).toHaveBeenCalledWith(14073567);
+      expect(spyInstance).toHaveBeenCalledWith(5); // Q5 = human
       expect(spyAssoc).toHaveBeenCalledWith(18, "imagen", null, false);
-      expect(spyAssoc).toHaveBeenCalledWith(154, "logo", null, true);
-      expect(spyAssoc).toHaveBeenCalledWith(487, "symbol", null, true);
+      expect(spyAssoc).toHaveBeenCalledWith(31, "occupation", null, true);
+      expect(spyAssoc).toHaveBeenCalledWith(106, "occupation", null, true);
+      expect(spyAssoc).toHaveBeenCalledWith(569, "birthDate", null, true);
+      expect(spyAssoc).toHaveBeenCalledWith(570, "deathDate", null, true);
     });
   });
-  
-  describe('getImageUrl', () => {
-    it('should return symbol value if available', () => {
-      const binding = {
-        symbolLabel: { value: 'https://example.com/symbol.jpg' },
-        logoLabel: { value: 'https://example.com/logo.jpg' },
-        imagen: { value: 'https://example.com/image.jpg' }
-      };
-      
-      const result = recipe.getImageUrl(binding);
-      expect(result).toBe('https://example.com/symbol.jpg');
-    });
-    
-    it('should return logo value if symbol is not available', () => {
-      const binding = {
-        logoLabel: { value: 'https://example.com/logo.jpg' },
-        imagen: { value: 'https://example.com/image.jpg' }
-      };
-      
-      const result = recipe.getImageUrl(binding);
-      expect(result).toBe('https://example.com/logo.jpg');
-    });
-    
-    it('should return imagen value if symbol and logo are not available', () => {
+    describe('getImageUrl', () => {
+    it('should return imagen value if available', () => {
       const binding = {
         imagen: { value: 'https://example.com/image.jpg' }
       };
@@ -68,7 +47,7 @@ describe('LogosRecipe', () => {
       const result = recipe.getImageUrl(binding);
       
       expect(result).toBe('');
-      expect(consoleSpy).toHaveBeenCalledWith('No image found for entity:', 'Test Entity');
+      expect(consoleSpy).toHaveBeenCalledWith('No image found for person:', 'Test Entity');
       
       consoleSpy.mockRestore();
     });
@@ -81,41 +60,40 @@ describe('LogosRecipe', () => {
       const result = recipe.getImageUrl(binding);
       
       expect(result).toBe('');
-      expect(consoleSpy).toHaveBeenCalledWith('No image found for entity:', 'Unknown');
+      expect(consoleSpy).toHaveBeenCalledWith('No image found for person:', 'Unknown');
       
       consoleSpy.mockRestore();
     });
   });
-  
-  describe('getAttributes', () => {
-    it('should collect all available attributes', () => {
+    describe('getAttributes', () => {
+    it('should collect all available attributes for a famous person', () => {
       const binding = {
-        symbolLabel: { value: 'Symbol Value' },
-        logoLabel: { value: 'Logo Value' },
         imagen: { value: 'Image URL' },
-        itemLabel: { value: 'Company Name' }
+        itemLabel: { value: 'Famous Person Name' },
+        occupationLabel: { value: 'Actor' },
+        birthDateLabel: { value: '1980-01-01' },
+        deathDateLabel: { value: '2020-01-01' }
       };
       
       const attributes = recipe.getAttributes(binding);
       
       expect(attributes).toHaveLength(4);
-      expect(attributes).toContainEqual(['symbol', 'Symbol Value']);
-      expect(attributes).toContainEqual(['logo', 'Logo Value']);
-      expect(attributes).toContainEqual(['imagen', 'Image URL']);
-      expect(attributes).toContainEqual(['item_label', 'Company Name']);
+      expect(attributes).toContainEqual(['item_label', 'Famous Person Name']);
+      expect(attributes).toContainEqual(['occupation', 'Actor']);
+      expect(attributes).toContainEqual(['birth_date', '1980-01-01']);
+      expect(attributes).toContainEqual(['death_date', '2020-01-01']);
     });
     
     it('should handle missing attributes', () => {
       const binding = {
         imagen: { value: 'Image URL' },
-        itemLabel: { value: 'Company Name' }
+        itemLabel: { value: 'Famous Person Name' }
       };
       
       const attributes = recipe.getAttributes(binding);
       
-      expect(attributes).toHaveLength(2);
-      expect(attributes).toContainEqual(['imagen', 'Image URL']);
-      expect(attributes).toContainEqual(['item_label', 'Company Name']);
+      expect(attributes).toHaveLength(1);
+      expect(attributes).toContainEqual(['item_label', 'Famous Person Name']);
     });
     
     it('should provide a placeholder when item label is missing', () => {
@@ -125,9 +103,8 @@ describe('LogosRecipe', () => {
       
       const attributes = recipe.getAttributes(binding);
       
-      expect(attributes).toHaveLength(2);
-      expect(attributes).toContainEqual(['imagen', 'Image URL']);
-      expect(attributes).toContainEqual(['item_label', 'Entidad desconocida']);
+      expect(attributes).toHaveLength(1);
+      expect(attributes).toContainEqual(['item_label', 'Persona desconocida']);
     });
   });
   
@@ -148,30 +125,11 @@ describe('LogosRecipe', () => {
       expect(recipe.getCategory()).toBe(Categories.Logos);
     });
   });
-  
-  describe('isValid', () => {
+    describe('isValid', () => {
     it('should return true for valid bindings with image and proper label', () => {
       const binding = {
         imagen: { value: 'https://example.com/image.jpg' },
-        itemLabel: { value: 'Valid Entity' }
-      };
-      
-      expect(recipe.isValid(binding)).toBe(true);
-    });
-    
-    it('should return true for valid bindings with logo and proper label', () => {
-      const binding = {
-        logoLabel: { value: 'https://example.com/logo.jpg' },
-        itemLabel: { value: 'Valid Entity' }
-      };
-      
-      expect(recipe.isValid(binding)).toBe(true);
-    });
-    
-    it('should return true for valid bindings with symbol and proper label', () => {
-      const binding = {
-        symbolLabel: { value: 'https://example.com/symbol.jpg' },
-        itemLabel: { value: 'Valid Entity' }
+        itemLabel: { value: 'Valid Person' }
       };
       
       expect(recipe.isValid(binding)).toBe(true);
@@ -179,7 +137,7 @@ describe('LogosRecipe', () => {
     
     it('should return false for bindings without any image source', () => {
       const binding = {
-        itemLabel: { value: 'Valid Entity' }
+        itemLabel: { value: 'Valid Person' }
       };
       
       expect(recipe.isValid(binding)).toBe(false);

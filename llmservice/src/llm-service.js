@@ -33,10 +33,10 @@ const getCategoryPrompt = (category) => {
         "No menciones directamente el nombre del monumento, pero puedes dar pistas sobre su localización o estilo."
       ]
     },    logos: {
-      subject: "el emblema o símbolo",
+      subject: "la persona famosa",
       specificInstructions: [
-        "Menciona características de la entidad, empresa o organización asociada al emblema o símbolo sin nombrarla directamente.",
-        "Puedes referirte a su historia, significado visual, colores o elementos distintivos, pero no describas texto que pueda aparecer en el símbolo."
+        "Menciona características de la persona como su profesión, logros, época en que vivió, nacionalidad o datos curiosos sin nombrarla directamente.",
+        "Puedes referirte a obras, películas, canciones o eventos importantes en los que participó, pero no menciones directamente su nombre."
       ]
     },
     flags: {
@@ -66,10 +66,9 @@ const getCategoryPrompt = (category) => {
 };
 
 // Obtener el mensaje de bienvenida según la categoría
-const getWelcomeMessage = (gameCategory) => {
-  if (gameCategory?.toLowerCase() === "monuments") {
+const getWelcomeMessage = (gameCategory) => {  if (gameCategory?.toLowerCase() === "monuments") {
     return "¡Bienvenido al juego de adivinanzas de monumentos del mundo! Hazme preguntas y te daré pistas para que adivines qué monumento aparece en la imagen.";  } else if (gameCategory?.toLowerCase() === "logos") {
-    return "¡Bienvenido al juego de adivinanzas de emblemas y símbolos! Hazme preguntas y te daré pistas para que adivines a qué marca, entidad u organización pertenece el emblema o símbolo que aparece en la imagen.";
+    return "¡Bienvenido al juego de adivinanzas de personas famosas! Hazme preguntas y te daré pistas para que adivines quién es la persona famosa que aparece en la imagen.";
   }else if (gameCategory?.toLowerCase() === "flags") {
     return "¡Bienvenido al juego de adivinanzas de banderas! Hazme preguntas y te daré pistas para que adivines a qué país o región pertenece la bandera que aparece en la imagen.";
   } else {

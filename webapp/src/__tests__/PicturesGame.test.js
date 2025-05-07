@@ -160,16 +160,15 @@ describe('PictureGame component', () => {
       expect(screen.getByText('¿De dónde es esta bandera?')).toBeInTheDocument();
     });
   });
-  it('changes question text when selecting logos category', async () => {
+  it('changes question text when selecting famous people category', async () => {
     renderGame();
     
     // Find the select element and change its value to logos
     const categorySelect = await screen.findByRole('combobox');
     await act(async () => {
       fireEvent.mouseDown(categorySelect);
-    });
-      // Find and click on the logos option
-    const logosOption = await screen.findByText('Emblemas y Símbolos');
+    });    // Find and click on the logos option
+    const logosOption = await screen.findByText('Personas Famosas');
     await act(async () => {
       fireEvent.click(logosOption);
     });
@@ -180,7 +179,7 @@ describe('PictureGame component', () => {
     });
     
     await waitFor(() => {
-      expect(screen.getByText('¿A qué marca o entidad pertenece este emblema o símbolo?')).toBeInTheDocument();
+      expect(screen.getByText('¿Quién es esta persona famosa?')).toBeInTheDocument();
     });
   });
 });

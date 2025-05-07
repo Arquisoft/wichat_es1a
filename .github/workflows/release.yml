@@ -48,7 +48,7 @@ jobs:
     permissions:
       contents: write
       packages: write
-    needs: [unit-tests]
+    needs: [e2e-tests]
     steps:
     - uses: actions/checkout@v4
     - name: Publish to Registry
@@ -65,7 +65,7 @@ jobs:
     permissions:
       contents: write
       packages: write
-    needs: [unit-tests]
+    needs: [e2e-tests]
     steps:
     - uses: actions/checkout@v4
     - name: Publish to Registry
@@ -82,7 +82,7 @@ jobs:
     permissions:
       contents: write
       packages: write
-    needs: [unit-tests]
+    needs: [e2e-tests]
     steps:
     - uses: actions/checkout@v4
     - name: Publish to Registry
@@ -99,7 +99,7 @@ jobs:
     permissions:
       contents: write
       packages: write
-    needs: [unit-tests]
+    needs: [e2e-tests]
     steps:
     - uses: actions/checkout@v4
 
@@ -122,7 +122,7 @@ jobs:
     permissions:
       contents: write
       packages: write
-    needs: [unit-tests]
+    needs: [e2e-tests]
     steps:
     - uses: actions/checkout@v4
     - name: Publish to Registry
@@ -145,7 +145,11 @@ jobs:
             user: ${{ secrets.DEPLOY_USER }}
             pass: ${{ secrets.DEPLOY_KEY }}
             command: |
+              mkdir -p wichat_es1a
+              cd wichat_es1a
+              rm -rf ./*
               wget https://raw.githubusercontent.com/arquisoft/wichat_es1a/master/docker-compose.yml -O docker-compose.yml
+              echo "GEMINI_API_KEY=${{ secrets.REACT_APP_GEMINI_API_KEY }}" >> .env
               docker compose --profile dev down
               docker container stop $(docker container ls -qa)
               docker container rm $(docker container ls -qa)

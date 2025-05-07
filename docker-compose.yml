@@ -74,7 +74,7 @@ services:
     build: 
       context: ./webapp
       args:
-        IP: ${IP}
+        REACT_APP_IP: ${IP}
     depends_on:
       - gatewayservice
     ports:

@@ -6,7 +6,7 @@ WORKDIR /app
 #Install the dependencies
 RUN npm install --omit=dev
 
-ARG IP="localhost"
+ARG REACT_APP_IP="localhost"
 ENV REACT_APP_IP=$IP
 
 #Create an optimized version of the webapp

@@ -100,10 +100,9 @@ jobs:
     needs: [e2e-tests]
     steps:
     - uses: actions/checkout@v4
-
     - name: Set env
       run: |
-        echo "REACT_APP_IP=${{ secrets.DEPLOY_HOST }}" > webapp/.env
+        echo "IP=${{ secrets.DEPLOY_HOST }}" > webapp/.env
         sed -i "s/localhost/${{ secrets.DEPLOY_HOST }}/" webapp/src/env.js
 
     - name: Publish to Registry

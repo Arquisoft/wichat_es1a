@@ -79,7 +79,7 @@ services:
     networks:
       - mynetwork
     environment:
-      IP: ${IP}
+      REACT_APP_IP: ${IP}
     restart: always
 
 

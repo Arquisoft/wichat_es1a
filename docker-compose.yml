@@ -71,15 +71,16 @@ services:
     container_name: webapp
     image: ghcr.io/arquisoft/wichat_es1a/web-app:latest
     profiles: ["dev", "prod"]
-    build: ./webapp
+    build: 
+      context: ./webapp
+      args:
+        IP: ${IP}
     depends_on:
       - gatewayservice
     ports:
       - "3000:3000"
     networks:
       - mynetwork
-    environment:
-      REACT_APP_IP: ${IP}
     restart: always
 
 

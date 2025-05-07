@@ -81,4 +81,4 @@ Other elements of the system are:
 - **Image Generation Service**: An internal service that manages image generation based on data retrieved from Wikidata.
 - **Gateway Service:** A public-facing Express service that acts as a proxy for user management, enabling sign-up and login.
 - **User service:** An Express service that handles the registration of new users in the system.
-- **Auth service:** An Express service dedicated to user authentication.
+- **LLM:** External Large Language Model the system uses to request hints about the image generated.

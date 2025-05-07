@@ -66,6 +66,8 @@ services:
       - "8003:8003"
     networks:
       - mynetwork
+    environment:
+      REACT_APP_GEMINI_API_KEY: ${GEMINI_API_KEY}
 
   webapp:
     container_name: webapp

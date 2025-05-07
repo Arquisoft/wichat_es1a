@@ -147,6 +147,9 @@ jobs:
               cd wichat_es1a
               rm -rf ./*
               wget https://raw.githubusercontent.com/arquisoft/wichat_es1a/master/docker-compose.yml -O docker-compose.yml
+              rm -rf .env
+              touch .env
+              echo "IP=${{ secrets.DEPLOY_HOST }}" >> .env
               echo "GEMINI_API_KEY=${{ secrets.REACT_APP_GEMINI_API_KEY }}" >> .env
               docker compose --profile dev down
               docker container stop $(docker container ls -qa)

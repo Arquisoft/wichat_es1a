@@ -71,7 +71,6 @@
             "time": "Secondes par question",
             "category": "Catégorie"
         },        "categories": {
-            "geography": "Gréographie",
             "political":"Politique",
             "sports":"Sport",
             "cities": "Villes",

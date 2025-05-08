@@ -22,24 +22,7 @@ export abstract class WikidataRecipe {
 
 
 
-export class GeographyRecipe extends WikidataRecipe {
-    buildQuery(qb: WikidataQueryBuilder) {
-        qb.subclassOf(Q.CITY)
-    }
-    getAttributes(binding: any): [String,String][] {
-        return [
-            ["item_label", binding.itemLabel.value],
-        ]
-    }
-    generateQuestion(): GenFunction {
-        return (we: WikidataEntity) => we.getAttribute("item_label")
-    }
 
-    getCategory(): Number {
-        return Categories.Geography
-    }
-
-}
 
 export class FlagsRecipe extends WikidataRecipe {
     buildQuery(qb: WikidataQueryBuilder) {

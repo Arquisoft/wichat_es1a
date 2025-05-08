@@ -192,7 +192,7 @@ describe("LLM Service API Tests", () => {
       // Verificar que se pasó el contexto correcto para banderas
       const requestData = axiosCallArgs[1];
       expect(requestData.contents[0].parts[0].text).toContain("el país o región cuya bandera");
-      expect(requestData.contents[0].parts[0].text).toContain("geografía, cultura, historia");
+      expect(requestData.contents[0].parts[0].text).toContain("cultura, historia, economía");
     });
       test("debería procesar correctamente una solicitud de chat para logos", async () => {
       // Configurar el mock de axios para devolver una respuesta exitosa
@@ -251,9 +251,8 @@ describe("LLM Service API Tests", () => {
 
       expect(res.statusCode).toBe(200);
       expect(res.body).toHaveProperty("response", "Soy una respuesta del LLM sobre banderas");      // Verificar contexto de banderas
-      const requestData = axios.post.mock.calls[0][1];
-      expect(requestData.contents[0].parts[0].text).toContain("el país o región cuya bandera");
-      expect(requestData.contents[0].parts[0].text).toContain("geografía, cultura, historia");
+      const requestData = axios.post.mock.calls[0][1];      expect(requestData.contents[0].parts[0].text).toContain("el país o región cuya bandera");
+      expect(requestData.contents[0].parts[0].text).toContain("cultura, historia, economía");
       expect(requestData.contents[0].parts[0].text).toContain("No menciones directamente el nombre del país");
     });    test("debería verificar que el prompt incluye instrucciones para respuestas concisas", async () => {
       // Configurar el mock de axios para devolver una respuesta exitosa
@@ -374,7 +373,7 @@ describe("LLM Service API Tests", () => {
       expect(res.body).toHaveProperty("response", "Respuesta usando la categoría flags por defecto");      // Verificar que se usó el contexto de banderas
       const requestData = axios.post.mock.calls[0][1];
       expect(requestData.contents[0].parts[0].text).toContain("el país o región cuya bandera");
-      expect(requestData.contents[0].parts[0].text).toContain("geografía, cultura, historia");
+      expect(requestData.contents[0].parts[0].text).toContain("cultura, historia, economía");
     });
   });
 

@@ -163,15 +163,13 @@ describe('Gateway API Integration', () => {
     expect(res.body).toHaveProperty('error');
   });
 
-  test('GET /questions/random/:category/:n éxito', async () => {
-    axios.get.mockResolvedValueOnce({ data: [{ q: 1 }, { q: 2 }] });
-    const res = await request(app).get('/questions/random/geography/2?username=test');
+  test('GET /questions/random/:category/:n éxito', async () => {    axios.get.mockResolvedValueOnce({ data: [{ q: 1 }, { q: 2 }] });
+    const res = await request(app).get('/questions/random/flags/2?username=test');
     expect(res.statusCode).toBe(200);
     expect(res.body).toEqual([{ q: 1 }, { q: 2 }]);
   });
-  test('GET /questions/random/:category/:n error', async () => {
-    axios.get.mockRejectedValueOnce({ response: { status: 500, data: { error: 'fail' } }, message: 'fail' });
-    const res = await request(app).get('/questions/random/geography/2?username=test');
+  test('GET /questions/random/:category/:n error', async () => {    axios.get.mockRejectedValueOnce({ response: { status: 500, data: { error: 'fail' } }, message: 'fail' });
+    const res = await request(app).get('/questions/random/flags/2?username=test');
     expect(res.statusCode).toBe(500);
     expect(res.body).toHaveProperty('error');
   });
@@ -275,9 +273,8 @@ describe('Cobertura extra de ramas en endpoints de preguntas', () => {
     expect(res.statusCode).toBe(500);
     expect(res.body).toHaveProperty('error');
   });
-  it('GET /questions/random/:category/:n error sin response ni message', async () => {
-    axios.get.mockRejectedValueOnce({});
-    const res = await request(app).get('/questions/random/geography/2?username=test');
+  it('GET /questions/random/:category/:n error sin response ni message', async () => {    axios.get.mockRejectedValueOnce({});
+    const res = await request(app).get('/questions/random/flags/2?username=test');
     expect(res.statusCode).toBe(500);
     expect(res.body).toHaveProperty('error');
   });

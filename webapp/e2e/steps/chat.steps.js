@@ -10,7 +10,8 @@ let browser;
 
 defineFeature(feature, test => {
 
-    beforeAll(async () => {        browser = await puppeteer.launch({
+    beforeAll(async () => {
+        browser = await puppeteer.launch({
             headless: "new", // Use new headless mode to avoid deprecation warning
             args: ['--no-sandbox', '--disable-setuid-sandbox'], // For stability in CI
             defaultViewport: { width: 1280, height: 720 }, // Consistent viewport size
@@ -29,7 +30,9 @@ defineFeature(feature, test => {
 
     afterAll(async () => {
         await browser.close();
-    });    test('Send a message in the chat', ({ given, when, then }) => {
+    });
+
+    test('Send a message in the chat', ({ given, when, then }) => {
         given('I am in a game of PicturesGame', async () => {
             // Navigate to PictureGame and start a game
             await page.goto('http://localhost:3000/pictureGame', { waitUntil: 'networkidle0' });
@@ -39,7 +42,8 @@ defineFeature(feature, test => {
             // Esperar a que el juego se cargue y el campo de chat esté disponible
             try {
                 await page.waitForSelector('input[placeholder="Escribe tu mensaje..."]', { timeout: 10000 });
-            } catch (error) {            // Esperar a que cualquier elemento del juego esté presente
+            } catch (error) {
+                // Esperar a que cualquier elemento del juego esté presente
                 await page.waitForFunction(
                     'document.querySelector("body").innerText.includes("bandera") || document.querySelector("body").innerText.includes("logo")',
                     { timeout: 10000 }
@@ -48,7 +52,9 @@ defineFeature(feature, test => {
             
             // Verificar que estamos en la página de juego
             expect(page.url()).toContain('/pictureGame');
-        });        when('I type a message and send it', async () => {
+        });
+
+        when('I type a message and send it', async () => {
             // Type a message and send it
             await page.waitForSelector('input[placeholder="Escribe tu mensaje..."]');
             await page.type('input[placeholder="Escribe tu mensaje..."]', 'Hola, necesito una pista');
@@ -70,7 +76,9 @@ defineFeature(feature, test => {
             
             // Verificar que se encontró y se hizo clic en el botón de enviar
             expect(sendButtonFound).toBe(true);
-        });        then('The message appears in the chat history', async () => {
+        });
+
+        then('The message appears in the chat history', async () => {
             // Dar tiempo para que la interfaz se actualice
             await page.waitForTimeout(1000);
 
@@ -90,14 +98,17 @@ defineFeature(feature, test => {
             });
             expect(hasResponse).toBe(true);
         });
-    });    test('Request a hint from the chat', ({ given, when, then }) => {
+    });
+
+    test('Request a hint from the chat', ({ given, when, then }) => {
         given('I am in a game of PicturesGame', async () => {
             // Navigate to PictureGame and start a game
             await page.goto('http://localhost:3000/pictureGame', { waitUntil: 'networkidle0' });
             await page.waitForSelector('[data-testid="start-button"]');
             await page.click('[data-testid="start-button"]');
 
-            // Esperar a que la página del juego se cargue completamente            try {
+            // Esperar a que la página del juego se cargue completamente
+            try {
                 await page.waitForFunction(
                     'document.querySelector("body").innerText.includes("bandera") || document.querySelector("body").innerText.includes("logo")',
                     { timeout: 15000 }
@@ -115,7 +126,9 @@ defineFeature(feature, test => {
             
             // Verificar que estamos en la página de juego
             expect(page.url()).toContain('/pictureGame');
-        });        when('I click the hint button', async () => {
+        });
+
+        when('I click the hint button', async () => {
             // Hacer una pausa para asegurar que la UI está completamente cargada
             await page.waitForTimeout(2000);
 
@@ -153,7 +166,9 @@ defineFeature(feature, test => {
             // No fallamos el test si no se encuentra el botón, pero verificamos
             // que hemos permanecido en la página del juego
             expect(page.url()).toContain('/pictureGame');
-        });        then('I receive a hint message in the chat', async () => {
+        });
+
+        then('I receive a hint message in the chat', async () => {
             // Dar tiempo para que la interfaz se actualice
             await page.waitForTimeout(2000);
 

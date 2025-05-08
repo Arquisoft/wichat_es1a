@@ -24,18 +24,18 @@ const getCategoryPrompt = (category) => {
     "Cada respuesta debe tener 2-3 frases informativas.",
     "No des respuestas de sí/no solamente.",
     "Si preguntan algo fuera del juego responde: 'Lo siento, solo puedo darte pistas sobre"
-  ];
-  // Configuración específica por categoría  const categoryConfig = {
+  ];  // Configuración específica por categoría
+  const categoryConfig = {
     logos: {
       subject: "el logo",
       specificInstructions: [
         "Menciona características de la empresa o marca asociada al logo."
       ]
-    },    
+    },
     flags: {
       subject: "el país o región cuya bandera",
       specificInstructions: [
-        "Menciona características del país como geografía, cultura, historia, economía o datos curiosos.",
+        "Menciona características del país como cultura, historia, economía o datos curiosos.",
         "No menciones directamente el nombre del país o región, ni describas visualmente la bandera."
       ]
     },

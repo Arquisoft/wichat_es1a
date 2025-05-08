@@ -70,7 +70,6 @@
             "time": "Seconds per question",
             "category": "Category"
         },        "categories": {
-            "geography": "Geography",
             "political":"Political",
             "sports":"Sports",
             "cities": "Cities",

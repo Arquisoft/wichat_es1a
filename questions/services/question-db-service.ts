@@ -208,9 +208,7 @@ export class QuestionDBService extends PromiseStore {
         }
 
         return count
-    }
-
-    async generateQuestions(n: number, username: String = "", recipe: WikidataRecipe = new FlagsRecipe()) : Promise<IQuestion[]> {
+    }    async generateQuestions(n: number, username: String = "", recipe: WikidataRecipe = new FlagsRecipe()) : Promise<IQuestion[]> {
         console.log("Generating a batch of " + n + " questions")
 
         let query = new WikidataQueryBuilder()
@@ -236,23 +234,23 @@ export class QuestionDBService extends PromiseStore {
             } else {
                 return recipe.isValid(e);
             }
-        })
-
-        const genQuestions: Promise<IQuestion>[] =
-            bindings.map((elem: any) => {
-
+        });
+        
+        // Process each binding individually to handle async image URL generation
+        const genQuestions: IQuestion[] = [];
+        for (const elem of bindings) {
             let attrs = recipe.getAttributes(elem);
-            return new Question({
-                image_url: recipe.getImageUrl(elem),
+            const imageUrl = await recipe.getImageUrl(elem);
+            const question = await new Question({
+                image_url: imageUrl,
                 wdId: elem.wdId,
                 attrs,
                 category: recipe.getCategory()
-            }).save()
-        });
+            }).save();
+            genQuestions.push(question);
+        }        console.log("  Generated " + genQuestions.length);
 
-        console.log("  Generated " + genQuestions.length);
-
-        return Promise.all(genQuestions);
+        return genQuestions;
     }
 
 }

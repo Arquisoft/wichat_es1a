@@ -20,10 +20,6 @@ export abstract class WikidataRecipe {
     abstract getCategory() : Number;
 }
 
-
-
-
-
 export class FlagsRecipe extends WikidataRecipe {
     buildQuery(qb: WikidataQueryBuilder) {
         qb
@@ -44,40 +40,5 @@ export class FlagsRecipe extends WikidataRecipe {
     }
     getCategory(): Number {
         return Categories.Flags
-    }
-}
-
-export class ArtRecipe extends WikidataRecipe {
-    buildQuery(qb: WikidataQueryBuilder) {
-        qb.clearProperties();
-        qb
-        .instanceOf(3305213)  // Instance of painting
-        .assocProperty(170, "creator")  // Property for creator/artist
-        .assocProperty(18, "image")    // Property for image
-    }
-    
-    async getImageUrl(binding: any): Promise<String> {
-        // Simply return the original artwork image URL
-        return binding.imageLabel.value;
-    }
-    
-    getAttributes(binding: any): Array<[String, String]> {
-        return [
-            ["image", binding.imageLabel.value],
-            ["item_label", binding.itemLabel.value],
-            ["creator", binding.creatorLabel ? binding.creatorLabel.value : "Unknown Artist"],
-        ]
-    }
-    
-    generateQuestion(): GenFunction {
-        return (we: WikidataEntity) => {
-            const itemLabel = we.getAttribute("item_label");
-            const creator = we.getAttribute("creator");
-            return creator ? `${itemLabel} (by ${creator})` : itemLabel;
-        }
-    }
-    
-    getCategory(): Number {
-        return Categories.Art
     }
 }

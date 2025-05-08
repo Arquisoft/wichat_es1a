@@ -44,7 +44,7 @@ defineFeature(feature, test => {
                 await page.waitForSelector('input[placeholder="Escribe tu mensaje..."]', { timeout: 10000 });
             } catch (error) {                // Esperar a que cualquier elemento del juego esté presente
                 await page.waitForFunction(
-                    'document.querySelector("body").innerText.includes("bandera") || document.querySelector("body").innerText.includes("obra de arte")',
+                    'document.querySelector("body").innerText.includes("bandera")',
                     { timeout: 10000 }
                 );
             }
@@ -108,7 +108,7 @@ defineFeature(feature, test => {
 
             // Esperar a que la página del juego se cargue completamente
             try {                await page.waitForFunction(
-                    'document.querySelector("body").innerText.includes("bandera") || document.querySelector("body").innerText.includes("obra de arte")',
+                    'document.querySelector("body").innerText.includes("bandera")',
                     { timeout: 15000 }
                 );
             } catch (error) {

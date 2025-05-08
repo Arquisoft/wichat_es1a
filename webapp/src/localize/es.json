@@ -72,12 +72,7 @@
             "time": "Segundos por pregunta",
             "category": "Categoría"
         },        "categories": {
-            "political":"Política",
-            "sports":"Deporte",
-            "cities": "Ciudades",
-            "art": "Arte",
-            "entertainment": "Entretenimiento",
-            "games": "Juegos"
+            "flags": "Banderas"
         }
     },
 

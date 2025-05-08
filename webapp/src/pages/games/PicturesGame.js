@@ -74,11 +74,10 @@ const PictureGame = () => {
   // Estados para el chat redimensionable
   const [chatSize, setChatSize] = React.useState({ width: 300, height: 300 });
   const [isResizing, setIsResizing] = React.useState(false);
-  const [resizeStartPos, setResizeStartPos] = React.useState({ x: 0, y: 0 });
-  const [resizeStartSize, setResizeStartSize] = React.useState({ width: 0, height: 0 });
+  const [resizeStartPos, setResizeStartPos] = React.useState({ x: 0, y: 0 });  const [resizeStartSize, setResizeStartSize] = React.useState({ width: 0, height: 0 });
   const [chatOpen, setChatOpen] = React.useState(true);
 
-  // Iniciar nueva ronda cuando el round cambie
+  // Iniciar nueva ronda cuando el round cambie  
   React.useEffect(() => {
     if (round > 0 && round <= 5) { // Límite de 5 rondas
       startNewRound();
@@ -88,10 +87,11 @@ const PictureGame = () => {
     } else if(round > 5) {
       endGame();
     }
-    // eslint-disable-next-line
-  }, [round]);  const questionText = useMemo(() => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [round]);
+  
+  const questionText = useMemo(() => {
     switch (category) {
-      case 'art': return '¿Qué obra de arte es esta?';
       case 'flags': return '¿De dónde es esta bandera?';
       default: return '¿Qué es esto?';
     }
@@ -291,10 +291,10 @@ const PictureGame = () => {
       />
     ));
   };
-
   const togglePause = () => {
     setTimerRunning(!timerRunning);
-    setPaused(!paused);  };
+    setPaused(!paused);
+  };
 
   // Función para enviar mensaje de chat
   const sendChatMessage = async () => {
@@ -367,12 +367,10 @@ const PictureGame = () => {
               <Typography variant="h4" fontWeight="bold" color={theme.palette.success.main}>{t("Wise_Men.instructions2")}</Typography>
               <Typography variant="h4" fontWeight="bold" color="primary">{t("Wise_Men.instructions3")}</Typography>
             </Box>            {/* Dropdown para seleccionar categoría */}
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: '1em' }}>
-              <Typography data-testid="categories-label" variant="h5" htmlFor="category">
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: '1em' }}>              <Typography data-testid="categories-label" variant="h5" htmlFor="category">
                 {t("Game.config.category")}:
               </Typography>                <Select value={category} style={{ minWidth: '120px' }}>
                 <MenuItem value="flags" onClick={() => setCategory(('flags'))}>Banderas</MenuItem>
-                <MenuItem value="art" onClick={() => setCategory(('art'))}>Obras de Arte</MenuItem>
               </Select>
             </Box>
             
@@ -516,12 +514,10 @@ const PictureGame = () => {
                   </Box>
                 )}
               </CountdownCircleTimer>
-            }
-
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2, mt: 2 }}>
+            }          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2, mt: 2 }}>
             {/* Imagen con texto encima */}
             <Box sx={{ textAlign: 'center' }}>
-              <Typography variant="h5" gutterBottom>
+              <Typography variant="h5" gutterBottom data-testid="question-text">
                 {questionText}
               </Typography>
               <Box

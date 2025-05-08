@@ -72,12 +72,7 @@
             "time": "Seconds per question",
             "category": "Category"
         },        "categories": {
-            "political":"Political",
-            "sports":"Sports",
-            "cities": "Cities",
-            "art": "Art",
-            "entertainment": "Entertainment",
-            "games": "Games"
+            "flags": "Flags"
         }
     },
 

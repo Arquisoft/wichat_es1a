@@ -1,4 +1,4 @@
-import { WikidataRecipe, FlagsRecipe, ArtRecipe } from "../../services/question-generation";
+import { WikidataRecipe, FlagsRecipe } from "../../services/question-generation";
 import { WikidataQueryBuilder } from "../../services/wikidata/query_builder";
 import { WikidataEntity } from "../../services/wikidata";
 
@@ -72,81 +72,5 @@ describe('FlagsRecipe', () => {
 
   test('getCategory should return the Flags category', () => {
     expect(flagsRecipe.getCategory()).toBe(3); // Categories.Flags
-  });
-});
-
-describe('ArtRecipe', () => {
-  let artRecipe: ArtRecipe;
-  let queryBuilder: WikidataQueryBuilder;
-
-  beforeEach(() => {
-    artRecipe = new ArtRecipe();
-    queryBuilder = new WikidataQueryBuilder();
-    // Espiar los métodos del queryBuilder
-    jest.spyOn(queryBuilder, 'clearProperties');
-    jest.spyOn(queryBuilder, 'instanceOf');
-    jest.spyOn(queryBuilder, 'assocProperty');
-  });
-
-  test('buildQuery should call clearProperties, instanceOf and assocProperty', () => {
-    artRecipe.buildQuery(queryBuilder);
-    expect(queryBuilder.clearProperties).toHaveBeenCalled();
-    expect(queryBuilder.instanceOf).toHaveBeenCalledWith(3305213);
-    expect(queryBuilder.assocProperty).toHaveBeenCalledWith(170, "creator");
-    expect(queryBuilder.assocProperty).toHaveBeenCalledWith(18, "image");
-  });
-
-  test('getImageUrl should return the image URL directly', async () => {
-    const binding = { imageLabel: { value: 'https://example.com/artwork.jpg' } };
-    const url = await artRecipe.getImageUrl(binding);
-    
-    // Verificar que devuelve directamente la URL sin procesarla
-    expect(url).toBe('https://example.com/artwork.jpg');
-  });
-
-  test('getAttributes should return image, item_label and creator attributes', () => {
-    const binding = { 
-      imageLabel: { value: 'https://example.com/artwork.jpg' },
-      itemLabel: { value: 'The Starry Night' },
-      creatorLabel: { value: 'Vincent van Gogh' }
-    };
-    const attributes = artRecipe.getAttributes(binding);
-    expect(attributes).toEqual([
-      ['image', 'https://example.com/artwork.jpg'],
-      ['item_label', 'The Starry Night'],
-      ['creator', 'Vincent van Gogh']
-    ]);
-  });
-
-  test('getAttributes should handle missing creator', () => {
-    const binding = { 
-      imageLabel: { value: 'https://example.com/artwork.jpg' },
-      itemLabel: { value: 'The Starry Night' }
-    };
-    const attributes = artRecipe.getAttributes(binding);
-    expect(attributes).toEqual([
-      ['image', 'https://example.com/artwork.jpg'],
-      ['item_label', 'The Starry Night'],
-      ['creator', 'Unknown Artist']
-    ]);
-  });
-
-  test('generateQuestion should return a function that formats item_label and creator', () => {
-    const genFunction = artRecipe.generateQuestion();
-    const entity = new WikidataEntity("https://example.com/artwork.jpg");
-    entity.addAttribute("item_label", "The Starry Night");
-    entity.addAttribute("creator", "Vincent van Gogh");
-    expect(genFunction(entity)).toBe("The Starry Night (by Vincent van Gogh)");
-  });
-
-  test('generateQuestion should work without creator', () => {
-    const genFunction = artRecipe.generateQuestion();
-    const entity = new WikidataEntity("https://example.com/artwork.jpg");
-    entity.addAttribute("item_label", "Unknown Artwork");
-    expect(genFunction(entity)).toBe("Unknown Artwork");
-  });
-
-  test('getCategory should return the Art category', () => {
-    expect(artRecipe.getCategory()).toBe(4); // Categories.Art
   });
 });

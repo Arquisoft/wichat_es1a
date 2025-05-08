@@ -42,18 +42,8 @@ const getCategoryPrompt = (category) => {
     "No des respuestas de sí/no solamente, elabora siempre con información útil.",
     "Si preguntan algo fuera del juego responde: 'Lo siento, solo puedo darte pistas sobre"
   ];
-  
-  // Configuración específica por categoría
+    // Configuración específica por categoría
   const categoryConfig = {
-    art: {
-      subject: "la obra de arte",
-      specificInstructions: [
-        "Menciona características de la obra y su autor/artista.",
-        "Si preguntan sobre estilo artístico, época, técnica o contexto histórico, responde con información real.",
-        "Si preguntan sobre el museo donde se encuentra, materiales usados o significado, proporciona información específica.",
-        "Adapta tu respuesta al nivel de especificidad de la pregunta del usuario."
-      ]
-    },
     flags: {
       subject: "el país o región cuya bandera",
       specificInstructions: [
@@ -87,13 +77,7 @@ const getCategoryPrompt = (category) => {
 
 // Obtener el mensaje de bienvenida según la categoría
 const getWelcomeMessage = (gameCategory) => {
-  if (gameCategory?.toLowerCase() === "art") {
-    return "¡Bienvenido al juego de adivinanzas de obras de arte! Hazme preguntas y te daré pistas para que adivines qué obra de arte aparece en la imagen.";
-  } else if (gameCategory?.toLowerCase() === "flags") {
-    return "¡Bienvenido al juego de adivinanzas de banderas! Hazme preguntas y te daré pistas para que adivines a qué país o región pertenece la bandera que aparece en la imagen.";
-  } else {
-    return "¡Bienvenido al juego de adivinanzas! Hazme preguntas y te daré pistas para que adivines lo que aparece en la imagen.";
-  }
+  return "¡Bienvenido al juego de adivinanzas de banderas! Hazme preguntas y te daré pistas para que adivines a qué país o región pertenece la bandera que aparece en la imagen.";
 };
 
 const llmConfigs = {

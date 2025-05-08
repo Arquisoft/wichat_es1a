@@ -56,9 +56,9 @@ services:
       USER_SERVICE_URL: http://users:8001
       QUESTION_SERVICE_URL: http://questions:8010
     restart: always
-
+    
   llmservice:
-    container_name: llmservice-wichat_es1a
+    container_name: llmservice
     image: ghcr.io/arquisoft/wichat_es1a/llm-service:latest
     profiles: ["dev", "prod"]
     build: ./llmservice
@@ -68,6 +68,8 @@ services:
       - mynetwork
     environment:
       REACT_APP_GEMINI_API_KEY: ${GEMINI_API_KEY}
+
+    restart: always
 
   webapp:
     container_name: webapp

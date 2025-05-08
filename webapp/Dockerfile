@@ -4,7 +4,7 @@ COPY . /app
 WORKDIR /app
 
 #Install the dependencies
-RUN npm install --omit=dev
+RUN npm install
 
 ARG IP="localhost"
 ENV REACT_APP_IP=$IP

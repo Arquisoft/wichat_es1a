@@ -34,17 +34,17 @@
     "web-vitals": "^3.5.1"
   },  "scripts": {
     "start": "react-scripts start",
-    "build": "CI=false react-scripts build",
+    "build": "cross-env CI=false react-scripts build",
     "prod": "serve -s build",
-    "test": "TEST=true react-scripts test --passWithNoTests --transformIgnorePatterns 'node_modules/(?!axios)/'",
-    "test:e2e": "TEST=true start-server-and-test 'node e2e/test-environment-setup.js' http://localhost:8000/health start http://localhost:3000/ \"cd e2e && jest\"",
-    "test:e2e:login": "TEST=true start-server-and-test 'node e2e/test-environment-setup.js' http://localhost:8000/health start http://localhost:3000/ \"cd e2e && jest -i steps/login.steps.js\"",
-    "test:e2e:register": "TEST=true start-server-and-test 'node e2e/test-environment-setup.js' http://localhost:8000/health start http://localhost:3000/ \"cd e2e && jest -i steps/register.steps.js\"",
-    "test:e2e:category": "TEST=true start-server-and-test 'node e2e/test-environment-setup.js' http://localhost:8000/health start http://localhost:3000/ \"cd e2e && jest -i steps/category.steps.js\"",
-    "test:e2e:chat": "TEST=true start-server-and-test 'node e2e/test-environment-setup.js' http://localhost:8000/health start http://localhost:3000/ \"cd e2e && jest -i steps/chat.steps.js\"",
-    "test:e2e:navigation": "TEST=true start-server-and-test 'node e2e/test-environment-setup.js' http://localhost:8000/health start http://localhost:3000/ \"cd e2e && jest -i steps/navigation.steps.js\"",
-    "test:e2e:picturesgame": "TEST=true start-server-and-test 'node e2e/test-environment-setup.js' http://localhost:8000/health start http://localhost:3000/ \"cd e2e && jest -i steps/picturesgame.steps.js\"",
-    "test:e2e:statistics": "TEST=true start-server-and-test 'node e2e/test-environment-setup.js' http://localhost:8000/health start http://localhost:3000/ \"cd e2e && jest -i steps/statistics.steps.js\"",
+    "test": "cross-env TEST=true react-scripts test --passWithNoTests --transformIgnorePatterns \"node_modules/(?!axios)/\"",
+    "test:e2e": "cross-env TEST=true start-server-and-test \"node e2e/test-environment-setup.js\" http://localhost:8000/health \"react-scripts start\" http://localhost:3000/ \"cd e2e && jest\"",
+    "test:e2e:login": "cross-env TEST=true start-server-and-test \"node e2e/test-environment-setup.js\" http://localhost:8000/health \"react-scripts start\" http://localhost:3000/ \"cd e2e && jest -i steps/login.steps.js\"",
+    "test:e2e:register": "cross-env TEST=true start-server-and-test \"node e2e/test-environment-setup.js\" http://localhost:8000/health \"react-scripts start\" http://localhost:3000/ \"cd e2e && jest -i steps/register.steps.js\"",
+    "test:e2e:category": "cross-env TEST=true start-server-and-test \"node e2e/test-environment-setup.js\" http://localhost:8000/health \"react-scripts start\" http://localhost:3000/ \"cd e2e && jest -i steps/category.steps.js\"",
+    "test:e2e:chat": "cross-env TEST=true start-server-and-test \"node e2e/test-environment-setup.js\" http://localhost:8000/health \"react-scripts start\" http://localhost:3000/ \"cd e2e && jest -i steps/chat.steps.js\"",
+    "test:e2e:navigation": "cross-env TEST=true start-server-and-test \"node e2e/test-environment-setup.js\" http://localhost:8000/health \"react-scripts start\" http://localhost:3000/ \"cd e2e && jest -i steps/navigation.steps.js\"",
+    "test:e2e:picturesgame": "cross-env TEST=true start-server-and-test \"node e2e/test-environment-setup.js\" http://localhost:8000/health \"react-scripts start\" http://localhost:3000/ \"cd e2e && jest -i steps/picturesgame.steps.js\"",
+    "test:e2e:statistics": "cross-env TEST=true start-server-and-test \"node e2e/test-environment-setup.js\" http://localhost:8000/health \"react-scripts start\" http://localhost:3000/ \"cd e2e && jest -i steps/statistics.steps.js\"",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

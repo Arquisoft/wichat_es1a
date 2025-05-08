@@ -339,10 +339,10 @@ describe("LLM Service API Tests", () => {
         .send({
           messages: [{ sender: "user", text: "Dame una pista" }],
           gameCategory: "categoría_inexistente"
-        });
-
-      expect(res.statusCode).toBe(200);
-      expect(res.body).toHaveProperty("response", "Respuesta para categoría no válida");      // Verificar que se usó el contexto por defecto      const requestData = axios.post.mock.calls[0][1];
+        });      expect(res.statusCode).toBe(200);
+      expect(res.body).toHaveProperty("response", "Respuesta para categoría no válida");      
+      // Verificar que se usó el contexto por defecto      
+      const requestData = axios.post.mock.calls[0][1];
       expect(requestData.contents[0].parts[0].text).not.toContain("el país o región cuya bandera");
       expect(requestData.contents[0].parts[0].text).not.toContain("el logo");
       expect(requestData.contents[0].parts[0].text).toContain("lo que aparece en la imagen");

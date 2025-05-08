@@ -13,14 +13,11 @@ import {
   IconButton,
   useTheme,
   Paper,
-  Drawer,
-  Divider,
-  TextField,
-  Popover
+  TextField
 } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
-import { PlayArrow, Pause, ChatBubble, Close } from '@mui/icons-material';
+import { PlayArrow, Pause, ChatBubble } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { SessionContext } from '../../SessionContext';
 import {useContext, useMemo} from 'react';
@@ -297,12 +294,7 @@ const PictureGame = () => {
 
   const togglePause = () => {
     setTimerRunning(!timerRunning);
-    setPaused(!paused);
-  };
-
-  const toggleDrawer = (open) => () => {
-    setDrawerOpen(open);
-  };
+    setPaused(!paused);  };
 
   // Función para enviar mensaje de chat
   const sendChatMessage = async () => {

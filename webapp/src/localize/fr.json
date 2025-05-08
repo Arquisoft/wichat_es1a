@@ -51,9 +51,7 @@
             "desc": "Créez une salle pour que d'autres joueurs se joignent et jouent ensemble. Il y a aussi un chat."
         }
 
-    },
-
-    "Game": {
+    },    "Game": {
         "win_msg": "Excellent travail !",
         "lose_msg": "Partie Terminée",
         "correct": "Réponses Correctes",
@@ -65,6 +63,10 @@
         "round": "Question ",
         "start": "Commencer à Jouer",
         "skip": "Sauter",
+        "difficulty": "Difficulté",
+        "difficulty_easy": "Facile",
+        "difficulty_medium": "Moyenne",
+        "difficulty_hard": "Difficile",
         "config": {
             "title": "CONFIGURATION DU JEU",
             "num_rounds": "Nombre de tours",

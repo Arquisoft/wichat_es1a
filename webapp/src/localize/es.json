@@ -50,15 +50,17 @@
             "name": "Multiplayer",
             "desc": "Crea una sala para que otros jugadores se unan y jueguen juntos. También hay un chat disponible."
         }
-    },
-
-    "Game": {
+    },    "Game": {
         "win_msg": "¡Buen trabajo!",
         "lose_msg": "Fin del Juego",
         "correct": "Respuestas Correctas",
         "incorrect": "Respuestas Incorrectas",
         "money": "Puntos Finales",
         "time": "Segundos de Juego",
+        "difficulty": "Dificultad",
+        "difficulty_easy": "Fácil",
+        "difficulty_medium": "Media",
+        "difficulty_hard": "Difícil",
         "pause": "Pausa",
         "play": "Jugar",
         "round": "Pregunta ",

@@ -50,9 +50,7 @@
             "name": "Multiplayer",
             "desc": "Create a room for other players to join and play together. Also, a chat is available."
         }
-    },
-
-    "Game": {
+    },    "Game": {
         "win_msg": "Great Job!",
         "lose_msg": "Game Over",
         "correct": "Correct Answers",
@@ -64,6 +62,10 @@
         "round": "Question ",
         "start": "Start Game",
         "skip": "Skip",
+        "difficulty": "Difficulty",
+        "difficulty_easy": "Easy",
+        "difficulty_medium": "Medium",
+        "difficulty_hard": "Hard",
         "config": {
             "title": "GAME CONFIGURATION",
             "num_rounds": "Number of rounds",

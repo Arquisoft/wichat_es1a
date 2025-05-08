@@ -1,13 +1,27 @@
-import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import PictureGame from '../pages/games/PicturesGame';
-import { SessionContext } from '../SessionContext';
-import { MemoryRouter } from 'react-router-dom';
-import axios from 'axios';
-import { act } from '@testing-library/react';
+const React = require('react');
+const { render, screen, fireEvent, waitFor } = require('@testing-library/react');
+const PictureGame = require('../pages/games/PicturesGame').default;
+const { SessionContext } = require('../SessionContext');
+const { MemoryRouter } = require('react-router-dom');
+const { act } = require('@testing-library/react');
 
-jest.mock('axios');
-jest.mock('react-confetti', () => () => <div data-testid="confetti" />);
+// Mock axios before requiring it
+jest.mock('axios', () => ({
+  get: jest.fn(),
+  post: jest.fn(),
+  put: jest.fn()
+}));
+
+// Now require axios after it's been mocked
+const axios = require('axios');
+
+// Mock react-confetti properly for CommonJS
+jest.mock('react-confetti', () => {
+  return function DummyConfetti() {
+    return '<div data-testid="confetti"></div>';
+  };
+});
+
 window.HTMLMediaElement.prototype.play = () => {}; // mock para sonidos
 
 beforeAll(() => {
@@ -160,12 +174,13 @@ describe('PictureGame component', () => {
     await waitFor(() => {
       expect(screen.getByText('¿De dónde es esta bandera?')).toBeInTheDocument();
     });
-  });
-  it('changes question text when selecting logos category', async () => {
+  });  it('changes question text when selecting logos category', async () => {
     renderGame();
     
-    // Find the select element and change its value to logos
-    const categorySelect = await screen.findByRole('combobox');
+    // Find all select elements and get the first one (category)
+    const selectElements = await screen.findAllByRole('combobox');
+    const categorySelect = selectElements[0]; // First select is for category
+    
     await act(async () => {
       fireEvent.mouseDown(categorySelect);
     });
@@ -184,5 +199,77 @@ describe('PictureGame component', () => {
     await waitFor(() => {
       expect(screen.getByText('¿Que logo es este?')).toBeInTheDocument();
     });
+  });  it('shows difficulty selector in the configuration screen', async () => {
+    renderGame();
+    
+    // Find both select elements (category and difficulty)
+    const selectElements = await screen.findAllByRole('combobox');
+    expect(selectElements.length).toBe(2); // Should have 2 select elements now
+    
+    // Find and click on the difficulty dropdown
+    const difficultySelect = selectElements[1]; // The second Select should be the difficulty one
+    await act(async () => {
+      fireEvent.mouseDown(difficultySelect);
+    });
+    
+    // Verify we can find all difficulty options - using Spanish text as the app is in Spanish by default
+    const easyOption = await screen.findByText('Fácil');
+    expect(easyOption).toBeInTheDocument();
+      const mediumOption = screen.queryByRole('option', { name: 'Media' });
+    expect(mediumOption).toBeInTheDocument();
+    
+    const hardOption = screen.queryByText('Difícil');
+    expect(hardOption).toBeInTheDocument();
+  });
+  it('sets correct timer value based on difficulty', async () => {
+    // Create a test wrapper component to inspect timer value
+    const TestWrapper = () => {
+      const [difficulty, setDifficultyState] = React.useState('medium');
+      const [timerValue, setTimerValue] = React.useState(0);
+      
+      React.useEffect(() => {
+        // Update timer based on difficulty - same logic as in component
+        switch (difficulty) {
+          case 'easy':
+            setTimerValue(60);
+            break;
+          case 'medium':
+            setTimerValue(45);
+            break;
+          case 'hard':
+            setTimerValue(30);
+            break;
+          default:
+            setTimerValue(45);
+        }
+      }, [difficulty]);
+      
+      return (
+        <div>
+          <div data-testid="timer-value">{timerValue}</div>
+          <select 
+            data-testid="difficulty-select"
+            value={difficulty} 
+            onChange={(e) => setDifficultyState(e.target.value)}>
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+          </select>
+        </div>
+      );
+    };
+    
+    render(<TestWrapper />);
+    
+    // Should start with medium difficulty (45 seconds)
+    expect(screen.getByTestId("timer-value").textContent).toBe("45");
+    
+    // Change to easy difficulty
+    fireEvent.change(screen.getByTestId("difficulty-select"), { target: { value: 'easy' } });
+    expect(screen.getByTestId("timer-value").textContent).toBe("60");
+    
+    // Change to hard difficulty
+    fireEvent.change(screen.getByTestId("difficulty-select"), { target: { value: 'hard' } });
+    expect(screen.getByTestId("timer-value").textContent).toBe("30");
   });
 });

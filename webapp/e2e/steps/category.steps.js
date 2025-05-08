@@ -34,14 +34,18 @@ defineFeature(feature, test => {
             await page.goto('http://localhost:3000/pictureGame', { waitUntil: 'networkidle0' });
             await page.waitForSelector('[data-testid="categories-label"]');
             expect(page.url()).toContain('/pictureGame');
-        });
-
-        when('I select the "logos" category and start the game', async () => {
-            // Click the dropdown to open it
-            await page.click('div.MuiSelect-select');
+        });        when('I select the "logos" category and start the game', async () => {
+            // Get all dropdown elements
+            const selectElements = await page.$$('div.MuiSelect-select');
+            expect(selectElements.length).toBeGreaterThanOrEqual(1);
+            
+            // Click the first dropdown (category)
+            await selectElements[0].click();
+            
             // Find and click on the "Logos" option
             await page.waitForSelector('li[data-value="logos"]');
             await page.click('li[data-value="logos"]');
+            
             // Click the start button
             await page.click('[data-testid="start-button"]');
         });

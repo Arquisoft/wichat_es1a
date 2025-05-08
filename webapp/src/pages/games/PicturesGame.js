@@ -53,7 +53,8 @@ const PictureGame = () => {
   const [timerRunning, setTimerRunning] = React.useState(true);
   const [showConfetti, setShowConfetti] = React.useState(false);
   const [questionCountdownKey, setQuestionCountdownKey] = React.useState(0);
-  const [timerPerQuestion] = React.useState(45); //Tiempo por pregunta en segundos
+  const [difficulty, setDifficulty] = React.useState('medium'); // Nivel de dificultad (fácil, medio, difícil)
+  const [timerPerQuestion, setTimerPerQuestion] = React.useState(45); //Tiempo por pregunta en segundos
   const [questionCountdownRunning, setQuestionCountdownRunning] = React.useState(false);
   const [userResponses, setUserResponses] = React.useState([]);
   const [language, setCurrentLanguage] = React.useState(i18n.language);
@@ -337,6 +338,23 @@ const PictureGame = () => {
     }
   };
 
+  // Actualizar el timer basado en la dificultad seleccionada
+  React.useEffect(() => {
+    switch (difficulty) {
+      case 'easy':
+        setTimerPerQuestion(60); // 60 segundos para nivel fácil
+        break;
+      case 'medium':
+        setTimerPerQuestion(45); // 45 segundos para nivel medio
+        break;
+      case 'hard':
+        setTimerPerQuestion(30); // 30 segundos para nivel difícil
+        break;
+      default:
+        setTimerPerQuestion(45); // Valor predeterminado
+    }
+  }, [difficulty]);
+
   if (!isConfigured) {
     return (
       <Container sx={{ display: 'flex', flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -349,16 +367,34 @@ const PictureGame = () => {
               <Typography variant="h4" fontWeight="bold" color="error">{t("Wise_Men.instructions1")}</Typography>
               <Typography variant="h4" fontWeight="bold" color={theme.palette.success.main}>{t("Wise_Men.instructions2")}</Typography>
               <Typography variant="h4" fontWeight="bold" color="primary">{t("Wise_Men.instructions3")}</Typography>
-            </Box>
-            {/* Dropdown para seleccionar categoría */}
+            </Box>            {/* Dropdown para seleccionar categoría */}
             <Box sx={{ display: 'flex', alignItems: 'center', gap: '1em' }}>
               <Typography data-testid="categories-label" variant="h5" htmlFor="category">
                 {t("Game.config.category")}:
-              </Typography>              <Select value={category} style={{ minWidth: '120px' }}>
+              </Typography>              
+              <Select value={category} style={{ minWidth: '120px' }}>
                 <MenuItem value="flags" onClick={() => setCategory(('flags'))}>Banderas</MenuItem>
                 <MenuItem value="logos" onClick={() => setCategory(('logos'))}>Logos</MenuItem>
               </Select>
             </Box>
+            
+            {/* Dropdown para seleccionar dificultad */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: '1em', marginTop: '1em' }}>
+              <Typography data-testid="difficulty-label" variant="h5" htmlFor="difficulty">
+                {t("Game.difficulty")}:
+              </Typography>                <Select value={difficulty} style={{ minWidth: '120px' }}>
+                <MenuItem value="easy" onClick={() => setDifficulty('easy')}>{t("Game.difficulty_easy")}</MenuItem>
+                <MenuItem value="medium" onClick={() => setDifficulty('medium')}>{t("Game.difficulty_medium")}</MenuItem>
+                <MenuItem value="hard" onClick={() => setDifficulty('hard')}>{t("Game.difficulty_hard")}</MenuItem>
+              </Select>
+            </Box>
+            
+            {/* Información sobre el tiempo según dificultad */}
+            <Typography variant="body2" sx={{ marginTop: '0.5em', fontStyle: 'italic' }}>
+              {difficulty === 'easy' && `${t("Game.time")}: 60s`}
+              {difficulty === 'medium' && `${t("Game.time")}: 45s`}
+              {difficulty === 'hard' && `${t("Game.time")}: 30s`}
+            </Typography>
           </Box>
           <Button
             data-testid="start-button"

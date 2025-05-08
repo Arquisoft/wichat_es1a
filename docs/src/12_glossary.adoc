@@ -51,7 +51,7 @@ For more information, check the arc42 documentation: https://docs.arc42.org/sect
 |A user who registers in the application to play the various available quizzes.
 
 |Picture Game
-|A challenge with questions from various topics (animals, logos, flags). The goal is to answer as many questions correctly as possible within a limited time, the round ends after 5 questions.
+|A challenge with questions from various topics (logos, flags). The goal is to answer as many questions correctly as possible within a limited time, the round ends after 5 questions.
 
 |===
 

@@ -25,14 +25,7 @@ const getCategoryPrompt = (category) => {
     "No des respuestas de sí/no solamente.",
     "Si preguntan algo fuera del juego responde: 'Lo siento, solo puedo darte pistas sobre"
   ];
-  // Configuración específica por categoría
-  const categoryConfig = {
-    animals: {
-      subject: "el animal",
-      specificInstructions: [
-        "Menciona características físicas, hábitat, comportamiento o curiosidades del animal."
-      ]
-    },
+  // Configuración específica por categoría  const categoryConfig = {
     logos: {
       subject: "el logo",
       specificInstructions: [
@@ -67,9 +60,7 @@ const getCategoryPrompt = (category) => {
 
 // Obtener el mensaje de bienvenida según la categoría
 const getWelcomeMessage = (gameCategory) => {
-  if (gameCategory?.toLowerCase() === "animals") {
-    return "¡Bienvenido al juego de adivinanzas de animales! Hazme preguntas y te daré pistas para que adivines qué animal aparece en la imagen.";
-  } else if (gameCategory?.toLowerCase() === "logos") {
+  if (gameCategory?.toLowerCase() === "logos") {
     return "¡Bienvenido al juego de adivinanzas de logos! Hazme preguntas y te daré pistas para que adivines qué logo aparece en la imagen.";
   } else if (gameCategory?.toLowerCase() === "flags") {
     return "¡Bienvenido al juego de adivinanzas de banderas! Hazme preguntas y te daré pistas para que adivines a qué país o región pertenece la bandera que aparece en la imagen.";

@@ -39,10 +39,9 @@ defineFeature(feature, test => {
             // Esperar a que el juego se cargue y el campo de chat esté disponible
             try {
                 await page.waitForSelector('input[placeholder="Escribe tu mensaje..."]', { timeout: 10000 });
-            } catch (error) {
-                // Esperar a que cualquier elemento del juego esté presente
+            } catch (error) {            // Esperar a que cualquier elemento del juego esté presente
                 await page.waitForFunction(
-                    'document.querySelector("body").innerText.includes("animal") || document.querySelector("body").innerText.includes("logo")',
+                    'document.querySelector("body").innerText.includes("bandera") || document.querySelector("body").innerText.includes("logo")',
                     { timeout: 10000 }
                 );
             }
@@ -98,10 +97,9 @@ defineFeature(feature, test => {
             await page.waitForSelector('[data-testid="start-button"]');
             await page.click('[data-testid="start-button"]');
 
-            // Esperar a que la página del juego se cargue completamente
-            try {
+            // Esperar a que la página del juego se cargue completamente            try {
                 await page.waitForFunction(
-                    'document.querySelector("body").innerText.includes("animal") || document.querySelector("body").innerText.includes("logo")',
+                    'document.querySelector("body").innerText.includes("bandera") || document.querySelector("body").innerText.includes("logo")',
                     { timeout: 15000 }
                 );
             } catch (error) {

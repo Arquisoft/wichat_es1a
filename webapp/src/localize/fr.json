@@ -70,16 +70,14 @@
             "num_rounds": "Nombre de tours",
             "time": "Secondes par question",
             "category": "Catégorie"
-        },
-        "categories": {
+        },        "categories": {
             "geography": "Gréographie",
             "political":"Politique",
             "sports":"Sport",
             "cities": "Villes",
             "art": "Art",
             "entertainment": "Divertissement",
-            "games": "Jeux",
-            "animals": "Animaux"
+            "games": "Jeux"
         }
     },
     

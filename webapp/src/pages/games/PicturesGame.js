@@ -60,8 +60,7 @@ const PictureGame = () => {
   const [questionCountdownRunning, setQuestionCountdownRunning] = React.useState(false);
   const [userResponses, setUserResponses] = React.useState([]);
   const [language, setCurrentLanguage] = React.useState(i18n.language);
-  const [drawerOpen, setDrawerOpen] = React.useState(false);
-  const [category, setCategory] = React.useState('flags');
+  const [drawerOpen, setDrawerOpen] = React.useState(false);  const [category, setCategory] = React.useState('flags');
   const [possibleAnswers, setPossibleAnswers] = React.useState([]);
   const [isConfigured, setConfiguration] = React.useState(false);
   const [paused, setPaused] = React.useState(false);
@@ -93,10 +92,8 @@ const PictureGame = () => {
     }
     // eslint-disable-next-line
   }, [round]);
-
   const questionText = useMemo(() => {
     switch (category) {
-      case 'animals': return '¿Que animal es este?';
       case 'logos': return '¿Que logo es este?';
       case 'flags': return '¿De dónde es esta bandera?';
       default: return '¿Qué es esto?';
@@ -365,12 +362,9 @@ const PictureGame = () => {
             <Box sx={{ display: 'flex', alignItems: 'center', gap: '1em' }}>
               <Typography data-testid="categories-label" variant="h5" htmlFor="category">
                 {t("Game.config.category")}:
-              </Typography>
-              <Select value={category} style={{ minWidth: '120px' }}>
-                <MenuItem value="animals" onClick={() => setCategory(('animals'))}>Animales</MenuItem>
+              </Typography>              <Select value={category} style={{ minWidth: '120px' }}>
                 <MenuItem value="flags" onClick={() => setCategory(('flags'))}>Banderas</MenuItem>
                 <MenuItem value="logos" onClick={() => setCategory(('logos'))}>Logos</MenuItem>
-                {/* Agrega más categorías si lo deseas */}
               </Select>
             </Box>
           </Box>

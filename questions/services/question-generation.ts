@@ -20,24 +20,7 @@ export abstract class WikidataRecipe {
     abstract getCategory() : Number;
 }
 
-export class AnimalRecipe extends WikidataRecipe {
-    buildQuery(qb: WikidataQueryBuilder) {
-        qb
-        .subclassOf(Q.ANIMAL)
-        .assocProperty(1843, "common_name", null, true, "es")
-    }
-    getAttributes(binding: any): Array<[String,String]> {
-        return [
-            ["item_label", binding.itemLabel.value],
-        ]
-    }
-    generateQuestion(): GenFunction {
-        return (we: WikidataEntity) => we.getAttribute("item_label")
-    }
-    getCategory(): Number {
-        return Categories.Animals
-    }
-}
+
 
 export class GeographyRecipe extends WikidataRecipe {
     buildQuery(qb: WikidataQueryBuilder) {

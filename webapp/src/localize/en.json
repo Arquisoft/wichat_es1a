@@ -69,16 +69,14 @@
             "num_rounds": "Number of rounds",
             "time": "Seconds per question",
             "category": "Category"
-        },
-        "categories": {
+        },        "categories": {
             "geography": "Geography",
             "political":"Political",
             "sports":"Sports",
             "cities": "Cities",
             "art": "Art",
             "entertainment": "Entertainment",
-            "games": "Games",
-            "animals": "Animals"
+            "games": "Games"
         }
     },
 

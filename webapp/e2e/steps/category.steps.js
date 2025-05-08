@@ -29,12 +29,12 @@ defineFeature(feature, test => {
 
     afterAll(async () => {
         await browser.close();
-    });test('Change game category to logos', ({ given, when, then }) => {
+    });test('Change game category to art', ({ given, when, then }) => {
         given('I am in the PicturesGame setup page', async () => {
             await page.goto('http://localhost:3000/pictureGame', { waitUntil: 'networkidle0' });
             await page.waitForSelector('[data-testid="categories-label"]');
             expect(page.url()).toContain('/pictureGame');
-        });        when('I select the "logos" category and start the game', async () => {
+        });        when('I select the "art" category and start the game', async () => {
             // Get all dropdown elements
             const selectElements = await page.$$('div.MuiSelect-select');
             expect(selectElements.length).toBeGreaterThanOrEqual(1);
@@ -42,26 +42,26 @@ defineFeature(feature, test => {
             // Click the first dropdown (category)
             await selectElements[0].click();
             
-            // Find and click on the "Logos" option
-            await page.waitForSelector('li[data-value="logos"]');
-            await page.click('li[data-value="logos"]');
+            // Find and click on the "Art" option
+            await page.waitForSelector('li[data-value="art"]');
+            await page.click('li[data-value="art"]');
             
             // Click the start button
             await page.click('[data-testid="start-button"]');
         });
 
-        then('The question text changes to show logo-related question', async () => {
+        then('The question text changes to show art-related question', async () => {
             // Wait for the game to load
             await page.waitForFunction(
-                'document.querySelector("body").innerText.includes("¿Que logo es este?")',
+                'document.querySelector("body").innerText.includes("¿Qué obra de arte es esta?")',
                 { timeout: 5000 }
             );
             
-            // Verificar que hemos cargado correctamente un juego de logos
+            // Verificar que hemos cargado correctamente un juego de obras de arte
             const questionText = await page.evaluate(() => {
                 return document.body.innerText;
             });
-            expect(questionText).toContain('¿Que logo es este?');
+            expect(questionText).toContain('¿Qué obra de arte es esta?');
         });
     });
 });

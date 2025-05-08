@@ -1,4 +1,4 @@
-import { FlagsRecipe, LogosRecipe, WikidataRecipe } from "../question-generation";
+import { FlagsRecipe, ArtRecipe, WikidataRecipe } from "../question-generation";
 
 export class ItemAttribute {
     name: String;
@@ -39,22 +39,22 @@ export const P = {
 
 export const Categories = {
     Flags: 3,
-    Logos: 4,
+    Art: 4,
 }
 
 export function category_from_str(name: String) : Number | null {
     if (name == "flags")
         return Categories.Flags
-    if (name == "logos")
-        return Categories.Logos
+    if (name == "art")
+        return Categories.Art
     return null
 }
 
 export function category_into_recipe(cat: Number) : WikidataRecipe {
     if (cat == Categories.Flags)
         return new FlagsRecipe();
-    if (cat == Categories.Logos)
-        return new LogosRecipe();
+    if (cat == Categories.Art)
+        return new ArtRecipe();
     return undefined;
 }
 

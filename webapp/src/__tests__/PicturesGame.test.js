@@ -174,7 +174,7 @@ describe('PictureGame component', () => {
     await waitFor(() => {
       expect(screen.getByText('¿De dónde es esta bandera?')).toBeInTheDocument();
     });
-  });  it('changes question text when selecting logos category', async () => {
+  });  it('changes question text when selecting art category', async () => {
     renderGame();
     
     // Find all select elements and get the first one (category)
@@ -185,19 +185,18 @@ describe('PictureGame component', () => {
       fireEvent.mouseDown(categorySelect);
     });
     
-    // Find and click on the logos option
-    const logosOption = await screen.findByText('Logos');
+    // Find and click on the art option
+    const artOption = await screen.findByText('Obras de Arte');
     await act(async () => {
-      fireEvent.click(logosOption);
+      fireEvent.click(artOption);
     });
     
     const startButton = await screen.findByTestId('start-button');
     await act(async () => {
       fireEvent.click(startButton);
     });
-    
-    await waitFor(() => {
-      expect(screen.getByText('¿Que logo es este?')).toBeInTheDocument();
+      await waitFor(() => {
+      expect(screen.getByText('¿Qué obra de arte es esta?')).toBeInTheDocument();
     });
   });  it('shows difficulty selector in the configuration screen', async () => {
     renderGame();

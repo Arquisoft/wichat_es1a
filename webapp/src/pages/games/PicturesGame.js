@@ -89,10 +89,9 @@ const PictureGame = () => {
       endGame();
     }
     // eslint-disable-next-line
-  }, [round]);
-  const questionText = useMemo(() => {
+  }, [round]);  const questionText = useMemo(() => {
     switch (category) {
-      case 'logos': return '¿Que logo es este?';
+      case 'art': return '¿Qué obra de arte es esta?';
       case 'flags': return '¿De dónde es esta bandera?';
       default: return '¿Qué es esto?';
     }
@@ -371,10 +370,9 @@ const PictureGame = () => {
             <Box sx={{ display: 'flex', alignItems: 'center', gap: '1em' }}>
               <Typography data-testid="categories-label" variant="h5" htmlFor="category">
                 {t("Game.config.category")}:
-              </Typography>              
-              <Select value={category} style={{ minWidth: '120px' }}>
+              </Typography>                <Select value={category} style={{ minWidth: '120px' }}>
                 <MenuItem value="flags" onClick={() => setCategory(('flags'))}>Banderas</MenuItem>
-                <MenuItem value="logos" onClick={() => setCategory(('logos'))}>Logos</MenuItem>
+                <MenuItem value="art" onClick={() => setCategory(('art'))}>Obras de Arte</MenuItem>
               </Select>
             </Box>
             

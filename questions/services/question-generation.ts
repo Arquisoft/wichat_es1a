@@ -47,44 +47,37 @@ export class FlagsRecipe extends WikidataRecipe {
     }
 }
 
-export class LogosRecipe extends WikidataRecipe {
+export class ArtRecipe extends WikidataRecipe {
     buildQuery(qb: WikidataQueryBuilder) {
         qb.clearProperties();
         qb
-        .instanceOf(4830453)
-        .assocProperty(361, "partof", 242345)
-        .assocProperty(154, "logo")
+        .instanceOf(3305213)  // Instance of painting
+        .assocProperty(170, "creator")  // Property for creator/artist
+        .assocProperty(18, "image")    // Property for image
     }
     
     async getImageUrl(binding: any): Promise<String> {
-        // We'll process the logo image before returning it
-        const originalUrl = binding.logoLabel.value;
-          // Import here to avoid circular dependencies
-        const { ImageProcessingService } = await import('./image-processing-service');
-        const imageProcessingService = ImageProcessingService.getInstance();
-        
-        // Process the logo image to blur text
-        try {
-            const processedUrl = await imageProcessingService.processLogoImage(originalUrl);
-            return processedUrl;
-        } catch (error) {
-            console.error('Failed to process logo image:', error);
-            return originalUrl; // Fall back to original if processing fails
-        }
+        // Simply return the original artwork image URL
+        return binding.imageLabel.value;
     }
     
     getAttributes(binding: any): Array<[String, String]> {
         return [
-            ["logo", binding.logoLabel.value],
+            ["image", binding.imageLabel.value],
             ["item_label", binding.itemLabel.value],
+            ["creator", binding.creatorLabel ? binding.creatorLabel.value : "Unknown Artist"],
         ]
     }
     
     generateQuestion(): GenFunction {
-        return (we: WikidataEntity) => we.getAttribute("item_label")
+        return (we: WikidataEntity) => {
+            const itemLabel = we.getAttribute("item_label");
+            const creator = we.getAttribute("creator");
+            return creator ? `${itemLabel} (by ${creator})` : itemLabel;
+        }
     }
     
     getCategory(): Number {
-        return Categories.Logos
+        return Categories.Art
     }
 }

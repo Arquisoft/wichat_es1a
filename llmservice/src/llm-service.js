@@ -45,11 +45,12 @@ const getCategoryPrompt = (category) => {
   
   // Configuración específica por categoría
   const categoryConfig = {
-    logos: {
-      subject: "el logo",
+    art: {
+      subject: "la obra de arte",
       specificInstructions: [
-        "Menciona características de la empresa o marca asociada al logo.",
-        "Si preguntan sobre sector comercial, año de fundación, ubicación de la sede o productos, responde con información real.",
+        "Menciona características de la obra y su autor/artista.",
+        "Si preguntan sobre estilo artístico, época, técnica o contexto histórico, responde con información real.",
+        "Si preguntan sobre el museo donde se encuentra, materiales usados o significado, proporciona información específica.",
         "Adapta tu respuesta al nivel de especificidad de la pregunta del usuario."
       ]
     },
@@ -86,8 +87,8 @@ const getCategoryPrompt = (category) => {
 
 // Obtener el mensaje de bienvenida según la categoría
 const getWelcomeMessage = (gameCategory) => {
-  if (gameCategory?.toLowerCase() === "logos") {
-    return "¡Bienvenido al juego de adivinanzas de logos! Hazme preguntas y te daré pistas para que adivines qué logo aparece en la imagen.";
+  if (gameCategory?.toLowerCase() === "art") {
+    return "¡Bienvenido al juego de adivinanzas de obras de arte! Hazme preguntas y te daré pistas para que adivines qué obra de arte aparece en la imagen.";
   } else if (gameCategory?.toLowerCase() === "flags") {
     return "¡Bienvenido al juego de adivinanzas de banderas! Hazme preguntas y te daré pistas para que adivines a qué país o región pertenece la bandera que aparece en la imagen.";
   } else {
